@@ -38,6 +38,18 @@ interface RouteInterface extends \ArrayAccess
 
 
     /**
+     * Returns route pattern
+     *
+     * @return string
+    */
+    public function getPattern(): string;
+
+
+
+
+
+
+    /**
      * Returns route action will be executed.
      *
      * @return mixed
@@ -82,11 +94,11 @@ interface RouteInterface extends \ArrayAccess
 
 
     /**
-     * Returns route requirements rules
+     * Returns route required params
      *
      * @return array
     */
-    public function getPatterns(): array;
+    public function getRequires(): array;
 
 
 
@@ -109,6 +121,30 @@ interface RouteInterface extends \ArrayAccess
      * @return string|null
     */
     public function getController(): ?string;
+
+
+
+
+
+
+    /**
+     * Determine if the route action is callable
+     *
+     * @return bool
+    */
+    public function callable(): bool;
+
+
+
+
+
+
+    /**
+     * Call the route action if is callable
+     *
+     * @return mixed
+    */
+    public function callAction(): mixed;
 
 
 

@@ -199,7 +199,7 @@ class RouteCollection
      */
     private function addByMethod(Route $route): void
     {
-        $this->methods[$route->toStringMethods()][] = $route;
+        $this->methods[$route->getMethod()][] = $route;
     }
 
 

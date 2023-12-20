@@ -30,11 +30,6 @@ class RouteFactory
         mixed  $action,
         ?string $name = null
     ): Route {
-
-        if (is_string($methods)) {
-            $methods = explode('|', $methods);
-        }
-
         return new Route($methods, $path, $action, $name);
     }
 }

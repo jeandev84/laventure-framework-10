@@ -37,6 +37,18 @@ class Route implements RouteInterface
 
 
 
+
+    /**
+     * route pattern
+     *
+     * @var string
+    */
+    protected string $pattern;
+
+
+
+
+
     /**
      * route action
      *
@@ -72,7 +84,7 @@ class Route implements RouteInterface
      *
      * @var array
     */
-    protected static array $wheres = [];
+    private static array $wheres = [];
 
 
 
@@ -105,7 +117,7 @@ class Route implements RouteInterface
 
 
     /**
-     * @param array $methods
+     * @param array|string $methods
      *
      * @param string $path
      *
@@ -113,12 +125,66 @@ class Route implements RouteInterface
      *
      * @param string|null $name
     */
-    public function __construct(array $methods, string $path, mixed $action, ?string $name = null)
+    public function __construct(array|string $methods, string $path, mixed $action, ?string $name = null)
     {
-        $this->methods = $methods;
-        $this->path    = $this->normalizePath($path);
+        $this->methods($methods)
+             ->path($path)
+        ;
+
         $this->action  = $action;
         $this->name    = $name;
+    }
+
+
+
+
+    /**
+     * @param array|string $methods
+     *
+     * @return $this
+    */
+    public function methods(array|string $methods): static
+    {
+        if (is_string($methods)) {
+            $methods = explode('|', $methods);
+        }
+
+        $this->methods = $methods;
+
+        return $this;
+    }
+
+
+
+
+    /**
+     * @param string $path
+     *
+     * @return $this
+    */
+    public function path(string $path): static
+    {
+        $this->path = $this->normalizePath($path);
+
+        $this->pattern($this->path);
+
+        return $this;
+    }
+
+
+
+
+
+    /**
+     * @param string $pattern
+     *
+     * @return $this
+    */
+    public function pattern(string $pattern): static
+    {
+        $this->pattern = $pattern;
+
+        return $this;
     }
 
 
@@ -144,7 +210,7 @@ class Route implements RouteInterface
      *
      * @return string
     */
-    public function toStringMethods(string $separator = '|'): string
+    public function getMethod(string $separator = '|'): string
     {
         return join($separator, $this->methods);
     }
@@ -201,6 +267,20 @@ class Route implements RouteInterface
 
 
 
+    /**
+     * @return string
+    */
+    public function getPattern(): string
+    {
+        return $this->pattern;
+    }
+
+
+
+
+
+
+
     public function getController(): ?string
     {
         return '';
@@ -223,7 +303,7 @@ class Route implements RouteInterface
     /**
      * @inheritDoc
     */
-    public function getPatterns(): array
+    public function getRequires(): array
     {
         return $this->patterns;
     }
@@ -292,6 +372,8 @@ class Route implements RouteInterface
 
         return $this;
     }
+
+
 
 
 
@@ -403,7 +485,11 @@ class Route implements RouteInterface
 
         foreach ($parameters as $name => $value) {
             if (! empty(self::$wheres[$name])) {
-                $path = preg_replace(array_keys(self::$wheres[$name]), [$value, $value], $path);
+                $path = preg_replace(
+                    array_keys(self::$wheres[$name]),
+                    [$value, $value],
+                    $path
+                );
             }
         }
 
@@ -443,13 +529,38 @@ class Route implements RouteInterface
 
 
     /**
-     * @param string $path
+     * @param string $uri
      *
      * @return bool
     */
-    public function matchPath(string $path): bool
+    public function matchPath(string $uri): bool
     {
-        return true;
+        $path    = $this->normalizeRequestPath($uri);
+        $pattern = $this->getPattern();
+
+        if(preg_match("#^$pattern$#i", $path, $matches)) {
+            $this->params  = $this->resolveParams($matches);
+            $this->options(compact('uri'));
+            return true;
+        }
+
+        return false;
+    }
+
+
+
+
+
+    /**
+     * @param array $options
+     *
+     * @return $this
+    */
+    public function options(array $options): static
+    {
+        $this->options = array_merge($this->options, $options);
+
+        return $this;
     }
 
 
@@ -459,9 +570,46 @@ class Route implements RouteInterface
     /**
      * @inheritDoc
     */
+    public function callable(): bool
+    {
+        return is_callable($this->action);
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function callAction(): mixed
+    {
+        if (! $this->callable()) {
+            return false;
+        }
+
+        return call_user_func_array($this->action, array_values($this->params));
+    }
+
+
+
+
+    /**
+     * @return array
+    */
+    public function toArray(): array
+    {
+        return get_object_vars($this);
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
     public function offsetExists(mixed $offset): bool
     {
-
+        return property_exists($this, $offset);
     }
 
 
@@ -472,7 +620,11 @@ class Route implements RouteInterface
     */
     public function offsetGet(mixed $offset): mixed
     {
+        if (! $this->offsetExists($offset)) {
+            return false;
+        }
 
+        return $this->{$offset};
     }
 
 
@@ -483,7 +635,9 @@ class Route implements RouteInterface
     */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-
+        if ($this->offsetExists($offset)) {
+            $this->{$offset} = $value;
+        }
     }
 
 
@@ -493,8 +647,11 @@ class Route implements RouteInterface
     */
     public function offsetUnset(mixed $offset): void
     {
-
+        if ($this->offsetExists($offset)) {
+            unset($this->{$offset});
+        }
     }
+
 
 
 
@@ -508,6 +665,21 @@ class Route implements RouteInterface
     {
         return sprintf('/%s', trim($path, '/'));
     }
+
+
+
+
+    /**
+     * @param string $path
+     *
+     * @return string
+    */
+    private function normalizeRequestPath(string $path): string
+    {
+        return parse_url($path, PHP_URL_PATH);
+    }
+
+
 
 
 
@@ -536,8 +708,23 @@ class Route implements RouteInterface
     */
     private function replacePatterns(array $patterns): array
     {
-        $this->path = preg_replace(array_keys($patterns), array_values($patterns), $this->getPath());
+        $this->pattern = preg_replace(array_keys($patterns), array_values($patterns), $this->pattern);
 
         return $patterns;
+    }
+
+
+
+
+    /**
+     * @param array $matches
+     *
+     * @return array
+    */
+    private function resolveParams(array $matches): array
+    {
+        return array_filter($matches, function ($key) {
+            return ! is_numeric($key);
+        }, ARRAY_FILTER_USE_KEY);
     }
 }
