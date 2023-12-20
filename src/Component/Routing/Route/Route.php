@@ -837,21 +837,16 @@ class Route implements RouteInterface
 
 
     /**
-     * @param array $action
+     * @param array $handler
      *
      * @return string
     */
-    private function resolveActionFromArray(array $action): string
+    private function resolveActionFromArray(array $handler): string
     {
-        if (empty($action[0])) {
-            throw new \InvalidArgumentException("Controller name is required parameter.");
-        }
-
-        $controller = $action[0];
-        $action     = (string)($action[1] ?? '__invoke');
+        [$controller, $action] = $handler;
 
         $this->options(compact('controller', 'action'));
 
-        return sprintf('%s::%s', $controller, $action);
+        return join('@', $handler);
     }
 }
