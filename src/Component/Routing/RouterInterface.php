@@ -19,7 +19,6 @@ use Laventure\Component\Routing\Route\RouteInterface;
  */
 interface RouterInterface
 {
-
     /**
      * Determine if the current request match route
      *

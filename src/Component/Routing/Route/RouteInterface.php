@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Route;
@@ -79,6 +80,7 @@ interface RouteInterface extends \ArrayAccess
 
 
 
+
     /**
      * Returns route requirements rules
      *
@@ -96,6 +98,17 @@ interface RouteInterface extends \ArrayAccess
      * @return array
     */
     public function getOptions(): array;
+
+
+
+
+
+    /**
+     * Returns controller
+     *
+     * @return string|null
+    */
+    public function getController(): ?string;
 
 
 

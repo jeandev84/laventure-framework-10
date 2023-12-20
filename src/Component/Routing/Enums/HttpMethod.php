@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Enums;
@@ -16,10 +17,10 @@ namespace Laventure\Component\Routing\Enums;
 */
 class HttpMethod
 {
-    const GET     = 'GET';
-    const HEAD    = 'HEAD';
-    const POST    = 'POST';
-    const PUT     = 'PUT';
-    const PATCH   = 'PATCH';
-    const DELETE  = 'DELETE';
+    public const GET     = 'GET';
+    public const HEAD    = 'HEAD';
+    public const POST    = 'POST';
+    public const PUT     = 'PUT';
+    public const PATCH   = 'PATCH';
+    public const DELETE  = 'DELETE';
 }

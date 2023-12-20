@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing;
-
 
 use Laventure\Component\Routing\Enums\HttpMethod;
 use Laventure\Component\Routing\Route\Route;
@@ -37,7 +37,8 @@ class Router implements RouterInterface
 
 
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->collection   = new RouteCollection();
         $this->routeFactory = new RouteFactory();
     }

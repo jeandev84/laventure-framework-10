@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Route;
@@ -16,7 +17,6 @@ namespace Laventure\Component\Routing\Route;
  */
 class RouteFactory
 {
-
     /**
      * @param array $methods
      * @param string $path
@@ -50,7 +50,8 @@ class RouteFactory
         mixed $action,
         ?string $name = null
     ): Route {
-        return $this->createRoute(explode('|', $methods),
+        return $this->createRoute(
+            explode('|', $methods),
             $path,
             $action,
             $name

@@ -133,7 +133,7 @@ class Route implements RouteInterface
     */
     public function getMethod(string $separator = '|'): string
     {
-         return join($separator, $this->methods);
+        return join($separator, $this->methods);
     }
 
 
@@ -188,7 +188,7 @@ class Route implements RouteInterface
 
     public function getController(): ?string
     {
-         return '';
+        return '';
     }
 
 
