@@ -1,15 +1,12 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing;
 
-use Laventure\Component\Routing\Collection\RouteCollection;
-use Laventure\Component\Routing\Collection\RouteCollectionInterface;
+
 use Laventure\Component\Routing\Enums\HttpMethod;
+use Laventure\Component\Routing\Route\Route;
 use Laventure\Component\Routing\Route\RouteFactory;
-use Laventure\Component\Routing\Route\RouteFactoryInterface;
-use Laventure\Component\Routing\Route\RouteInterface;
 
 /**
  * Router
@@ -25,9 +22,9 @@ use Laventure\Component\Routing\Route\RouteInterface;
 class Router implements RouterInterface
 {
     /**
-     * @var RouteCollectionInterface
+     * @var RouteCollection
     */
-    protected RouteCollectionInterface $collection;
+    protected RouteCollection $collection;
 
 
     /**
@@ -38,44 +35,26 @@ class Router implements RouterInterface
 
 
 
-    /**
-     * @param RouteCollectionInterface|null $collection
-     *
-     * @param RouteFactoryInterface|null $routeFactory
-    */
-    public function __construct(
-        RouteCollectionInterface $collection = null,
-        RouteFactoryInterface $routeFactory = null
-    ) {
-        $this->collection   = $collection ?: new RouteCollection();
-        $this->routeFactory = $routeFactory ?: new RouteFactory();
+
+
+    public function __construct() {
+        $this->collection   = new RouteCollection();
+        $this->routeFactory = new RouteFactory();
     }
 
 
 
     /**
-     * @param RouteInterface $route
+     * @param Route $route
      *
-     * @return RouteInterface
+     * @return Route
     */
-    public function addRoute(RouteInterface $route): RouteInterface
+    public function add(Route $route): Route
     {
         return $this->collection->addRoute($route);
     }
 
 
-
-    /**
-     * @param string $name
-     *
-     * @param RouteInterface $route
-     *
-     * @return RouteInterface
-    */
-    public function add(string $name, RouteInterface $route): RouteInterface
-    {
-        return $this->collection->add($name, $route);
-    }
 
 
 
@@ -90,9 +69,9 @@ class Router implements RouterInterface
      *
      * @param string|null $name
      *
-     * @return RouteInterface
+     * @return Route
     */
-    public function makeRoute(string $methods, string $path, mixed $action, string $name = null): RouteInterface
+    public function makeRoute(string $methods, string $path, mixed $action, string $name = null): Route
     {
         return $this->routeFactory->createRouteFromStringMethods($methods, $path, $action, $name);
     }
@@ -101,27 +80,37 @@ class Router implements RouterInterface
 
 
 
+
     /**
-     * @inheritDoc
+     * @param string $methods
+     *
+     * @param string $path
+     *
+     * @param mixed $action
+     *
+     * @param string|null $name
+     *
+     * @return Route
     */
-    public function map(string $methods, string $path, mixed $action, string $name = null): RouteInterface
+    public function map(string $methods, string $path, mixed $action, string $name = null): Route
     {
-        $route = $this->makeRoute($methods, $path, $action, $name);
-
-        if ($name) {
-            return $this->add($name, $route);
-        }
-
-        return $this->addRoute($route);
+        return $this->add($this->makeRoute($methods, $path, $action, $name));
     }
 
 
 
 
+
     /**
-     * @inheritDoc
+     * @param string $path
+     *
+     * @param mixed $action
+     *
+     * @param string|null $name
+     *
+     * @return Route
     */
-    public function get(string $path, mixed $action, string $name = null): RouteInterface
+    public function get(string $path, mixed $action, string $name = null): Route
     {
         return $this->map(HttpMethod::GET, $path, $action, $name);
     }
@@ -129,12 +118,16 @@ class Router implements RouterInterface
 
 
 
-
-
     /**
-     * @inheritDoc
+     * @param string $path
+     *
+     * @param mixed $action
+     *
+     * @param string|null $name
+     *
+     * @return Route
     */
-    public function post(string $path, mixed $action, string $name = null): RouteInterface
+    public function post(string $path, mixed $action, string $name = null): Route
     {
         return $this->map(HttpMethod::POST, $path, $action, $name);
     }
@@ -143,9 +136,12 @@ class Router implements RouterInterface
 
 
     /**
-     * @inheritDoc
+     * @param string $path
+     * @param mixed $action
+     * @param string|null $name
+     * @return Route
     */
-    public function put(string $path, mixed $action, string $name = null): RouteInterface
+    public function put(string $path, mixed $action, string $name = null): Route
     {
         return $this->map(HttpMethod::PUT, $path, $action, $name);
     }
@@ -154,9 +150,12 @@ class Router implements RouterInterface
 
 
     /**
-     * @inheritDoc
+     * @param string $path
+     * @param mixed $action
+     * @param string|null $name
+     * @return Route
     */
-    public function delete(string $path, mixed $action, string $name = null): RouteInterface
+    public function delete(string $path, mixed $action, string $name = null): Route
     {
         return $this->map(HttpMethod::DELETE, $path, $action, $name);
     }
@@ -168,7 +167,7 @@ class Router implements RouterInterface
     /**
      * @inheritDoc
     */
-    public function match(string $method, string $path): RouteInterface|false
+    public function match(string $method, string $path): Route|false
     {
         foreach ($this->getRoutes() as $route) {
             if ($route->match($method, $path)) {
@@ -178,6 +177,8 @@ class Router implements RouterInterface
 
         return false;
     }
+
+
 
 
 
@@ -198,6 +199,8 @@ class Router implements RouterInterface
 
 
 
+
+
     /**
      * @inheritDoc
     */
@@ -209,10 +212,12 @@ class Router implements RouterInterface
 
 
 
+
+
     /**
-     * @return RouteCollectionInterface
+     * @return RouteCollection
     */
-    public function getCollection(): RouteCollectionInterface
+    public function getCollection(): RouteCollection
     {
         return $this->collection;
     }

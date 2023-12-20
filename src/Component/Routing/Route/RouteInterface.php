@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Route;
@@ -81,21 +80,6 @@ interface RouteInterface extends \ArrayAccess
 
 
     /**
-     * Bind param
-     *
-     * @param string $name
-     *
-     * @param string $pattern
-     *
-     * @return $this
-    */
-    public function where(string $name, string $pattern): static;
-
-
-
-
-
-    /**
      * Returns route requirements rules
      *
      * @return array
@@ -112,6 +96,8 @@ interface RouteInterface extends \ArrayAccess
      * @return array
     */
     public function getOptions(): array;
+
+
 
 
 

@@ -19,76 +19,6 @@ use Laventure\Component\Routing\Route\RouteInterface;
  */
 interface RouterInterface
 {
-    /**
-     * @param string $methods
-     *
-     * @param string $path
-     *
-     * @param mixed $action
-     *
-     * @param string|null $name
-     * @return RouteInterface
-    */
-    public function map(string $methods, string $path, mixed $action, string $name = null): RouteInterface;
-
-
-
-
-    /**
-     * @param string $path
-     *
-     * @param mixed $action
-     *
-     * @param string|null $name
-     *
-     * @return RouteInterface
-    */
-    public function get(string $path, mixed $action, string $name = null): RouteInterface;
-
-
-
-
-
-
-    /**
-     * @param string $path
-     * @param mixed $action
-     * @param string|null $name
-     * @return RouteInterface
-    */
-    public function post(string $path, mixed $action, string $name = null): RouteInterface;
-
-
-
-
-
-
-
-
-    /**
-     * @param string $path
-     * @param mixed $action
-     * @param string|null $name
-     * @return RouteInterface
-    */
-    public function put(string $path, mixed $action, string $name = null): RouteInterface;
-
-
-
-
-
-    /**
-     * @param string $path
-     * @param mixed $action
-     * @param string|null $name
-     * @return RouteInterface
-    */
-    public function delete(string $path, mixed $action, string $name = null): RouteInterface;
-
-
-
-
-
 
     /**
      * Determine if the current request match route
@@ -100,6 +30,7 @@ interface RouterInterface
      * @return RouteInterface|false
     */
     public function match(string $method, string $path): RouteInterface|false;
+
 
 
 

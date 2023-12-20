@@ -122,6 +122,25 @@ class Route implements RouteInterface
 
 
 
+
+
+    /**
+     * Returns methods as string
+     *
+     * @param string $separator
+     *
+     * @return string
+    */
+    public function getMethod(string $separator = '|'): string
+    {
+         return join($separator, $this->methods);
+    }
+
+
+
+
+
+
     /**
      * @inheritDoc
     */
@@ -166,6 +185,15 @@ class Route implements RouteInterface
 
 
 
+
+    public function getController(): ?string
+    {
+         return '';
+    }
+
+
+
+
     /**
      * @inheritDoc
     */
@@ -197,6 +225,8 @@ class Route implements RouteInterface
     }
 
 
+
+
     /**
      * @param string $name
      *
@@ -213,6 +243,25 @@ class Route implements RouteInterface
 
 
 
+
+    /**
+     * @param array $wheres
+     *
+     * @return $this
+    */
+    public function wheres(array $wheres): static
+    {
+        foreach ($wheres as $name => $value) {
+            $this->where($name, $value);
+        }
+
+        return $this;
+    }
+
+
+
+
+
     /**
      * @inheritDoc
     */
@@ -220,6 +269,8 @@ class Route implements RouteInterface
     {
         return $this->getPath() . '?' . http_build_query($parameters);
     }
+
+
 
 
 
@@ -232,6 +283,8 @@ class Route implements RouteInterface
     }
 
 
+
+
     /**
      * @param string $method
      *
@@ -241,6 +294,8 @@ class Route implements RouteInterface
     {
         return in_array($method, $this->methods);
     }
+
+
 
 
 
@@ -306,8 +361,6 @@ class Route implements RouteInterface
     */
     private function normalizePath(string $path): string
     {
-        $path = trim($path, '/');
-
-        return sprintf('/%s', $path);
+        return sprintf('/%s', trim($path, '/'));
     }
 }
