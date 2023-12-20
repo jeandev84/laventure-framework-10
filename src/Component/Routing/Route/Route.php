@@ -66,12 +66,25 @@ class Route implements RouteInterface
 
 
 
+
+    /**
+     * route patterns
+     *
+     * @var array
+    */
+    protected static array $wheres = [];
+
+
+
+
+
     /**
      * route middlewares
      *
      * @var array
     */
     protected array $middlewares = [];
+
 
 
 
@@ -131,7 +144,7 @@ class Route implements RouteInterface
      *
      * @return string
     */
-    public function getMethod(string $separator = '|'): string
+    public function toStringMethods(string $separator = '|'): string
     {
         return join($separator, $this->methods);
     }
@@ -160,6 +173,8 @@ class Route implements RouteInterface
     {
         return $this->action;
     }
+
+
 
 
 
@@ -216,6 +231,7 @@ class Route implements RouteInterface
 
 
 
+
     /**
      * @inheritDoc
     */
@@ -223,6 +239,40 @@ class Route implements RouteInterface
     {
         return $this->options;
     }
+
+
+
+
+    /**
+     * @param string $middleware
+     *
+     * @return $this
+    */
+    public function middleware(string $middleware): static
+    {
+        $this->middlewares[] = $middleware;
+
+        return $this;
+    }
+
+
+
+
+    /**
+     * @param array $middlewares
+     *
+     * @return $this
+    */
+    public function middlewares(array $middlewares): static
+    {
+        foreach ($middlewares as $middleware) {
+            $this->middleware($middleware);
+        }
+
+        return $this;
+    }
+
+
 
 
 
@@ -236,7 +286,9 @@ class Route implements RouteInterface
     */
     public function where(string $name, string $pattern): static
     {
-        $this->patterns[$name] = $pattern;
+        $patterns                  = $this->makePatterns($name, $pattern);
+        static::$wheres[$name]     = $this->replacePatterns($patterns);
+        $this->patterns[$name]     = $pattern;
 
         return $this;
     }
@@ -261,13 +313,101 @@ class Route implements RouteInterface
 
 
 
+    /**
+     * @return $this
+    */
+    public function id(): self
+    {
+        return $this->number('id');
+    }
+
+
+
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function number(string $name): self
+    {
+        return $this->where($name, '\d+');
+    }
+
+
+
+
+
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function text(string $name): self
+    {
+        return $this->where($name, '\w+');
+    }
+
+
+
+
+
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function alphaNumeric(string $name): self
+    {
+        return $this->where($name, '[^a-z_\-0-9]');
+    }
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+    */
+    public function slug(string $name): self
+    {
+        return $this->where($name, '[a-z\-0-9]+');
+    }
+
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function anything(string $name): self
+    {
+        return $this->where($name, '.*');
+    }
+
+
+
+
 
     /**
      * @inheritDoc
     */
-    public function generate(array $parameters = []): string
+    public function generateUri(array $parameters = []): string
     {
-        return $this->getPath() . '?' . http_build_query($parameters);
+        $path = $this->getPath();
+
+        foreach ($parameters as $name => $value) {
+            if (! empty(self::$wheres[$name])) {
+                $path = preg_replace(array_keys(self::$wheres[$name]), [$value, $value], $path);
+            }
+        }
+
+        return $path;
     }
 
 
@@ -281,6 +421,8 @@ class Route implements RouteInterface
     {
         return $this->matchMethod($method) && $this->matchPath($path);
     }
+
+
 
 
 
@@ -299,6 +441,7 @@ class Route implements RouteInterface
 
 
 
+
     /**
      * @param string $path
      *
@@ -308,6 +451,8 @@ class Route implements RouteInterface
     {
         return true;
     }
+
+
 
 
 
@@ -362,5 +507,37 @@ class Route implements RouteInterface
     private function normalizePath(string $path): string
     {
         return sprintf('/%s', trim($path, '/'));
+    }
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @param string $pattern
+     *
+     * @return string[]
+    */
+    private function makePatterns(string $name, string $pattern): array
+    {
+        $pattern = str_replace('(', '(?:', $pattern);
+
+        return ["#{{$name}}#" => "(?P<$name>$pattern)", "#{{$name}.?}#" => "?(?P<$name>$pattern)?"];
+    }
+
+
+
+
+    /**
+     * @param array $patterns
+     *
+     * @return array
+    */
+    private function replacePatterns(array $patterns): array
+    {
+        $this->path = preg_replace(array_keys($patterns), array_values($patterns), $this->getPath());
+
+        return $patterns;
     }
 }

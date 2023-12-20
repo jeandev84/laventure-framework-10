@@ -72,9 +72,9 @@ class Router implements RouterInterface
      *
      * @return Route
     */
-    public function makeRoute(string $methods, string $path, mixed $action, string $name = null): Route
+    public function makeRoute(string|array $methods, string $path, mixed $action, string $name = null): Route
     {
-        return $this->routeFactory->createRouteFromStringMethods($methods, $path, $action, $name);
+        return $this->routeFactory->createRoute($methods, $path, $action, $name);
     }
 
 
@@ -83,17 +83,9 @@ class Router implements RouterInterface
 
 
     /**
-     * @param string $methods
-     *
-     * @param string $path
-     *
-     * @param mixed $action
-     *
-     * @param string|null $name
-     *
-     * @return Route
+     * @inheritdoc
     */
-    public function map(string $methods, string $path, mixed $action, string $name = null): Route
+    public function map(string|array $methods, string $path, mixed $action, string $name = null): Route
     {
         return $this->add($this->makeRoute($methods, $path, $action, $name));
     }
@@ -115,6 +107,8 @@ class Router implements RouterInterface
     {
         return $this->map(HttpMethod::GET, $path, $action, $name);
     }
+
+
 
 
 
@@ -146,6 +140,7 @@ class Router implements RouterInterface
     {
         return $this->map(HttpMethod::PUT, $path, $action, $name);
     }
+
 
 
 
@@ -194,7 +189,7 @@ class Router implements RouterInterface
             return null;
         }
 
-        return $this->collection->getRoute($name)->generate($parameters);
+        return $this->collection->getRoute($name)->generateUri($parameters);
     }
 
 

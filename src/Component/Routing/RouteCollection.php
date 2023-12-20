@@ -22,23 +22,14 @@ class RouteCollection
     /**
      * @var Route[]
     */
-    protected ?array $routes = [];
+    protected array $routes = [];
 
 
 
     /**
      * @var Route[]
     */
-    protected ?array $methods = [];
-
-
-
-
-    /**
-     * @var Route[]
-    */
-    protected ?array $controllers = [];
-
+    protected array $methods = [];
 
 
 
@@ -46,7 +37,16 @@ class RouteCollection
     /**
      * @var Route[]
     */
-    protected ?array $namedRoutes = [];
+    protected array $controllers = [];
+
+
+
+
+
+    /**
+     * @var Route[]
+    */
+    protected array $namedRoutes = [];
 
 
 
@@ -69,6 +69,21 @@ class RouteCollection
 
 
 
+    /**
+     * @param Route[] $routes
+     *
+     * @return $this
+    */
+    public function addRoutes(array $routes): static
+    {
+        foreach ($routes as $route) {
+            $this->addRoute($route);
+        }
+
+        return $this;
+    }
+
+
 
 
 
@@ -76,7 +91,25 @@ class RouteCollection
      * @param string $name
      *
      * @return bool
-     */
+    */
+    public function remove(string $name): bool
+    {
+        if($named = $this->hasRoute($name)) {
+            unset($this->namedRoutes[$name]);
+        }
+
+        return (!$named);
+    }
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+    */
     public function hasRoute(string $name): bool
     {
         return array_key_exists($name, $this->namedRoutes);
@@ -85,14 +118,38 @@ class RouteCollection
 
 
 
+
     /**
      * @param string $name
      *
      * @return Route|null
-     */
+    */
     public function getRoute(string $name): ?Route
     {
         return $this->namedRoutes[$name] ?? null;
+    }
+
+
+
+
+    /**
+     * @return Route[]
+    */
+    public function getMethods(): array
+    {
+        return $this->methods;
+    }
+
+
+
+
+
+    /**
+     * @return Route[]
+    */
+    public function getControllers(): array
+    {
+        return $this->controllers;
     }
 
 
@@ -111,30 +168,23 @@ class RouteCollection
 
 
 
-
-    /**
-     * @param Route[] $routes
-     *
-     * @return $this
-     */
-    public function addRoutes(array $routes): static
-    {
-        foreach ($routes as $route) {
-            $this->addRoute($route);
-        }
-
-        return $this;
-    }
-
-
-
-
     /**
      * @return Route[]
      */
     public function getRoutes(): array
     {
         return $this->routes;
+    }
+
+
+
+
+    public function clear(): void
+    {
+        $this->methods     = [];
+        $this->namedRoutes = [];
+        $this->controllers = [];
+        $this->routes      = [];
     }
 
 
@@ -149,7 +199,7 @@ class RouteCollection
      */
     private function addByMethod(Route $route): void
     {
-        $this->methods[$route->getMethod()][] = $route;
+        $this->methods[$route->toStringMethods()][] = $route;
     }
 
 

@@ -18,43 +18,23 @@ namespace Laventure\Component\Routing\Route;
 class RouteFactory
 {
     /**
-     * @param array $methods
+     * @param array|string $methods
      * @param string $path
      * @param mixed $action
      * @param string|null $name
      * @return Route
     */
     public function createRoute(
-        array $methods,
+        array|string $methods,
         string $path,
         mixed  $action,
         ?string $name = null
     ): Route {
 
+        if (is_string($methods)) {
+            $methods = explode('|', $methods);
+        }
+
         return new Route($methods, $path, $action, $name);
-    }
-
-
-
-
-    /**
-     * @param string $methods
-     * @param string $path
-     * @param mixed $action
-     * @param string|null $name
-     * @return Route
-    */
-    public function createRouteFromStringMethods(
-        string $methods,
-        string $path,
-        mixed $action,
-        ?string $name = null
-    ): Route {
-        return $this->createRoute(
-            explode('|', $methods),
-            $path,
-            $action,
-            $name
-        );
     }
 }

@@ -137,5 +137,5 @@ interface RouteInterface extends \ArrayAccess
      *
      * @return string
     */
-    public function generate(array $parameters = []): string;
+    public function generateUri(array $parameters = []): string;
 }
