@@ -837,16 +837,16 @@ class Route implements RouteInterface
 
 
     /**
-     * @param array $handler
+     * @param array $callback
      *
      * @return string
     */
-    private function resolveActionFromArray(array $handler): string
+    private function resolveActionFromArray(array $callback): string
     {
-        [$controller, $action] = $handler;
+        [$controller, $action] = $callback;
 
         $this->options(compact('controller', 'action'));
 
-        return join('@', $handler);
+        return join('@', $callback);
     }
 }
