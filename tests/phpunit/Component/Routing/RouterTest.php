@@ -42,10 +42,10 @@ class RouterTest extends TestCase
          $router->map('PUT', '/books/{id}', ['BookController', 'update'], 'books.update');
 
          $expected = [
-            $router->makeRoute('GET', '/', ['SiteController', 'index'], 'home'),
-            $router->makeRoute('GET', '/about', ['SiteController', 'about'], 'about'),
-            $router->makeRoute('GET|POST', '/contact-us', ['SiteController', 'contactUs'], 'contact.us'),
-            $router->makeRoute('PUT', '/books/{id}', ['BookController', 'update'], 'books.update'),
+            $router->route('GET', '/', ['SiteController', 'index'], 'home'),
+            $router->route('GET', '/about', ['SiteController', 'about'], 'about'),
+            $router->route('GET|POST', '/contact-us', ['SiteController', 'contactUs'], 'contact.us'),
+            $router->route('PUT', '/books/{id}', ['BookController', 'update'], 'books.update'),
          ];
 
          $this->assertEquals($expected, $router->getRoutes());
@@ -59,7 +59,7 @@ class RouterTest extends TestCase
         $router->get( '/', ['SiteController', 'index'], 'home');
 
         $expected = [
-            $router->makeRoute('GET', '/', ['SiteController', 'index'], 'home'),
+            $router->route('GET', '/', ['SiteController', 'index'], 'home'),
         ];
 
         $this->assertEquals($expected, $router->getRoutes());
@@ -73,7 +73,7 @@ class RouterTest extends TestCase
         $router->post('/contact-us', ['SiteController', 'contactUs'], 'contact.us');
 
         $expected = [
-            $router->makeRoute('POST', '/contact-us', ['SiteController', 'contactUs'], 'contact.us'),
+            $router->route('POST', '/contact-us', ['SiteController', 'contactUs'], 'contact.us'),
         ];
 
         $this->assertEquals($expected, $router->getRoutes());
@@ -87,7 +87,7 @@ class RouterTest extends TestCase
         $router->map('PUT', '/books/{id}', ['BookController', 'update'], 'books.update');
 
         $expected = [
-            $router->makeRoute('PUT', '/books/{id}', ['BookController', 'update'], 'books.update'),
+            $router->route('PUT', '/books/{id}', ['BookController', 'update'], 'books.update'),
         ];
 
         $this->assertEquals($expected, $router->getRoutes());
@@ -101,7 +101,7 @@ class RouterTest extends TestCase
         $router->delete('/books/{id}', ['BookController', 'delete'], 'books.delete');
 
         $expected = [
-            $router->makeRoute('DELETE', '/books/{id}', ['BookController', 'delete'], 'books.delete'),
+            $router->route('DELETE', '/books/{id}', ['BookController', 'delete'], 'books.delete'),
         ];
 
         $this->assertEquals($expected, $router->getRoutes());
@@ -122,7 +122,7 @@ class RouterTest extends TestCase
             return "Welcome";
         });
 
-        $expected = $router->makeRoute('GET', '/welcome', function () {
+        $expected = $router->route('GET', '/welcome', function () {
             return "Welcome";
         })->options(['uri' => '/welcome']);
 
@@ -153,7 +153,7 @@ class RouterTest extends TestCase
         ]);
 
 
-        $expected1 = $router->makeRoute('GET', '/admin/books/{slug}-{id}', function () {
+        $expected1 = $router->route('GET', '/admin/books/{slug}-{id}', function () {
             return "Get Book from storage";
         }, 'books.show')
         ->slug('slug')->id()
@@ -199,7 +199,7 @@ class RouterTest extends TestCase
         })->where('id', '\d+');
 
 
-        $expected1 = $router->makeRoute('GET', '/users/{id}', function () {
+        $expected1 = $router->route('GET', '/users/{id}', function () {
             return "Get Users";
         })
         ->where('id', '\d+')
@@ -218,7 +218,7 @@ class RouterTest extends TestCase
         })->slug('slug')->id();
 
 
-        $expected2 = $router->makeRoute('DELETE', '/books/{slug}/{id?}', function () {
+        $expected2 = $router->route('DELETE', '/books/{slug}/{id?}', function () {
             return "Delete Books";
         })
         ->slug('slug')->id()

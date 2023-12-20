@@ -98,7 +98,7 @@ interface RouteInterface extends \ArrayAccess
      *
      * @return array
     */
-    public function getRequires(): array;
+    public function getPatterns(): array;
 
 
 
@@ -134,17 +134,6 @@ interface RouteInterface extends \ArrayAccess
     */
     public function callable(): bool;
 
-
-
-
-
-
-    /**
-     * Call the route action if is callable
-     *
-     * @return mixed
-    */
-    public function callAction(): mixed;
 
 
 

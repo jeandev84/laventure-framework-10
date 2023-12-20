@@ -70,7 +70,7 @@ class Route implements RouteInterface
 
 
     /**
-     * route requirements
+     * route patterns
      *
      * @var array
     */
@@ -116,6 +116,8 @@ class Route implements RouteInterface
 
 
 
+
+
     /**
      * @param array|string $methods
      *
@@ -131,6 +133,7 @@ class Route implements RouteInterface
         mixed $action,
         string $name = null
     ) {
+
         $this->methods($methods)
              ->path($path)
              ->action($action)
@@ -147,11 +150,7 @@ class Route implements RouteInterface
     */
     public function methods(array|string $methods): static
     {
-        if (is_string($methods)) {
-            $methods = explode('|', $methods);
-        }
-
-        $this->methods = $methods;
+        $this->methods = $this->resolveMethods($methods);
 
         return $this;
     }
@@ -183,9 +182,26 @@ class Route implements RouteInterface
     */
     public function action(mixed $action): static
     {
+        if (is_array($action)) {
+            $action = $this->resolveActionFromArray($action);
+        }
+
         $this->action = $action;
 
         return $this;
+    }
+
+
+
+
+    /**
+     * @param callable $action
+     *
+     * @return $this
+    */
+    public function callback(callable $action): static
+    {
+        return $this->action($action);
     }
 
 
@@ -329,13 +345,16 @@ class Route implements RouteInterface
 
 
 
-
-
-
+    /**
+     * Returns the name of controller or request handler
+     *
+     * @return string|null
+    */
     public function getController(): ?string
     {
-        return '';
+        return $this->getOption('controller');
     }
+
 
 
 
@@ -354,7 +373,7 @@ class Route implements RouteInterface
     /**
      * @inheritDoc
     */
-    public function getRequires(): array
+    public function getPatterns(): array
     {
         return $this->patterns;
     }
@@ -616,6 +635,38 @@ class Route implements RouteInterface
 
 
 
+    /**
+     * Determine if the given name exist in options
+     *
+     * @param string $name
+     *
+     * @return bool
+    */
+    public function hasOption(string $name): bool
+    {
+        return isset($this->options[$name]);
+    }
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @param $default
+     *
+     * @return mixed
+    */
+    public function getOption(string $name, $default = null): mixed
+    {
+        return $this->options[$name] ?? $default;
+    }
+
+
+
+
+
 
 
     /**
@@ -626,20 +677,6 @@ class Route implements RouteInterface
         return is_callable($this->action);
     }
 
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function callAction(): mixed
-    {
-        if (!$this->callable()) {
-            return false;
-        }
-
-        return call_user_func_array($this->action, array_values($this->params));
-    }
 
 
 
@@ -777,5 +814,44 @@ class Route implements RouteInterface
         return array_filter($matches, function ($key) {
             return !is_numeric($key);
         }, ARRAY_FILTER_USE_KEY);
+    }
+
+
+
+
+    /**
+     * @param array|string $methods
+     *
+     * @return array
+    */
+    private function resolveMethods(array|string $methods): array
+    {
+        if (is_string($methods)) {
+            $methods = explode('|', $methods);
+        }
+
+        return $methods;
+    }
+
+
+
+
+    /**
+     * @param array $action
+     *
+     * @return string
+    */
+    private function resolveActionFromArray(array $action): string
+    {
+        if (empty($action[0])) {
+            throw new \InvalidArgumentException("Controller name is required parameter.");
+        }
+
+        $controller = $action[0];
+        $action     = (string)($action[1] ?? '__invoke');
+
+        $this->options(compact('controller', 'action'));
+
+        return sprintf('%s::%s', $controller, $action);
     }
 }

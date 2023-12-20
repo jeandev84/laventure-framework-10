@@ -24,7 +24,7 @@ class RouteFactory
      * @param string|null $name
      * @return Route
     */
-    public function createRoute(
+    public function make(
         array|string $methods,
         string $path,
         mixed  $action,

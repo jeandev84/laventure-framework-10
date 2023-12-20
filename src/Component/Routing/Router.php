@@ -35,8 +35,6 @@ class Router implements RouterInterface
 
 
 
-
-
     public function __construct()
     {
         $this->collection   = new RouteCollection();
@@ -56,6 +54,9 @@ class Router implements RouterInterface
     }
 
 
+
+
+
     /**
      * @param string|array $methods
      *
@@ -67,9 +68,9 @@ class Router implements RouterInterface
      *
      * @return Route
      */
-    public function makeRoute(string|array $methods, string $path, mixed $action, string $name = null): Route
+    public function route(string|array $methods, string $path, mixed $action, string $name = null): Route
     {
-        return $this->routeFactory->createRoute($methods, $path, $action, $name);
+        return $this->routeFactory->make($methods, $path, $action, $name);
     }
 
 
@@ -82,7 +83,7 @@ class Router implements RouterInterface
     */
     public function map(string|array $methods, string $path, mixed $action, string $name = null): Route
     {
-        return $this->add($this->makeRoute($methods, $path, $action, $name));
+        return $this->add($this->route($methods, $path, $action, $name));
     }
 
 
