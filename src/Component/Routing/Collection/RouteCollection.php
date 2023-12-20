@@ -14,7 +14,7 @@ use Laventure\Component\Routing\Route\Route;
  *
  * @package  Laventure\Component\Routing\Collection
 */
-class RouteCollection
+class RouteCollection implements RouteCollectionInterface
 {
     /**
      * @var Route[]
@@ -50,9 +50,7 @@ class RouteCollection
 
 
     /**
-     * @param Route $route
-     *
-     * @return Route
+     * @inheritdoc
      */
     public function addRoute(Route $route): Route
     {
@@ -85,9 +83,7 @@ class RouteCollection
 
 
     /**
-     * @param string $name
-     *
-     * @return bool
+     * @inheritdoc
     */
     public function remove(string $name): bool
     {
@@ -132,7 +128,7 @@ class RouteCollection
     /**
      * @return Route[]
     */
-    public function getMethods(): array
+    public function getRoutesByMethod(): array
     {
         return $this->methods;
     }
@@ -144,7 +140,7 @@ class RouteCollection
     /**
      * @return Route[]
     */
-    public function getControllers(): array
+    public function getRoutesByController(): array
     {
         return $this->controllers;
     }
@@ -154,8 +150,8 @@ class RouteCollection
 
 
     /**
-     * @return Route[]
-     */
+     * @inheritdoc
+    */
     public function getNamedRoutes(): array
     {
         return $this->namedRoutes;
@@ -166,7 +162,7 @@ class RouteCollection
 
 
     /**
-     * @return Route[]
+     * @inheritdoc
      */
     public function getRoutes(): array
     {
@@ -176,6 +172,9 @@ class RouteCollection
 
 
 
+    /**
+     * @inheritdoc
+    */
     public function clear(): void
     {
         $this->methods     = [];
