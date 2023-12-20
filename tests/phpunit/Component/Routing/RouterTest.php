@@ -5,6 +5,8 @@ namespace PHPUnitTest\Component\Routing;
 
 use Laventure\Component\Routing\Router;
 use PHPUnit\Framework\TestCase;
+use PHPUnitTest\Component\Routing\Middlewares\AuthenticatedMiddleware;
+use PHPUnitTest\Component\Routing\Middlewares\GuestMiddleware;
 
 
 /**
@@ -125,6 +127,44 @@ class RouterTest extends TestCase
         })->options(['uri' => '/welcome']);
 
         $this->assertEquals($expected, $router->match('GET', '/welcome'));
+    }
+
+
+
+
+    public function testRouteMatchWithQueryString()
+    {
+        $router = new Router();
+
+        /*
+        $router->get('/', function () {
+            return "Welcome";
+        }, 'welcome')
+        ->middleware(GuestMiddleware::class);
+        */
+
+
+        $router->get('/admin/books/{slug}-{id}', function () {
+            return "Get Book from storage";
+        }, 'books.show')
+        ->slug('slug')->id()
+        ->middlewares([
+            AuthenticatedMiddleware::class
+        ]);
+
+
+        $expected1 = $router->makeRoute('GET', '/admin/books/{slug}-{id}', function () {
+            return "Get Book from storage";
+        }, 'books.show')
+        ->slug('slug')->id()
+        ->params(['slug' => 'my-new-book', 'id' => 1])
+        ->middlewares([
+            AuthenticatedMiddleware::class
+        ])
+        ->pattern('/admin/books/(?P<slug>[a-z\-0-9]+)-(?P<id>\d+)')
+        ->options(['uri' => '/admin/books/my-new-book-1?page=3&sort=users.id&direction=asc']);
+
+        $this->assertEquals($expected1, $router->match('GET', '/admin/books/my-new-book-1?page=3&sort=users.id&direction=asc'));
     }
 
 

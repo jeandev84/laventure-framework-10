@@ -130,8 +130,7 @@ class Route implements RouteInterface
         string $path,
         mixed $action,
         string $name = null
-    )
-    {
+    ) {
         $this->methods($methods)
              ->path($path)
              ->action($action)
@@ -536,7 +535,7 @@ class Route implements RouteInterface
         $path = $this->getPath();
 
         foreach ($parameters as $name => $value) {
-            if (! empty(self::$wheres[$name])) {
+            if (!empty(self::$wheres[$name])) {
                 $path = preg_replace(
                     array_keys(self::$wheres[$name]),
                     [$value, $value],
@@ -635,7 +634,7 @@ class Route implements RouteInterface
     */
     public function callAction(): mixed
     {
-        if (! $this->callable()) {
+        if (!$this->callable()) {
             return false;
         }
 
@@ -672,7 +671,7 @@ class Route implements RouteInterface
     */
     public function offsetGet(mixed $offset): mixed
     {
-        if (! $this->offsetExists($offset)) {
+        if (!$this->offsetExists($offset)) {
             return false;
         }
 
@@ -776,7 +775,7 @@ class Route implements RouteInterface
     private function resolveParams(array $matches): array
     {
         return array_filter($matches, function ($key) {
-            return ! is_numeric($key);
+            return !is_numeric($key);
         }, ARRAY_FILTER_USE_KEY);
     }
 }
