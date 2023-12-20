@@ -24,3 +24,10 @@ composer require --dev friendsofphp/php-cs-fixer
 Usage:
 tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
 ```
+
+
+
+### PHPUnit
+```
+./vendor/bin/phpunit tests/phpunit/Component/Routing/RouterTest.php
+```

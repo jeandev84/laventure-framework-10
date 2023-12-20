@@ -56,13 +56,8 @@ class Router implements RouterInterface
     }
 
 
-
-
-
-
-
     /**
-     * @param string $methods
+     * @param string|array $methods
      *
      * @param string $path
      *
@@ -71,7 +66,7 @@ class Router implements RouterInterface
      * @param string|null $name
      *
      * @return Route
-    */
+     */
     public function makeRoute(string|array $methods, string $path, mixed $action, string $name = null): Route
     {
         return $this->routeFactory->createRoute($methods, $path, $action, $name);

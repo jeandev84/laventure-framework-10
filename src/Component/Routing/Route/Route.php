@@ -125,14 +125,17 @@ class Route implements RouteInterface
      *
      * @param string|null $name
     */
-    public function __construct(array|string $methods, string $path, mixed $action, ?string $name = null)
+    public function __construct(
+        array|string $methods,
+        string $path,
+        mixed $action,
+        string $name = null
+    )
     {
         $this->methods($methods)
              ->path($path)
-        ;
-
-        $this->action  = $action;
-        $this->name    = $name;
+             ->action($action)
+             ->name($name);
     }
 
 
@@ -174,6 +177,39 @@ class Route implements RouteInterface
 
 
 
+    /**
+     * @param mixed $action
+     *
+     * @return $this
+    */
+    public function action(mixed $action): static
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+
+
+
+
+    /**
+     * @param $name
+     *
+     * @return $this
+    */
+    public function name($name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+
+
+
+
+
 
     /**
      * @param string $pattern
@@ -183,6 +219,22 @@ class Route implements RouteInterface
     public function pattern(string $pattern): static
     {
         $this->pattern = $pattern;
+
+        return $this;
+    }
+
+
+
+
+
+    /**
+     * @param array $params
+     *
+     * @return $this
+    */
+    public function params(array $params): static
+    {
+        $this->params = $params;
 
         return $this;
     }
