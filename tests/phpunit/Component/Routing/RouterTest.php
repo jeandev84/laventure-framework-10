@@ -262,7 +262,7 @@ class RouterTest extends TestCase
 
 
 
-    public function testRouteGroupMapEverythingCorrectly(): void
+    public function testIfRouteGroupMapEverythingCorrectly(): void
     {
          $router = new \Laventure\Component\Routing\Router();
 
@@ -299,7 +299,7 @@ class RouterTest extends TestCase
 
 
 
-    public function testMapActionString(): void
+    public function testIfActionStringMappedCorrectly(): void
     {
         $router = new \Laventure\Component\Routing\Router(static::NAMESPACE);
 
