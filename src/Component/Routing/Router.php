@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Routing;
 
+use Closure;
 use Laventure\Component\Routing\Collection\RouteCollection;
 use Laventure\Component\Routing\Enums\HttpMethod;
+use Laventure\Component\Routing\Group\Invoker\RouteGroupInvoker;
+use Laventure\Component\Routing\Group\RouteGroup;
 use Laventure\Component\Routing\Route\Route;
 use Laventure\Component\Routing\Route\RouteFactory;
 
@@ -34,11 +37,55 @@ class Router implements RouterInterface
 
 
 
-    public function __construct()
+    /**
+     * @var RouteGroup
+    */
+    protected RouteGroup $group;
+
+
+
+
+    /**
+     * @var string
+    */
+    protected string $namespace;
+
+
+
+
+    /**
+     * @param string $namespace
+    */
+    public function __construct(string $namespace = '')
     {
         $this->collection   = new RouteCollection();
         $this->routeFactory = new RouteFactory();
+        $this->group        = new RouteGroup($namespace);
     }
+
+
+
+
+    /**
+     * @param string $path
+     *
+     * @return $this
+    */
+    public function path(string $path): static
+    {
+        return $this;
+    }
+
+
+
+
+
+
+    public function namespace(string $namespace): static
+    {
+        return $this;
+    }
+
 
 
 
@@ -149,6 +196,20 @@ class Router implements RouterInterface
     public function delete(string $path, mixed $action, string $name = null): Route
     {
         return $this->map(HttpMethod::DELETE, $path, $action, $name);
+    }
+
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function group(array $attributes, Closure $closure): mixed
+    {
+         $invoker = new RouteGroupInvoker($attributes, $closure);
     }
 
 

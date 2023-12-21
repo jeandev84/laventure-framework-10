@@ -62,7 +62,7 @@ class Route implements RouteInterface
      *
      * @var string|null
     */
-    protected ?string $name;
+    protected ?string $name = '';
 
 
 
@@ -213,7 +213,7 @@ class Route implements RouteInterface
     */
     public function name($name): static
     {
-        $this->name = $name;
+        $this->name .= $name;
 
         return $this;
     }

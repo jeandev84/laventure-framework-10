@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Collection;
-
 
 use Laventure\Component\Routing\Route\Route;
 
@@ -17,8 +17,6 @@ use Laventure\Component\Routing\Route\Route;
  */
 interface RouteCollectionInterface
 {
-
-
     /**
      * @param Route $route
      *

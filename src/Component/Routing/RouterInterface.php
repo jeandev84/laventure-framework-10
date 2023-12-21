@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Routing;
 
+use Closure;
 use Laventure\Component\Routing\Route\Route;
 
 /**
@@ -103,6 +104,21 @@ interface RouterInterface
      * @return Route
     */
     public function delete(string $path, mixed $action, string $name = null): Route;
+
+
+
+
+
+    /**
+     * @param array $attributes
+     *
+     * @param Closure $closure
+     *
+     * @return mixed
+    */
+    public function group(array $attributes, Closure $closure): mixed;
+
+
 
 
 
