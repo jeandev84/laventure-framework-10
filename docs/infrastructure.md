@@ -29,5 +29,7 @@ tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
 
 ### PHPUnit
 ```
-Test1: ./vendor/bin/phpunit tests/phpunit/Component/Routing/RouterTest.php
+Test Routing   : ./vendor/bin/phpunit tests/phpunit/Component/Routing/RouterTest.php
+Test Container : ./vendor/bin/phpunit tests/phpunit/Component/Container/ContainerTest.php
+
 ```
