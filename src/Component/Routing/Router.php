@@ -560,7 +560,8 @@ class Router implements RouterInterface
         $name   = $this->group->resolveName((string)$name);
 
         $route = $this->routeFactory->make($methods, $path, $action, $name);
-        $route->middlewares($this->group->getMiddlewares());
+        $route->middlewares($this->group->getMiddlewares())
+              ->wheres($this->patterns);
 
         return $route;
     }
