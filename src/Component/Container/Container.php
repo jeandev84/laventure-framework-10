@@ -134,10 +134,17 @@ class Container implements ContainerInterface, \ArrayAccess
     public function get(string $id): mixed
     {
          if ($this->has($id)) {
+
              $concrete = $this->bindings[$id];
+
+             if ($concrete instanceof SharedConcrete) {
+                 return $this->share($concrete);
+             }
+
              return $concrete->getValue();
          }
 
+         dd('OK');
          return $this->resolve($id);
     }
 

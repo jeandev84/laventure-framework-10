@@ -16,7 +16,7 @@ use PHPUnitTest\App\Entity\User;
  */
 class Auth
 {
-     public function attempt(string $username, string $password, bool $rememberMe = false)
+     public function attempt(string $username, string $password, bool $rememberMe = false): bool
      {
          return true;
      }
