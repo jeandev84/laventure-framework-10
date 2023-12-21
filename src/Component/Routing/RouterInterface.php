@@ -112,11 +112,11 @@ interface RouterInterface
     /**
      * @param array $attributes
      *
-     * @param Closure $closure
+     * @param Closure $routes
      *
      * @return mixed
     */
-    public function group(array $attributes, Closure $closure): mixed;
+    public function group(array $attributes, Closure $routes): mixed;
 
 
 

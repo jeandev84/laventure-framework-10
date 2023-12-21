@@ -168,7 +168,7 @@ class RouteGroup implements RouteGroupInterface
     */
     public function group(RouteGroupInvokerInterface $invoker): mixed
     {
-        $this->attributes($invoker->attributes());
+        $this->add($invoker->attributes());
         $invoker->invoke();
         $this->clear();
 
@@ -270,7 +270,7 @@ class RouteGroup implements RouteGroupInterface
      *
      * @return void
      */
-    private function attributes(RouteGroupAttributes $attributes): void
+    private function add(RouteGroupAttributes $attributes): void
     {
         $this->path($attributes->path)
              ->namespace($attributes->namespace)

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing;
@@ -9,6 +8,10 @@ use Laventure\Component\Routing\Collection\RouteCollection;
 use Laventure\Component\Routing\Enums\HttpMethod;
 use Laventure\Component\Routing\Group\Invoker\RouteGroupInvoker;
 use Laventure\Component\Routing\Group\RouteGroup;
+use Laventure\Component\Routing\Resource\Enums\ResourceType;
+use Laventure\Component\Routing\Resource\Resource;
+use Laventure\Component\Routing\Resource\Types\ApiResource;
+use Laventure\Component\Routing\Resource\Types\WebResource;
 use Laventure\Component\Routing\Route\Route;
 use Laventure\Component\Routing\Route\RouteFactory;
 
@@ -44,11 +47,19 @@ class Router implements RouterInterface
 
 
 
+    /**
+     * @var array
+    */
+    protected array $patterns = [];
+
+
+
 
     /**
-     * @var string
+     * @var Resource[]
     */
-    protected string $namespace;
+    public array $resources = [];
+
 
 
 
@@ -67,6 +78,41 @@ class Router implements RouterInterface
 
 
     /**
+     * @param array $patterns
+     *
+     * @return $this
+    */
+    public function patterns(array $patterns): static
+    {
+         foreach ($patterns as $name => $pattern) {
+             $this->pattern($name, $pattern);
+         }
+
+         return $this;
+    }
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @param string $pattern
+     *
+     * @return $this
+    */
+    public function pattern(string $name, string $pattern): static
+    {
+        $this->patterns[$name] = $pattern;
+
+        return $this;
+    }
+
+
+
+
+
+    /**
      * @param string $path
      *
      * @return $this
@@ -77,6 +123,7 @@ class Router implements RouterInterface
 
         return $this;
     }
+
 
 
 
@@ -110,6 +157,10 @@ class Router implements RouterInterface
 
 
 
+
+
+
+
     /**
      * @param array $middlewares
      *
@@ -121,6 +172,8 @@ class Router implements RouterInterface
 
         return $this;
     }
+
+
 
 
 
@@ -136,29 +189,24 @@ class Router implements RouterInterface
 
 
 
-
-
     /**
-     * @param string|array $methods
+     * @param Resource $resource
      *
-     * @param string $path
-     *
-     * @param mixed $action
-     *
-     * @param string|null $name
-     *
-     * @return Route
-     */
-    public function makeRoute(string|array $methods, string $path, mixed $action, string $name = null): Route
+     * @return $this
+    */
+    public function addResource(Resource $resource): static
     {
-        $path   = $this->group->resolvePath($path);
-        $action = $this->group->resolveAction($action);
-        $name   = $this->group->resolveName((string)$name);
+        $type = $resource->getType();
+        $name = $resource->getName();
 
-        $route = $this->routeFactory->make($methods, $path, $action, $name);
-        $route->middlewares($this->group->getMiddlewares());
+        $this->pattern('id', '\d+');
+        $this->pattern($name, '\d+');
 
-        return $route;
+        $resource->map($this);
+
+        $this->resources[$type][$name] = $resource;
+
+        return $this;
     }
 
 
@@ -169,7 +217,7 @@ class Router implements RouterInterface
     /**
      * @inheritdoc
     */
-    public function map(string|array $methods, string $path, mixed $action, string $name = null): Route
+    public function map(string $methods, string $path, mixed $action, string $name = null): Route
     {
         return $this->add($this->makeRoute($methods, $path, $action, $name));
     }
@@ -230,6 +278,27 @@ class Router implements RouterInterface
 
 
     /**
+     * Map route called by method PATCH
+     *
+     * @param string $path
+     *
+     * @param mixed $action
+     *
+     * @param string|null $name
+     *
+     * @return Route
+    */
+    public function patch(string $path, mixed $action, string $name = null): Route
+    {
+        return $this->map(HttpMethod::PATCH, $path, $action, $name);
+    }
+
+
+
+
+
+
+    /**
      * @param string $path
      * @param mixed $action
      * @param string|null $name
@@ -244,17 +313,156 @@ class Router implements RouterInterface
 
 
 
+    /**
+     * @param string $name
+     *
+     * @param string $controller
+     *
+     * @return $this
+     */
+    public function resource(string $name, string $controller): static
+    {
+        return $this->addResource(new WebResource($name, $controller));
+    }
+
+
+
+
+
+
+
+    /**
+     * @param array $resources
+     *
+     * @return $this
+    */
+    public function resources(array $resources): static
+    {
+        foreach ($resources as $name => $controller) {
+            $this->resource($name, $controller);
+        }
+
+        return $this;
+    }
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasResource(string $name): bool
+    {
+        return isset($this->resources[ResourceType::WEB][$name]);
+    }
+
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return WebResource|null
+    */
+    public function getResource(string $name): ?WebResource
+    {
+        return $this->resources[ResourceType::WEB][$name] ?? null;
+    }
+
+
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @param string $controller
+     *
+     * @return $this
+     */
+    public function apiResource(string $name, string $controller): static
+    {
+        return $this->addResource(new ApiResource($name, $controller));
+    }
+
+
+
+
+
+
+    /**
+     * @param array $resources
+     *
+     * @return $this
+     */
+    public function apiResources(array $resources): static
+    {
+        foreach ($resources as $name => $controller) {
+            $this->apiResource($name, $controller);
+        }
+
+        return $this;
+    }
+
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasApiResource(string $name): bool
+    {
+        return isset($this->resources[ResourceType::API][$name]);
+    }
+
+
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return ApiResource|null
+     */
+    public function getApiResource(string $name): ?ApiResource
+    {
+        return $this->resources[ResourceType::API][$name] ?? null;
+    }
+
+
+
+
+
+
+
+
+
 
 
     /**
      * @inheritDoc
     */
-    public function group(array $attributes, Closure $closure): mixed
+    public function group(array $attributes, Closure $routes): mixed
     {
-        $this->group->group(new RouteGroupInvoker($attributes, $closure, $this));
+        $this->group->group(new RouteGroupInvoker($attributes, $routes, $this));
 
         return $this;
     }
+
+
+
+
 
 
 
@@ -319,11 +527,41 @@ class Router implements RouterInterface
     }
 
 
+
+
+
+
     /**
      * @return RouteGroup
     */
     public function getGroup(): RouteGroup
     {
         return $this->group;
+    }
+
+
+
+
+    /**
+     * @param string $methods
+     *
+     * @param string $path
+     *
+     * @param mixed $action
+     *
+     * @param string|null $name
+     *
+     * @return Route
+    */
+    public function makeRoute(string $methods, string $path, mixed $action, string $name = null): Route
+    {
+        $path   = $this->group->resolvePath($path);
+        $action = $this->group->resolveAction($action);
+        $name   = $this->group->resolveName((string)$name);
+
+        $route = $this->routeFactory->make($methods, $path, $action, $name);
+        $route->middlewares($this->group->getMiddlewares());
+
+        return $route;
     }
 }

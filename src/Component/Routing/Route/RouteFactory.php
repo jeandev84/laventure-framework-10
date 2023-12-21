@@ -16,14 +16,13 @@ namespace Laventure\Component\Routing\Route;
 class RouteFactory
 {
     /**
-     * @param array|string $methods
+     * @param string $methods
      * @param string $path
      * @param mixed $action
      * @param string $name
      * @return Route
     */
-    public function make(
-        array|string $methods,
+    public function make(string $methods,
         string $path,
         mixed  $action,
         string $name = ''
