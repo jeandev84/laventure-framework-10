@@ -24,7 +24,7 @@ interface RouteGroupInvokerInterface
      *
      * @return RouteGroupAttributes
     */
-    public function getAttributes(): RouteGroupAttributes;
+    public function attributes(): RouteGroupAttributes;
 
 
 
@@ -32,7 +32,7 @@ interface RouteGroupInvokerInterface
     /**
      * @return callable
     */
-    public function getRoutes(): callable;
+    public function routes(): callable;
 
 
 
@@ -42,7 +42,7 @@ interface RouteGroupInvokerInterface
     /**
      * @return RouterInterface
     */
-    public function getRouter(): RouterInterface;
+    public function router(): RouterInterface;
 
 
 

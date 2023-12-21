@@ -51,7 +51,7 @@ class RouteGroupInvoker implements RouteGroupInvokerInterface
     /**
      * @inheritDoc
     */
-    public function getRoutes(): callable
+    public function routes(): callable
     {
         return $this->routes;
     }
@@ -63,7 +63,7 @@ class RouteGroupInvoker implements RouteGroupInvokerInterface
     /**
      * @inheritDoc
      */
-    public function getRouter(): RouterInterface
+    public function router(): RouterInterface
     {
         return $this->router;
     }
@@ -73,7 +73,7 @@ class RouteGroupInvoker implements RouteGroupInvokerInterface
     /**
      * @inheritDoc
     */
-    public function getAttributes(): RouteGroupAttributes
+    public function attributes(): RouteGroupAttributes
     {
         return new RouteGroupAttributes(
        $this->attributes['path'] ?? '',

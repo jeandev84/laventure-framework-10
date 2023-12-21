@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Group;
 
+use Laventure\Component\Routing\Group\DTO\RouteGroupAttributes;
 use Laventure\Component\Routing\Group\Invoker\RouteGroupInvokerInterface;
 
 /**
@@ -17,13 +18,6 @@ use Laventure\Component\Routing\Group\Invoker\RouteGroupInvokerInterface;
 */
 class RouteGroup implements RouteGroupInterface
 {
-
-    /**
-     * @var string 
-    */
-    protected string $namespace;
-    
-    
     /**
      * @var array
     */
@@ -138,17 +132,15 @@ class RouteGroup implements RouteGroupInterface
 
 
     /**
-     * @param array|string $middlewares
+     * @param array $middlewares
      *
      * @return $this
     */
-    public function middlewares(array|string $middlewares): static
+    public function middlewares(array $middlewares): static
     {
-         if (is_string($middlewares)) {
-             $middlewares = (array) $middlewares;
-         }
-
-         $this->middlewares = array_merge($this->middlewares, $middlewares);
+         $this->middlewares = array_merge(
+             $this->middlewares, $middlewares
+         );
 
          return $this;
     }
@@ -162,20 +154,14 @@ class RouteGroup implements RouteGroupInterface
     */
     public function group(RouteGroupInvokerInterface $invoker): mixed
     {
-         $attributes = $invoker->getAttributes();
-
-         $this->path($attributes->path)
-              ->namespace($attributes->namespace)
-              ->name($attributes->name)
-              ->middlewares($attributes->middlewares);
-
-
+         $this->attributes($invoker->attributes());
          $invoker->invoke();
-
          $this->clear();
-         
+
          return $this;
     }
+
+
 
     
     
@@ -196,7 +182,10 @@ class RouteGroup implements RouteGroupInterface
     */
     public function clear(): void
     {
-        
+        $this->path   = [];
+        $this->namespaces = [];
+        $this->middlewares = [];
+        $this->name = [];
     }
 
 
@@ -241,4 +230,21 @@ class RouteGroup implements RouteGroupInterface
     {
 
     }
+
+
+
+
+    /**
+     * @param RouteGroupAttributes $attributes
+     *
+     * @return void
+     */
+    private function attributes(RouteGroupAttributes $attributes): void
+    {
+        $this->path($attributes->path)
+             ->namespace($attributes->namespace)
+             ->name($attributes->name)
+             ->middlewares($attributes->middlewares);
+    }
+
 }
