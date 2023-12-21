@@ -4,9 +4,11 @@ declare(strict_types=1);
 namespace PHPUnitTest\Component\Routing;
 
 use Laventure\Component\Routing\Router;
+use Laventure\Component\Routing\RouterInterface;
 use PHPUnit\Framework\TestCase;
-use PHPUnitTest\Component\Routing\Middlewares\AuthenticatedMiddleware;
-use PHPUnitTest\Component\Routing\Middlewares\GuestMiddleware;
+use PHPUnitTest\App\Controllers\Admin\UserController;
+use PHPUnitTest\App\Controllers\HomeController;
+use PHPUnitTest\App\Middlewares\AuthenticatedMiddleware;
 
 
 /**
@@ -22,6 +24,9 @@ use PHPUnitTest\Component\Routing\Middlewares\GuestMiddleware;
 */
 class RouterTest extends TestCase
 {
+
+    const NAMESPACE = 'PHPUnitTest\\App\\Controllers';
+
 
 
     public function testThereAreNoRoutesWhenRouterIsCreated(): void
@@ -40,10 +45,10 @@ class RouterTest extends TestCase
          $router->map('PUT', '/books/{id}', ['BookController', 'update'], 'books.update');
 
          $expected = [
-            $router->route('GET', '/', ['SiteController', 'index'], 'home'),
-            $router->route('GET', '/about', ['SiteController', 'about'], 'about'),
-            $router->route('GET|POST', '/contact-us', ['SiteController', 'contactUs'], 'contact.us'),
-            $router->route('PUT', '/books/{id}', ['BookController', 'update'], 'books.update'),
+            $router->makeRoute('GET', '/', ['SiteController', 'index'], 'home'),
+            $router->makeRoute('GET', '/about', ['SiteController', 'about'], 'about'),
+            $router->makeRoute('GET|POST', '/contact-us', ['SiteController', 'contactUs'], 'contact.us'),
+            $router->makeRoute('PUT', '/books/{id}', ['BookController', 'update'], 'books.update'),
          ];
 
          $this->assertEquals($expected, $router->getRoutes());
@@ -57,7 +62,7 @@ class RouterTest extends TestCase
         $router->get( '/', ['SiteController', 'index'], 'home');
 
         $expected = [
-            $router->route('GET', '/', ['SiteController', 'index'], 'home'),
+            $router->makeRoute('GET', '/', ['SiteController', 'index'], 'home'),
         ];
 
         $this->assertEquals($expected, $router->getRoutes());
@@ -71,7 +76,7 @@ class RouterTest extends TestCase
         $router->post('/contact-us', ['SiteController', 'contactUs'], 'contact.us');
 
         $expected = [
-            $router->route('POST', '/contact-us', ['SiteController', 'contactUs'], 'contact.us'),
+            $router->makeRoute('POST', '/contact-us', ['SiteController', 'contactUs'], 'contact.us'),
         ];
 
         $this->assertEquals($expected, $router->getRoutes());
@@ -85,7 +90,7 @@ class RouterTest extends TestCase
         $router->map('PUT', '/books/{id}', ['BookController', 'update'], 'books.update');
 
         $expected = [
-            $router->route('PUT', '/books/{id}', ['BookController', 'update'], 'books.update'),
+            $router->makeRoute('PUT', '/books/{id}', ['BookController', 'update'], 'books.update'),
         ];
 
         $this->assertEquals($expected, $router->getRoutes());
@@ -99,7 +104,7 @@ class RouterTest extends TestCase
         $router->delete('/books/{id}', ['BookController', 'delete'], 'books.delete');
 
         $expected = [
-            $router->route('DELETE', '/books/{id}', ['BookController', 'delete'], 'books.delete'),
+            $router->makeRoute('DELETE', '/books/{id}', ['BookController', 'delete'], 'books.delete'),
         ];
 
         $this->assertEquals($expected, $router->getRoutes());
@@ -120,7 +125,7 @@ class RouterTest extends TestCase
             return "Welcome";
         });
 
-        $expected = $router->route('GET', '/welcome', function () {
+        $expected = $router->makeRoute('GET', '/welcome', function () {
             return "Welcome";
         })->options(['uri' => '/welcome']);
 
@@ -151,7 +156,7 @@ class RouterTest extends TestCase
         ]);
 
 
-        $expected1 = $router->route('GET', '/admin/books/{slug}-{id}', function () {
+        $expected1 = $router->makeRoute('GET', '/admin/books/{slug}-{id}', function () {
             return "Get Book from storage";
         }, 'books.show')
         ->slug('slug')->id()
@@ -197,7 +202,7 @@ class RouterTest extends TestCase
         })->where('id', '\d+');
 
 
-        $expected1 = $router->route('GET', '/users/{id}', function () {
+        $expected1 = $router->makeRoute('GET', '/users/{id}', function () {
             return "Get Users";
         })
         ->where('id', '\d+')
@@ -216,7 +221,7 @@ class RouterTest extends TestCase
         })->slug('slug')->id();
 
 
-        $expected2 = $router->route('DELETE', '/books/{slug}/{id?}', function () {
+        $expected2 = $router->makeRoute('DELETE', '/books/{slug}/{id?}', function () {
             return "Delete Books";
         })
         ->slug('slug')->id()
@@ -253,5 +258,79 @@ class RouterTest extends TestCase
             '/books/un-nouveau-article/3',
             $router->generate('books.delete', ['slug' => 'un-nouveau-article', 'id' => 3])
         );
+    }
+
+
+
+    public function testRouteGroupMapEverythingCorrectly(): void
+    {
+         $router = new \Laventure\Component\Routing\Router();
+
+         $prefixes = [
+            'path' => 'admin/',
+            'namespace' => 'Admin\\',
+            'name' => 'admin.',
+            'middlewares' => [AuthenticatedMiddleware::class]
+         ];
+
+         $router->group($prefixes, function (RouterInterface $router) {
+            $router->get('/users', [UserController::class, 'index'], 'users.index');
+            $router->get('/users/{id}', [UserController::class, 'show'], 'users.show');
+            $router->post('/users', [UserController::class, 'store'], 'users.store');
+            $router->put('/users/{id}', [UserController::class, 'update'], 'users.update');
+            $router->delete('/users/{id}', [UserController::class], 'users.delete');
+         });
+
+         $router->get('/welcome', [HomeController::class, 'index'], 'welcome');
+
+
+         $expectedGroup = [
+            $router->makeRoute('GET', '/admin/users', [UserController::class, 'index'], 'admin.users.index'),
+            $router->makeRoute('GET', '/admin/users/{id}', [UserController::class, 'show'], 'admin.users.show'),
+            $router->makeRoute('POST', '/admin/users', [UserController::class, 'store'], 'admin.users.store'),
+            $router->makeRoute('PUT', '/admin/users/{id}', [UserController::class, 'update'], 'admin.users.update'),
+            $router->makeRoute('DELETE', '/admin/users/{id}', [UserController::class], 'admin.users.delete'),
+            $router->makeRoute('GET', '/welcome', [HomeController::class, 'index'], 'welcome'),
+        ];
+
+        $this->assertEquals($expectedGroup, $router->getRoutes());
+    }
+
+
+
+
+    public function testMapActionString(): void
+    {
+        $router = new \Laventure\Component\Routing\Router(static::NAMESPACE);
+
+        $prefixes = [
+            'path' => 'admin/',
+            'namespace' => 'Admin\\',
+            'name' => 'admin.',
+            'middlewares' => [AuthenticatedMiddleware::class]
+        ];
+
+        $router->group($prefixes, function (RouterInterface $router) {
+            $router->get('/users', 'UserController@index', 'users.index');
+            $router->get('/users/{id}', 'UserController@show', 'users.show');
+            $router->post('/users', 'UserController@store', 'users.store');
+            $router->put('/users/{id}', 'UserController@update', 'users.update');
+            $router->delete('/users/{id}', 'UserController@delete', 'users.delete');
+        });
+
+
+        $router->get('/welcome', 'HomeController@index', 'welcome');
+
+        $expected = [
+            $router->makeRoute('GET', '/admin/users', 'Admin\\UserController@index', 'admin.users.index'),
+            $router->makeRoute('GET', '/admin/users/{id}', 'Admin\\UserController@show', 'admin.users.show'),
+            $router->makeRoute('POST', '/admin/users', 'Admin\\UserController@store', 'admin.users.store'),
+            $router->makeRoute('PUT', '/admin/users/{id}', 'Admin\\UserController@update', 'admin.users.update'),
+            $router->makeRoute('DELETE', '/admin/users/{id}', 'Admin\\UserController@delete', 'admin.users.delete'),
+            $router->makeRoute('GET', '/welcome', 'HomeController@index', 'welcome'),
+        ];
+
+
+        $this->assertEquals($expected, $router->getRoutes());
     }
 }

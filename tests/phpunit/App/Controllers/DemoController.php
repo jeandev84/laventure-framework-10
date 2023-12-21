@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace PHPUnitTest\Component\Routing\Controllers;
+namespace PHPUnitTest\App\Controllers;
 
 /**
  * DemoController
@@ -10,7 +10,7 @@ namespace PHPUnitTest\Component\Routing\Controllers;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  PHPUnitTest\Component\Routing\Controllers
+ * @package  PHPUnitTest\App\Controllers
  */
 class DemoController
 {

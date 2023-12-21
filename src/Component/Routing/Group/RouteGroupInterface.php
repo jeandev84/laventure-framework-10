@@ -17,8 +17,6 @@ use Laventure\Component\Routing\Group\Invoker\RouteGroupInvokerInterface;
 */
 interface RouteGroupInterface
 {
-
-
     /**
      * @param RouteGroupInvokerInterface $invoker
      *

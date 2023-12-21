@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Group\DTO;
@@ -14,7 +15,6 @@ namespace Laventure\Component\Routing\Group\DTO;
  */
 class RouteGroupAttributes
 {
-
     /**
      * @param string $path
      *
@@ -29,7 +29,6 @@ class RouteGroupAttributes
         public string $namespace,
         public string $name,
         public array  $middlewares
-    )
-    {
+    ) {
     }
 }

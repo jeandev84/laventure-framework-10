@@ -19,6 +19,13 @@ use Laventure\Component\Routing\Group\Invoker\RouteGroupInvokerInterface;
 class RouteGroup implements RouteGroupInterface
 {
     /**
+     * @var string
+    */
+    private string $namespace;
+
+
+
+    /**
      * @var array
     */
     protected array $path = [];
@@ -27,7 +34,7 @@ class RouteGroup implements RouteGroupInterface
      * @var array
     */
     protected array $namespaces = [];
-    
+
     /**
      * @var array
     */
@@ -39,13 +46,15 @@ class RouteGroup implements RouteGroupInterface
     protected array $middlewares = [];
 
 
-    
-    
+
+
     /**
      * @param string $namespace
     */
-    public function __construct(string $namespace = '')
+    public function __construct(string $namespace)
     {
+        $this->namespace = $namespace;
+
         $this->namespace($namespace);
     }
 
@@ -72,7 +81,11 @@ class RouteGroup implements RouteGroupInterface
     */
     public function getNamespace(): string
     {
-        return join("\\", $this->namespaces);
+        if (!empty($this->namespaces)) {
+            return join("\\", $this->namespaces);
+        }
+
+        return trim($this->namespace, '\\');
     }
 
 
@@ -138,34 +151,35 @@ class RouteGroup implements RouteGroupInterface
     */
     public function middlewares(array $middlewares): static
     {
-         $this->middlewares = array_merge(
-             $this->middlewares, $middlewares
-         );
+        $this->middlewares = array_merge(
+            $this->middlewares,
+            $middlewares
+        );
 
-         return $this;
+        return $this;
     }
 
 
 
-    
+
 
     /**
      * @inheritDoc
     */
     public function group(RouteGroupInvokerInterface $invoker): mixed
     {
-         $this->attributes($invoker->attributes());
-         $invoker->invoke();
-         $this->clear();
+        $this->attributes($invoker->attributes());
+        $invoker->invoke();
+        $this->clear();
 
-         return $this;
+        return $this;
     }
 
 
 
-    
-    
-    
+
+
+
     /**
      * @inheritDoc
     */
@@ -201,7 +215,11 @@ class RouteGroup implements RouteGroupInterface
     public function resolvePath(string $path): string
     {
         if ($prefix = $this->getPath()) {
-            $path = sprintf('%s/%s', trim($prefix, '/'), ltrim($path, '/'));
+            $path = sprintf(
+                '%s/%s',
+                trim($prefix, '/'),
+                ltrim($path, '/')
+            );
         }
 
         return $path;
@@ -233,13 +251,13 @@ class RouteGroup implements RouteGroupInterface
      */
     public function resolveAction(mixed $action): mixed
     {
-         if ($this->hasSymbolArobase($action)) {
-             $action     = explode('@', $action, 2);
-             $controller = join("\\", [$this->getNamespace(), $action[0]]);
-             return [$controller, $action[1]];
-         }
+        if ($this->hasSymbolArobase($action)) {
+            $action     = explode('@', $action, 2);
+            $controller = sprintf('%s\\%s', $this->getNamespace(), $action[0]);
+            return [$controller, $action[1]];
+        }
 
-         return $action;
+        return $action;
     }
 
 

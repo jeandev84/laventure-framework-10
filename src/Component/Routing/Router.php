@@ -73,19 +73,54 @@ class Router implements RouterInterface
     */
     public function path(string $path): static
     {
+        $this->group->path($path);
+
         return $this;
     }
 
 
 
 
-
-
+    /**
+     * @param string $namespace
+     *
+     * @return $this
+    */
     public function namespace(string $namespace): static
     {
+        $this->group->namespace($namespace);
+
         return $this;
     }
 
+
+
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+    */
+    public function name(string $name): static
+    {
+        $this->group->name($name);
+
+        return $this;
+    }
+
+
+
+    /**
+     * @param array $middlewares
+     *
+     * @return $this
+    */
+    public function middlewares(array $middlewares): static
+    {
+        $this->group->middlewares($middlewares);
+
+        return $this;
+    }
 
 
 
@@ -114,8 +149,12 @@ class Router implements RouterInterface
      *
      * @return Route
      */
-    public function route(string|array $methods, string $path, mixed $action, string $name = null): Route
+    public function makeRoute(string|array $methods, string $path, mixed $action, string $name = null): Route
     {
+        $path   = $this->group->resolvePath($path);
+        $action = $this->group->resolveAction($action);
+        $name   = $this->group->resolveName((string)$name);
+
         return $this->routeFactory->make($methods, $path, $action, $name);
     }
 
@@ -129,7 +168,7 @@ class Router implements RouterInterface
     */
     public function map(string|array $methods, string $path, mixed $action, string $name = null): Route
     {
-        return $this->add($this->route($methods, $path, $action, $name));
+        return $this->add($this->makeRoute($methods, $path, $action, $name));
     }
 
 
@@ -209,7 +248,9 @@ class Router implements RouterInterface
     */
     public function group(array $attributes, Closure $closure): mixed
     {
-         $invoker = new RouteGroupInvoker($attributes, $closure);
+        $this->group->group(new RouteGroupInvoker($attributes, $closure, $this));
+
+        return $this;
     }
 
 
@@ -272,5 +313,14 @@ class Router implements RouterInterface
     public function getCollection(): RouteCollection
     {
         return $this->collection;
+    }
+
+
+    /**
+     * @return RouteGroup
+    */
+    public function getGroup(): RouteGroup
+    {
+        return $this->group;
     }
 }

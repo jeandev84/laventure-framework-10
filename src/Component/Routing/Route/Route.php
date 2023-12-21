@@ -841,7 +841,12 @@ class Route implements RouteInterface
     */
     private function resolveActionFromArray(array $callback): string
     {
-        [$controller, $action] = $callback;
+        if (empty($callback[0])) {
+            throw new \InvalidArgumentException("Controller name is required parameter.");
+        }
+
+        $controller = $callback[0];
+        $action     = (string)($callback[1] ?? '__invoke');
 
         $this->options(compact('controller', 'action'));
 

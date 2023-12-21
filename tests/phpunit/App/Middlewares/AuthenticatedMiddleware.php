@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PHPUnitTest\Component\Routing\Middlewares;
+namespace PHPUnitTest\App\Middlewares;
 
 /**
- * GuestMiddleware
+ * AuthenticatedMiddleware
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -13,7 +13,7 @@ namespace PHPUnitTest\Component\Routing\Middlewares;
  *
  * @package  PHPUnitTest\Component\Routing\Middlewares
  */
-class GuestMiddleware
+class AuthenticatedMiddleware
 {
     public function __invoke($request, callable $next)
     {

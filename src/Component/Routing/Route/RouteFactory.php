@@ -19,14 +19,14 @@ class RouteFactory
      * @param array|string $methods
      * @param string $path
      * @param mixed $action
-     * @param string|null $name
+     * @param string $name
      * @return Route
     */
     public function make(
         array|string $methods,
         string $path,
         mixed  $action,
-        ?string $name = null
+        string $name = ''
     ): Route {
         return new Route($methods, $path, $action, $name);
     }

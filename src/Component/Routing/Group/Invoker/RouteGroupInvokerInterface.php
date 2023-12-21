@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Group\Invoker;
@@ -17,8 +18,6 @@ use Laventure\Component\Routing\RouterInterface;
  */
 interface RouteGroupInvokerInterface
 {
-
-
     /**
      * Returns prefixes or attributes of routes to invoke
      *

@@ -76,10 +76,10 @@ class RouteGroupInvoker implements RouteGroupInvokerInterface
     public function attributes(): RouteGroupAttributes
     {
         return new RouteGroupAttributes(
-       $this->attributes['path'] ?? '',
-  $this->attributes['namespace'] ?? '',
-      $this->attributes['name'] ?? '',
- $this->attributes['middlewares'] ?? []
+            $this->attributes['path'] ?? '',
+            $this->attributes['namespace'] ?? '',
+            $this->attributes['name'] ?? '',
+            $this->attributes['middlewares'] ?? []
         );
     }
 }
