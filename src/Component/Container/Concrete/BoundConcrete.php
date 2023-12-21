@@ -35,9 +35,9 @@ class BoundConcrete implements ConcreteInterface
     /**
      * @param string $id
      *
-     * @param $value
+     * @param mixed $value
     */
-    public function __construct(string $id, $value)
+    public function __construct(string $id, mixed $value)
     {
         $this->id       = $id;
         $this->value    = $value;

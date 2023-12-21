@@ -16,10 +16,13 @@ use PHPUnitTest\App\Entity\User;
  */
 class Auth
 {
-     protected $user = null;
+     public function __construct(protected ?User $user = null)
+     {
+     }
 
 
-     public function attempt(string $username, string $password, bool $rememberMe = false): bool
+
+    public function attempt(string $username, string $password, bool $rememberMe = false): bool
      {
          $hash = password_hash($username, PASSWORD_DEFAULT);
 

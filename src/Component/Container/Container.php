@@ -14,6 +14,7 @@ use Laventure\Component\Container\Resolver\Contract\ResolverInterface;
 use Laventure\Component\Container\Resolver\Resolver;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use ReflectionException;
 
 /**
  * Container
@@ -26,6 +27,13 @@ use Psr\Container\ContainerInterface;
 */
 class Container implements ContainerInterface, \ArrayAccess
 {
+
+    /**
+     * @var static
+    */
+    protected static $instance;
+
+
     /**
      * @var BoundConcrete[]
     */
@@ -36,6 +44,30 @@ class Container implements ContainerInterface, \ArrayAccess
      * @var array
     */
     protected array $instances = [];
+
+
+
+    /**
+     * @var array
+    */
+    protected array $resolved  = [];
+
+
+
+
+    /**
+     * Get container instance <Singleton>
+     *
+     * @return static
+    */
+    public static function getInstance(): static
+    {
+        if(is_null(static::$instance)) {
+            static::$instance = new static();
+        }
+
+        return static::$instance;
+    }
 
 
 
@@ -58,11 +90,11 @@ class Container implements ContainerInterface, \ArrayAccess
     /**
      * @param string $id
      *
-     * @param $concrete
+     * @param mixed $concrete
      *
      * @return $this
     */
-    public function bind(string $id, $concrete): static
+    public function bind(string $id, mixed $concrete): static
     {
         return $this->bindConcrete(new BoundConcrete($id, $concrete));
     }
@@ -73,11 +105,11 @@ class Container implements ContainerInterface, \ArrayAccess
     /**
      * @param string $id
      *
-     * @param $concrete
+     * @param mixed $concrete
      *
      * @return $this
     */
-    public function singleton(string $id, $concrete): static
+    public function singleton(string $id, mixed $concrete): static
     {
         return $this->bindConcrete(new SharedConcrete($id, $concrete));
     }
@@ -121,6 +153,8 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
+
+
     /**
      * @param string $id
      *
@@ -132,20 +166,17 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
-
     /**
      * @inheritDoc
+     *
+     * @throws ReflectionException
     */
     public function get(string $id): mixed
     {
         if ($this->has($id)) {
 
             $concrete = $this->getConcrete($id);
-            $value    = $concrete->getValue();
-
-            if ($concrete->callable()) {
-                $value = $this->callAnonymous($value);
-            }
+            $value    = $this->getConcreteValue($concrete);
 
             if ($concrete instanceof SharedConcrete) {
                 return $this->share($id, $value);
@@ -159,17 +190,30 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
     /**
+     * @param $id
+     *
+     * @return bool
+    */
+    protected function resolvable($id): bool
+    {
+        return $this->getResolver()->resolvable($id);
+    }
+
+
+
+
+    /**
      * @param Closure $func
      *
-     * @param array $parameters
+     * @param array $with
      *
      * @return mixed
      * @throws ContainerExceptionInterface
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function callAnonymous(Closure $func, array $parameters = []): mixed
+    public function callAnonymous(Closure $func, array $with = []): mixed
     {
-        return $this->getResolver()->resolveAnonymous($func, $parameters);
+        return $this->getResolver()->resolveAnonymous($func, $with);
     }
 
 
@@ -185,6 +229,9 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
+
+
+
     /**
      * @param string $id
      *
@@ -194,7 +241,11 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function resolve(string $id): mixed
     {
-        return $this->getResolver()->resolve($id);
+        if (isset($this->resolved[$id])) {
+            return $this->resolved[$id];
+        }
+
+        return $this->resolved[$id] = $this->getResolver()->resolve($id);
     }
 
 
@@ -291,6 +342,32 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function offsetUnset(mixed $offset): void
     {
+          $this->remove($offset);
+    }
 
+
+
+
+
+    /**
+     * @param BoundConcrete $concrete
+     *
+     * @return mixed
+     * @throws ContainerException
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+    */
+    private function getConcreteValue(BoundConcrete $concrete): mixed
+    {
+        $value = $concrete->getValue();
+
+        if ($concrete->callable()) {
+            $value = $this->callAnonymous($value, [$this]);
+        }
+        if ($this->resolvable($value)) {
+            $value = $this->resolve($value);
+        }
+
+        return  $value;
     }
 }

@@ -66,7 +66,7 @@ class Resolver implements ResolverInterface
     public function resolve(string $id, array $with = []): mixed
     {
         // 1. Inspect the class that we are trying to get from the container
-        $reflection = new ReflectionClass($id);
+        $reflection = $this->inspectorClass($id);
 
         if (!$reflection->isInstantiable()) {
             throw new ContainerException('Class "'. $id . '" is not instantiable');
@@ -102,9 +102,8 @@ class Resolver implements ResolverInterface
     */
     public function resolveDependencies(ReflectionFunctionAbstract $func, array $with = []): array
     {
-        $parameters = $func->getParameters();
+        return array_map(function (ReflectionParameter $parameter) use ($with) {
 
-        return array_map(function (ReflectionParameter $parameter) {
             $name = $parameter->getName();
             $type = $parameter->getType();
 
@@ -120,9 +119,13 @@ class Resolver implements ResolverInterface
                 return $this->container->get($type->getName());
             }
 
+            if (array_key_exists($name, $with)) {
+                return $with[$name];
+            }
+
             throw new ContainerException('Failed to resolve because invalid param "'. $name . '"');
 
-        }, $parameters);
+        }, $func->getParameters());
     }
 
 
@@ -138,11 +141,33 @@ class Resolver implements ResolverInterface
     */
     public function resolveAnonymous(callable $func, array $with = []): mixed
     {
-        $dependencies = $this->resolveDependencies(
-            new ReflectionFunction($func),
-            $with
-        );
+        $dependencies = $this->resolveDependencies(new ReflectionFunction($func), $with);
 
         return call_user_func_array($func, $dependencies);
+    }
+
+
+
+
+
+    /**
+     * @param $id
+     *
+     * @return bool
+    */
+    public function resolvable($id): bool
+    {
+        return (is_string($id) && class_exists($id));
+    }
+
+
+
+
+    /**
+     * @throws ReflectionException
+    */
+    private function inspectorClass(string $id): ReflectionClass
+    {
+        return new ReflectionClass($id);
     }
 }
