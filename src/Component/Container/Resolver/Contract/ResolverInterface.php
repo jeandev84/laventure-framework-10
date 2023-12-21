@@ -26,11 +26,24 @@ interface ResolverInterface
 
 
       /**
-       * @param mixed $value
+       * @param mixed $id
        *
        * @param array $parameters
        *
        * @return mixed
       */
-      public function resolve(mixed $value, array $parameters = []): mixed;
+      public function resolve(string $id, array $parameters = []): mixed;
+
+
+
+
+
+      /**
+       * @param callable $func
+       *
+       * @param array $parameters
+       *
+       * @return mixed
+      */
+      public function resolveAnonymous(callable $func, array $parameters = []): mixed;
 }

@@ -34,8 +34,15 @@ class UserService
 
 
 
-     public function loginUser(): bool
+     public function loginUser(): User
      {
-         return $this->auth->attempt('marry@yahoo.fr', 'marry123', true);
+         $credentials = [
+             'username' => 'marry123',
+             'password' => 'marry123'
+         ];
+
+         $this->auth->attempt($credentials['username'], $credentials['password'], true);
+
+         return $this->auth->user();
      }
 }

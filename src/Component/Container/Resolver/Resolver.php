@@ -7,6 +7,7 @@ namespace Laventure\Component\Container\Resolver;
 use Laventure\Component\Container\Concrete\Contract\ConcreteInterface;
 use Laventure\Component\Container\Resolver\Contract\ResolverInterface;
 use Psr\Container\ContainerInterface;
+use ReflectionFunctionAbstract;
 
 /**
  * Resolver
@@ -52,14 +53,14 @@ class Resolver implements ResolverInterface
     /**
      * @inheritDoc
     */
-    public function resolve(mixed $value, array $parameters = []): mixed
+    public function resolve(string $id, array $parameters = []): mixed
     {
-         if (is_callable($value)) {
-             return $this->callAnonymous($value);
-         }
+         $reflection = new \ReflectionClass($id);
 
-         return $value;
+         return $id;
     }
+
+
 
 
 
@@ -68,8 +69,31 @@ class Resolver implements ResolverInterface
      * @param array $parameters
      * @return mixed
     */
-    public function callAnonymous(callable $func, array $parameters = []): mixed
+    public function resolveAnonymous(callable $func, array $parameters = []): mixed
     {
         return call_user_func($func);
+    }
+
+
+
+
+
+    /**
+     * @param ReflectionFunctionAbstract $method
+     *
+     * @param array $with
+     *
+     * @return array
+     */
+    public function resolveDependencies(ReflectionFunctionAbstract $method, array $with = []): array
+    {
+         $dependencies = $method->getParameters();
+
+         return array_map(function (\ReflectionParameter $parameter) use ($with) {
+
+             $name = $parameter->getName();
+             $type = $parameter->getType();
+
+         }, $dependencies);
     }
 }

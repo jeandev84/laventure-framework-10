@@ -16,14 +16,29 @@ use PHPUnitTest\App\Entity\User;
  */
 class Auth
 {
+     protected $user = null;
+
+
      public function attempt(string $username, string $password, bool $rememberMe = false): bool
      {
+         $hash = password_hash($username, PASSWORD_DEFAULT);
+
+         if (! password_verify($password, $hash)) {
+              return false;
+         }
+
+         $this->user = new User(random_int(1, 100), $username);
+
          return true;
      }
 
 
      public function user(): User
      {
-         return new User(1, 'john@doe.com');
+         if ($this->user) {
+             return $this->user;
+         }
+
+         return new User(random_int(1, 100), uniqid(md5('someone')));
      }
 }

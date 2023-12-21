@@ -32,26 +32,15 @@ class BoundConcrete implements ConcreteInterface
     protected mixed $value;
 
 
-
-    /**
-     * @var Resolver
-    */
-    protected Resolver $resolver;
-
-
-
     /**
      * @param string $id
      *
      * @param $value
-     *
-     * @param Resolver $resolver
     */
-    public function __construct(string $id, $value, Resolver $resolver)
+    public function __construct(string $id, $value)
     {
         $this->id       = $id;
         $this->value    = $value;
-        $this->resolver = $resolver;
     }
 
 
@@ -71,7 +60,7 @@ class BoundConcrete implements ConcreteInterface
     */
     public function getValue(): mixed
     {
-        return $this->resolver->resolve($this->value);
+        return $this->value;
     }
 
 

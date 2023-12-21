@@ -10,6 +10,7 @@ use Laventure\Component\Routing\Route\Route;
 use Laventure\Component\Routing\Router;
 use PHPUnit\Framework\TestCase;
 use PHPUnitTest\App\Services\Auth\Auth;
+use PHPUnitTest\App\Services\FooService;
 use PHPUnitTest\App\Services\User\UserService;
 
 
@@ -30,7 +31,6 @@ class ContainerTest extends TestCase
     public function testBind(): void
     {
         $container = new Container();
-        $resolver  = $container->getResolver();
         $router    = new Router();
         $auth      = new Auth();
         $func      = function () use ($auth) {
@@ -43,10 +43,10 @@ class ContainerTest extends TestCase
         $container->bind(UserService::class, $func);
 
         $expectedBindings = [
-            'name' => new BoundConcrete('name', 'brown', $resolver),
-            'auth' => new BoundConcrete('auth', $auth, $resolver),
-            Router::class => new BoundConcrete(Router::class, $router, $resolver),
-            UserService::class => new BoundConcrete(UserService::class, $func, $resolver)
+            'name' => new BoundConcrete('name', 'brown'),
+            'auth' => new BoundConcrete('auth', $auth),
+            Router::class => new BoundConcrete(Router::class, $router),
+            UserService::class => new BoundConcrete(UserService::class, $func)
         ];
 
         $this->assertEquals($expectedBindings, $container->getBindings());
@@ -61,8 +61,6 @@ class ContainerTest extends TestCase
     public function testSingleton(): void
     {
         $container = new Container();
-        $resolver  = $container->getResolver();
-
         $func = function () {
             return new Router("PHPUnitTest\App\Controllers");
         };
@@ -70,9 +68,30 @@ class ContainerTest extends TestCase
         $container->singleton(Router::class, $func);
 
         $expected = [
-            Router::class => new SharedConcrete(Router::class, $func, $resolver),
+            Router::class => new SharedConcrete(Router::class, $func),
         ];
 
         $this->assertEquals($expected, $container->getBindings());
+    }
+
+
+
+
+    public function testResolvedId()
+    {
+        $container = new Container();
+        $resolver  = $container->getResolver();
+        $router    = new Router();
+        $auth      = new Auth();
+        $func      = function () use ($auth) {
+            return new UserService($auth);
+        };
+
+        $service = $container->get(FooService::class);
+
+        dd($service);
+
+
+        $this->assertTrue(true);
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Container;
 
+use Closure;
 use Laventure\Component\Container\Concrete\BoundConcrete;
 use Laventure\Component\Container\Concrete\Contract\ConcreteInterface;
 use Laventure\Component\Container\Concrete\InstanceConcrete;
@@ -26,7 +27,7 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
     /**
-     * @var ConcreteInterface[]
+     * @var BoundConcrete[]
     */
     protected array $bindings = [];
 
@@ -63,9 +64,7 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function bind(string $id, $concrete): static
     {
-        return $this->bindConcrete(
-            new BoundConcrete($id, $concrete, $this->getResolver())
-        );
+        return $this->bindConcrete(new BoundConcrete($id, $concrete));
     }
 
 
@@ -80,9 +79,7 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function singleton(string $id, $concrete): static
     {
-        return $this->bindConcrete(
-            new SharedConcrete($id, $concrete, $this->getResolver())
-        );
+        return $this->bindConcrete(new SharedConcrete($id, $concrete));
     }
 
 
@@ -98,9 +95,7 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function instance(string $id, $instance): static
     {
-        $this->instances[$id] = new InstanceConcrete(
-            $id, $instance, $this->getResolver()
-        );
+        $this->instances[$id] = new InstanceConcrete($id, $instance);
 
         return $this;
     }
@@ -110,21 +105,31 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
     /**
-     * @param SharedConcrete $concrete
+     * @param string $id
+     *
+     * @param mixed $value
      *
      * @return mixed
     */
-    public function share(SharedConcrete $concrete): mixed
+    public function share(string $id, mixed $value): mixed
     {
-         $id = $concrete->getId();
-
          if (! isset($this->instances[$id])) {
-              $this->instances[$id] = $concrete->getValue();
+              $this->instances[$id] = $value;
          }
 
          return $this->instances[$id];
     }
 
+
+    /**
+     * @param string $id
+     *
+     * @return BoundConcrete
+    */
+    public function getConcrete(string $id): BoundConcrete
+    {
+        return $this->bindings[$id];
+    }
 
 
 
@@ -134,14 +139,37 @@ class Container implements ContainerInterface, \ArrayAccess
     public function get(string $id): mixed
     {
          if ($this->has($id)) {
-             $concrete = $this->bindings[$id];
-             if ($concrete instanceof SharedConcrete) {
-                 return $this->share($concrete);
+
+             $concrete = $this->getConcrete($id);
+             $value    = $concrete->getValue();
+
+             if ($concrete->callable()) {
+                 $value = $this->callAnonymous($value);
              }
-             return $concrete->getValue();
+
+             if ($concrete instanceof SharedConcrete) {
+                 return $this->share($id, $value);
+             }
+
+             return $value;
          }
 
          return $this->resolve($id);
+    }
+
+
+
+
+    /**
+     * @param Closure $func
+     *
+     * @param array $parameters
+     *
+     * @return mixed
+    */
+    public function callAnonymous(Closure $func, array $parameters = []): mixed
+    {
+         return $this->getResolver()->resolveAnonymous($func, $parameters);
     }
 
 
