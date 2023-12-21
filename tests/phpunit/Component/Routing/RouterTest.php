@@ -6,6 +6,7 @@ namespace PHPUnitTest\Component\Routing;
 use Laventure\Component\Routing\Router;
 use Laventure\Component\Routing\RouterInterface;
 use PHPUnit\Framework\TestCase;
+use PHPUnitTest\App\Controllers\Admin\BookController;
 use PHPUnitTest\App\Controllers\Admin\UserController;
 use PHPUnitTest\App\Controllers\HomeController;
 use PHPUnitTest\App\Middlewares\AuthenticatedMiddleware;
@@ -337,6 +338,64 @@ class RouterTest extends TestCase
             $router->makeRoute('DELETE', '/admin/users/{id}', 'Admin\\UserController@delete', 'admin.users.delete')
                   ->middleware(AuthenticatedMiddleware::class),
             $router->makeRoute('GET', '/welcome', 'HomeController@index', 'welcome'),
+        ];
+
+
+        $this->assertEquals($expected, $router->getRoutes());
+    }
+
+
+
+    public function testWebResource()
+    {
+            $router = new \Laventure\Component\Routing\Router();
+
+            $router->group([
+                'path' => '/admin',
+                'name' => 'admin.'
+            ], function (Router $router) {
+                $router->resource('books', BookController::class);
+            });
+
+
+        $router->patterns(['id' => '\d+', 'books' => '\d+']);
+
+        $expected = [
+            $router->makeRoute('GET', '/admin/books', [BookController::class, 'index'], 'admin.books.index'),
+            $router->makeRoute('GET', '/admin/books/{id}', [BookController::class, 'show'], 'admin.books.show'),
+            $router->makeRoute('GET', '/admin/books', [BookController::class, 'create'], 'admin.books.create'),
+            $router->makeRoute('POST', '/admin/books', [BookController::class, 'store'], 'admin.books.store'),
+            $router->makeRoute('PUT|PATCH', '/admin/books/{id}', [BookController::class, 'update'], 'admin.books.update'),
+            $router->makeRoute('DELETE', '/admin/books/{id}', [BookController::class, 'destroy'], 'admin.books.destroy'),
+        ];
+
+
+        $this->assertEquals($expected, $router->getRoutes());
+    }
+
+
+
+
+    public function testApiResource()
+    {
+        $router = new \Laventure\Component\Routing\Router();
+
+        $router->group([
+            'path' => '/admin',
+            'name' => 'admin.'
+        ], function (Router $router) {
+            $router->apiResource('books', BookController::class);
+        });
+
+
+        $router->patterns(['id' => '\d+', 'books' => '\d+']);
+
+        $expected = [
+            $router->makeRoute('GET|HEAD', '/admin/books', [BookController::class, 'index'], 'admin.books.index'),
+            $router->makeRoute('GET', '/admin/books/{id}', [BookController::class, 'show'], 'admin.books.show'),
+            $router->makeRoute('POST', '/admin/books', [BookController::class, 'store'], 'admin.books.store'),
+            $router->makeRoute('PUT|PATCH', '/admin/books/{id}', [BookController::class, 'update'], 'admin.books.update'),
+            $router->makeRoute('DELETE', '/admin/books/{id}', [BookController::class, 'destroy'], 'admin.books.destroy'),
         ];
 
 
