@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Container\Resolver\Contract;
-
 
 use Psr\Container\ContainerInterface;
 
@@ -17,33 +17,37 @@ use Psr\Container\ContainerInterface;
  */
 interface ResolverInterface
 {
-      /**
-       * @return ContainerInterface
-      */
-      public function getContainer(): ContainerInterface;
+    /**
+     * @return ContainerInterface
+    */
+    public function getContainer(): ContainerInterface;
 
 
 
 
-      /**
-       * @param mixed $id
-       *
-       * @param array $parameters
-       *
-       * @return mixed
-      */
-      public function resolve(string $id, array $parameters = []): mixed;
+    /**
+     * Resolve class
+     *
+     * @param mixed $id
+     *
+     * @param array $with
+     *
+     * @return mixed
+    */
+    public function resolve(string $id, array $with = []): mixed;
 
 
 
 
 
-      /**
-       * @param callable $func
-       *
-       * @param array $parameters
-       *
-       * @return mixed
-      */
-      public function resolveAnonymous(callable $func, array $parameters = []): mixed;
+    /**
+     * Call and resolve anonymous function
+     *
+     * @param callable $func
+     *
+     * @param array $with
+     *
+     * @return mixed
+    */
+    public function resolveAnonymous(callable $func, array $with = []): mixed;
 }

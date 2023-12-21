@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Container\Exception;
@@ -16,5 +17,4 @@ use Psr\Container\ContainerExceptionInterface;
  */
 class ContainerException extends \Exception implements ContainerExceptionInterface
 {
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Container\Concrete;
@@ -18,7 +19,6 @@ use Psr\Container\ContainerInterface;
 */
 class BoundConcrete implements ConcreteInterface
 {
-
     /**
      * @var string
     */

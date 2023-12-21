@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Container;
@@ -8,10 +9,11 @@ use Laventure\Component\Container\Concrete\BoundConcrete;
 use Laventure\Component\Container\Concrete\Contract\ConcreteInterface;
 use Laventure\Component\Container\Concrete\InstanceConcrete;
 use Laventure\Component\Container\Concrete\SharedConcrete;
+use Laventure\Component\Container\Exception\ContainerException;
 use Laventure\Component\Container\Resolver\Contract\ResolverInterface;
 use Laventure\Component\Container\Resolver\Resolver;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-
 
 /**
  * Container
@@ -24,8 +26,6 @@ use Psr\Container\ContainerInterface;
 */
 class Container implements ContainerInterface, \ArrayAccess
 {
-
-
     /**
      * @var BoundConcrete[]
     */
@@ -113,11 +113,11 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function share(string $id, mixed $value): mixed
     {
-         if (! isset($this->instances[$id])) {
-              $this->instances[$id] = $value;
-         }
+        if (!isset($this->instances[$id])) {
+            $this->instances[$id] = $value;
+        }
 
-         return $this->instances[$id];
+        return $this->instances[$id];
     }
 
 
@@ -138,26 +138,24 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function get(string $id): mixed
     {
-         if ($this->has($id)) {
+        if ($this->has($id)) {
 
-             $concrete = $this->getConcrete($id);
-             $value    = $concrete->getValue();
+            $concrete = $this->getConcrete($id);
+            $value    = $concrete->getValue();
 
-             if ($concrete->callable()) {
-                 $value = $this->callAnonymous($value);
-             }
+            if ($concrete->callable()) {
+                $value = $this->callAnonymous($value);
+            }
 
-             if ($concrete instanceof SharedConcrete) {
-                 return $this->share($id, $value);
-             }
+            if ($concrete instanceof SharedConcrete) {
+                return $this->share($id, $value);
+            }
 
-             return $value;
-         }
+            return $value;
+        }
 
-         return $this->resolve($id);
+        return $this->resolve($id);
     }
-
-
 
 
     /**
@@ -166,10 +164,12 @@ class Container implements ContainerInterface, \ArrayAccess
      * @param array $parameters
      *
      * @return mixed
-    */
+     * @throws ContainerExceptionInterface
+     * @throws \ReflectionException
+     */
     public function callAnonymous(Closure $func, array $parameters = []): mixed
     {
-         return $this->getResolver()->resolveAnonymous($func, $parameters);
+        return $this->getResolver()->resolveAnonymous($func, $parameters);
     }
 
 
@@ -181,17 +181,16 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function has(string $id): bool
     {
-         return isset($this->bindings[$id]);
+        return isset($this->bindings[$id]);
     }
-
-
-
 
 
     /**
      * @param string $id
      *
      * @return mixed
+     *
+     * @throws ContainerException
     */
     public function resolve(string $id): mixed
     {
@@ -259,7 +258,7 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function offsetExists(mixed $offset): bool
     {
-         return $this->has($offset);
+        return $this->has($offset);
     }
 
 
@@ -271,7 +270,7 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function offsetGet(mixed $offset): mixed
     {
-         return $this->get($offset);
+        return $this->get($offset);
     }
 
 
@@ -281,7 +280,7 @@ class Container implements ContainerInterface, \ArrayAccess
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-         $this->bind($offset, $value);
+        $this->bind($offset, $value);
     }
 
 

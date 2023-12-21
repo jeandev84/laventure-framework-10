@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Exception;
-
 
 /**
  * NotFoundRouteException
@@ -15,8 +15,8 @@ namespace Laventure\Component\Routing\Exception;
  */
 class NotFoundRouteException extends \Exception
 {
-     public function __construct(string $path)
-     {
-         parent::__construct("Route $path can not found.", 404);
-     }
+    public function __construct(string $path)
+    {
+        parent::__construct("Route $path can not found.", 404);
+    }
 }

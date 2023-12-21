@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Container\Concrete\Contract;
-
 
 /**
  * ConcreteInterface
@@ -15,15 +15,15 @@ namespace Laventure\Component\Container\Concrete\Contract;
  */
 interface ConcreteInterface
 {
-      /**
-       * @return string
-      */
-      public function getId(): string;
+    /**
+     * @return string
+    */
+    public function getId(): string;
 
 
 
-      /**
-       * @return mixed
-      */
-      public function getValue(): mixed;
+    /**
+     * @return mixed
+    */
+    public function getValue(): mixed;
 }

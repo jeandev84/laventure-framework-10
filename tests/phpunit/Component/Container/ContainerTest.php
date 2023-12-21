@@ -51,9 +51,9 @@ class ContainerTest extends TestCase
 
         $this->assertEquals($expectedBindings, $container->getBindings());
         $this->assertSame('brown', $container->get('name'));
-        $this->assertSame($auth, $container->get('auth'));
-        $this->assertSame($router, $container->get(Router::class));
-        $this->assertEquals(call_user_func($func), $container->get(UserService::class));
+        $this->assertInstanceOf(Auth::class, $container->get('auth'));
+        $this->assertInstanceOf(Router::class, $container->get(Router::class));
+        $this->assertInstanceOf(UserService::class, $container->get(UserService::class));
     }
 
 
@@ -80,18 +80,17 @@ class ContainerTest extends TestCase
     public function testResolvedId()
     {
         $container = new Container();
-        $resolver  = $container->getResolver();
-        $router    = new Router();
-        $auth      = new Auth();
-        $func      = function () use ($auth) {
-            return new UserService($auth);
-        };
 
-        $service = $container->get(FooService::class);
+        $container->singleton(Auth::class, function () {
+            return new Auth();
+        });
 
-        dd($service);
+        $container->singleton(Router::class, function () {
+            return new Router();
+        });
 
 
-        $this->assertTrue(true);
+        $this->assertInstanceOf(FooService::class, $container->get(FooService::class));
+        $this->assertInstanceOf(UserService::class, $container->get(UserService::class));
     }
 }

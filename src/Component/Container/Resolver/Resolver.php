@@ -1,13 +1,24 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Container\Resolver;
 
-
-use Laventure\Component\Container\Concrete\Contract\ConcreteInterface;
+use Laventure\Component\Container\Exception\ContainerException;
+use Laventure\Component\Container\Reflection\Func\FunctionReflected;
+use Laventure\Component\Container\Reflection\Func\MethodReflected;
 use Laventure\Component\Container\Resolver\Contract\ResolverInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionFunction;
 use ReflectionFunctionAbstract;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
+use ReflectionUnionType;
 
 /**
  * Resolver
@@ -20,7 +31,6 @@ use ReflectionFunctionAbstract;
  */
 class Resolver implements ResolverInterface
 {
-
     /**
      * @var ContainerInterface
     */
@@ -44,7 +54,7 @@ class Resolver implements ResolverInterface
     */
     public function getContainer(): ContainerInterface
     {
-         return $this->container;
+        return $this->container;
     }
 
 
@@ -53,47 +63,86 @@ class Resolver implements ResolverInterface
     /**
      * @inheritDoc
     */
-    public function resolve(string $id, array $parameters = []): mixed
+    public function resolve(string $id, array $with = []): mixed
     {
-         $reflection = new \ReflectionClass($id);
+        // 1. Inspect the class that we are trying to get from the container
+        $reflection = new ReflectionClass($id);
 
-         return $id;
+        if (!$reflection->isInstantiable()) {
+            throw new ContainerException('Class "'. $id . '" is not instantiable');
+        }
+
+        // 2. Inspect the constructor of the class
+        $constructor = $reflection->getConstructor();
+
+        if (!$constructor) {
+            return $reflection->newInstance();
+        }
+
+        // 3. Inspect the constructor parameters (dependencies)
+        if (!$constructor->getParameters()) {
+            return $reflection->newInstance();
+        }
+
+        $dependencies = $this->resolveDependencies($constructor, $with);
+
+        return $reflection->newInstanceArgs($dependencies);
     }
 
+
+
+    /**
+     * @param ReflectionFunctionAbstract $func
+     *
+     * @param array $with
+     *
+     * @return array
+     *
+     * @throws ContainerExceptionInterface
+    */
+    public function resolveDependencies(ReflectionFunctionAbstract $func, array $with = []): array
+    {
+        $parameters = $func->getParameters();
+
+        return array_map(function (ReflectionParameter $parameter) {
+            $name = $parameter->getName();
+            $type = $parameter->getType();
+
+            if (!$type) {
+                throw new ContainerException('Failed to resolve parameter because param "'. $name . '" is missing a type hint.');
+            }
+
+            if ($type instanceof ReflectionUnionType) {
+                throw new ContainerException('Failed to resolve parameter because of union type for param "'. $name . '"');
+            }
+
+            if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
+                return $this->container->get($type->getName());
+            }
+
+            throw new ContainerException('Failed to resolve because invalid param "'. $name . '"');
+
+        }, $parameters);
+    }
 
 
 
 
     /**
      * @param callable $func
-     * @param array $parameters
-     * @return mixed
-    */
-    public function resolveAnonymous(callable $func, array $parameters = []): mixed
-    {
-        return call_user_func($func);
-    }
-
-
-
-
-
-    /**
-     * @param ReflectionFunctionAbstract $method
-     *
      * @param array $with
+     * @return mixed
      *
-     * @return array
-     */
-    public function resolveDependencies(ReflectionFunctionAbstract $method, array $with = []): array
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+    */
+    public function resolveAnonymous(callable $func, array $with = []): mixed
     {
-         $dependencies = $method->getParameters();
+        $dependencies = $this->resolveDependencies(
+            new ReflectionFunction($func),
+            $with
+        );
 
-         return array_map(function (\ReflectionParameter $parameter) use ($with) {
-
-             $name = $parameter->getName();
-             $type = $parameter->getType();
-
-         }, $dependencies);
+        return call_user_func_array($func, $dependencies);
     }
 }
