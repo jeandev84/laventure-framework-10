@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Routing\Enums;
+namespace Laventure\Component\Routing\Attributes\Enums;
 
 /**
  * HttpMethod
@@ -11,7 +11,7 @@ namespace Laventure\Component\Routing\Enums;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Routing\Enums
+ * @package  Laventure\Component\Routing\Attributes\Enums
 */
 enum HttpMethod: string
 {

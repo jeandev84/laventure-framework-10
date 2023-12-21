@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Laventure\Component\Routing;
 
 use Closure;
+use Laventure\Component\Routing\Attributes\Enums\HttpMethod;
 use Laventure\Component\Routing\Collection\RouteCollection;
-use Laventure\Component\Routing\Enums\HttpMethod;
 use Laventure\Component\Routing\Group\Invoker\RouteGroupInvoker;
 use Laventure\Component\Routing\Group\RouteGroup;
 use Laventure\Component\Routing\Resource\Enums\ResourceType;
