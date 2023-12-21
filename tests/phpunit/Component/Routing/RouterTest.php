@@ -285,11 +285,16 @@ class RouterTest extends TestCase
 
 
          $expectedGroup = [
-            $router->makeRoute('GET', '/admin/users', [UserController::class, 'index'], 'admin.users.index'),
-            $router->makeRoute('GET', '/admin/users/{id}', [UserController::class, 'show'], 'admin.users.show'),
-            $router->makeRoute('POST', '/admin/users', [UserController::class, 'store'], 'admin.users.store'),
-            $router->makeRoute('PUT', '/admin/users/{id}', [UserController::class, 'update'], 'admin.users.update'),
-            $router->makeRoute('DELETE', '/admin/users/{id}', [UserController::class], 'admin.users.delete'),
+            $router->makeRoute('GET', '/admin/users', [UserController::class, 'index'], 'admin.users.index')
+                   ->middleware(AuthenticatedMiddleware::class),
+            $router->makeRoute('GET', '/admin/users/{id}', [UserController::class, 'show'], 'admin.users.show')
+                   ->middleware(AuthenticatedMiddleware::class),
+            $router->makeRoute('POST', '/admin/users', [UserController::class, 'store'], 'admin.users.store')
+                   ->middleware(AuthenticatedMiddleware::class),
+            $router->makeRoute('PUT', '/admin/users/{id}', [UserController::class, 'update'], 'admin.users.update')
+                   ->middleware(AuthenticatedMiddleware::class),
+            $router->makeRoute('DELETE', '/admin/users/{id}', [UserController::class], 'admin.users.delete')
+                   ->middleware(AuthenticatedMiddleware::class),
             $router->makeRoute('GET', '/welcome', [HomeController::class, 'index'], 'welcome'),
         ];
 
@@ -318,15 +323,19 @@ class RouterTest extends TestCase
             $router->delete('/users/{id}', 'UserController@delete', 'users.delete');
         });
 
-
         $router->get('/welcome', 'HomeController@index', 'welcome');
 
         $expected = [
-            $router->makeRoute('GET', '/admin/users', 'Admin\\UserController@index', 'admin.users.index'),
-            $router->makeRoute('GET', '/admin/users/{id}', 'Admin\\UserController@show', 'admin.users.show'),
-            $router->makeRoute('POST', '/admin/users', 'Admin\\UserController@store', 'admin.users.store'),
-            $router->makeRoute('PUT', '/admin/users/{id}', 'Admin\\UserController@update', 'admin.users.update'),
-            $router->makeRoute('DELETE', '/admin/users/{id}', 'Admin\\UserController@delete', 'admin.users.delete'),
+            $router->makeRoute('GET', '/admin/users', 'Admin\\UserController@index', 'admin.users.index')
+                   ->middleware(AuthenticatedMiddleware::class),
+            $router->makeRoute('GET', '/admin/users/{id}', 'Admin\\UserController@show', 'admin.users.show')
+                   ->middleware(AuthenticatedMiddleware::class),
+            $router->makeRoute('POST', '/admin/users', 'Admin\\UserController@store', 'admin.users.store')
+                  ->middleware(AuthenticatedMiddleware::class),
+            $router->makeRoute('PUT', '/admin/users/{id}', 'Admin\\UserController@update', 'admin.users.update')
+                  ->middleware(AuthenticatedMiddleware::class),
+            $router->makeRoute('DELETE', '/admin/users/{id}', 'Admin\\UserController@delete', 'admin.users.delete')
+                  ->middleware(AuthenticatedMiddleware::class),
             $router->makeRoute('GET', '/welcome', 'HomeController@index', 'welcome'),
         ];
 

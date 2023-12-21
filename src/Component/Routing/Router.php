@@ -155,7 +155,10 @@ class Router implements RouterInterface
         $action = $this->group->resolveAction($action);
         $name   = $this->group->resolveName((string)$name);
 
-        return $this->routeFactory->make($methods, $path, $action, $name);
+        $route = $this->routeFactory->make($methods, $path, $action, $name);
+        $route->middlewares($this->group->getMiddlewares());
+
+        return $route;
     }
 
 
