@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing;
 
 use Closure;
-use Laventure\Component\Routing\Attributes\Enums\HttpMethod;
 use Laventure\Component\Routing\Collection\RouteCollection;
+use Laventure\Component\Routing\Enums\HttpMethod;
 use Laventure\Component\Routing\Group\Invoker\RouteGroupInvoker;
 use Laventure\Component\Routing\Group\RouteGroup;
 use Laventure\Component\Routing\Resource\Enums\ResourceType;
@@ -84,11 +85,11 @@ class Router implements RouterInterface
     */
     public function patterns(array $patterns): static
     {
-         foreach ($patterns as $name => $pattern) {
-             $this->pattern($name, $pattern);
-         }
+        foreach ($patterns as $name => $pattern) {
+            $this->pattern($name, $pattern);
+        }
 
-         return $this;
+        return $this;
     }
 
 
@@ -198,12 +199,8 @@ class Router implements RouterInterface
     {
         $type = $resource->getType();
         $name = $resource->getName();
-
-        $this->pattern('id', '\d+');
-        $this->pattern($name, '\d+');
-
+        $this->patterns(['id' => '\d+', $name => '\d+']);
         $resource->map($this);
-
         $this->resources[$type][$name] = $resource;
 
         return $this;

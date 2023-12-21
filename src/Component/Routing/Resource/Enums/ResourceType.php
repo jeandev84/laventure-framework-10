@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Resource\Enums;
-
 
 /**
  * ResourceType
@@ -15,6 +15,6 @@ namespace Laventure\Component\Routing\Resource\Enums;
  */
 enum ResourceType: string
 {
-     const WEB = 'web';
-     const API = 'api';
+    public const WEB = 'web';
+    public const API = 'api';
 }

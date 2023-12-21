@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Resource;
-
 
 use Laventure\Component\Routing\RouterInterface;
 
@@ -17,46 +17,45 @@ use Laventure\Component\Routing\RouterInterface;
  */
 interface ResourceInterface
 {
-
-       /**
-        * Returns resource name
-        *
-        * @return string
-       */
-       public function getName(): string;
-
-
-
-
-       /**
-        * Returns resource controller
-        *
-        * @return string
-       */
-       public function getController(): string;
+    /**
+     * Returns resource name
+     *
+     * @return string
+    */
+    public function getName(): string;
 
 
 
 
-       /**
-        * Returns resource type
-        *
-        * @return string
-       */
-       public function getType(): string;
+    /**
+     * Returns resource controller
+     *
+     * @return string
+    */
+    public function getController(): string;
 
+
+
+
+    /**
+     * Returns resource type
+     *
+     * @return string
+    */
+    public function getType(): string;
 
 
 
 
 
 
-      /**
-       * Map routes
-       *
-       * @param RouterInterface $router
-       *
-       * @return mixed
-      */
-      public function map(RouterInterface $router): mixed;
+
+    /**
+     * Map routes
+     *
+     * @param RouterInterface $router
+     *
+     * @return mixed
+    */
+    public function map(RouterInterface $router): mixed;
 }

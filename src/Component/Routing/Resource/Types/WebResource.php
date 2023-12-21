@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Resource\Types;
@@ -18,7 +19,6 @@ use Laventure\Component\Routing\RouterInterface;
  */
 class WebResource extends Resource
 {
-
     /**
      * @inheritDoc
     */

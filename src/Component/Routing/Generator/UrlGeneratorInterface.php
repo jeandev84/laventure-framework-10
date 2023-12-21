@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Routing\Generator;
@@ -14,7 +15,6 @@ namespace Laventure\Component\Routing\Generator;
 */
 interface UrlGeneratorInterface
 {
-
     /**
      * Generate URL e.g /post/1?page=3&sort=name&direction=desc#target1
      *

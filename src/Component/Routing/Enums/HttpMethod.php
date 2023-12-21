@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Routing\Attributes\Enums;
+namespace Laventure\Component\Routing\Enums;
 
 /**
  * HttpMethod
