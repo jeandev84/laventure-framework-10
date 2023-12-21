@@ -71,7 +71,7 @@ class BoundConcrete implements ConcreteInterface
     */
     public function getValue(): mixed
     {
-        return $this->value;
+        return $this->resolver->resolve($this->value);
     }
 
 
@@ -83,12 +83,5 @@ class BoundConcrete implements ConcreteInterface
     public function callable(): bool
     {
         return is_callable($this->value);
-    }
-
-
-
-    public function getDependencies()
-    {
-
     }
 }

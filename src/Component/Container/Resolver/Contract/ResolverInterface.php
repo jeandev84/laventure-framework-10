@@ -24,12 +24,13 @@ interface ResolverInterface
 
 
 
+
       /**
-       * @param $value
+       * @param mixed $value
        *
        * @param array $parameters
        *
        * @return mixed
       */
-      public function resolve($value, array $parameters = []): mixed;
+      public function resolve(mixed $value, array $parameters = []): mixed;
 }

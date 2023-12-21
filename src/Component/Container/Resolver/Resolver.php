@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Laventure\Component\Container\Resolver;
 
 
+use Laventure\Component\Container\Concrete\Contract\ConcreteInterface;
 use Laventure\Component\Container\Resolver\Contract\ResolverInterface;
 use Psr\Container\ContainerInterface;
 
@@ -47,26 +48,28 @@ class Resolver implements ResolverInterface
 
 
 
-    /**
-     * @param $value
-     *
-     * @param array $parameters
-     *
-     * @return array
-    */
-    public function getDependencies($value, array $parameters = []): array
-    {
-
-    }
-
-
-
 
     /**
      * @inheritDoc
     */
-    public function resolve($value, array $parameters = []): mixed
+    public function resolve(mixed $value, array $parameters = []): mixed
     {
+         if (is_callable($value)) {
+             return $this->callAnonymous($value);
+         }
 
+         return $value;
+    }
+
+
+
+    /**
+     * @param callable $func
+     * @param array $parameters
+     * @return mixed
+    */
+    public function callAnonymous(callable $func, array $parameters = []): mixed
+    {
+        return call_user_func($func);
     }
 }

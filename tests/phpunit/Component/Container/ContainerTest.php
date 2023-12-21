@@ -10,6 +10,7 @@ use Laventure\Component\Routing\Route\Route;
 use Laventure\Component\Routing\Router;
 use PHPUnit\Framework\TestCase;
 use PHPUnitTest\App\Services\Auth\Auth;
+use PHPUnitTest\App\Services\User\UserService;
 
 
 /**
@@ -32,22 +33,27 @@ class ContainerTest extends TestCase
         $resolver  = $container->getResolver();
         $router    = new Router();
         $auth      = new Auth();
+        $func      = function () use ($auth) {
+            return new UserService($auth);
+        };
 
         $container->bind('name', 'brown');
         $container->bind('auth', $auth);
         $container->bind(Router::class, $router);
-        $container->bind();
+        $container->bind(UserService::class, $func);
 
         $expectedBindings = [
             'name' => new BoundConcrete('name', 'brown', $resolver),
             'auth' => new BoundConcrete('auth', $auth, $resolver),
             Router::class => new BoundConcrete(Router::class, $router, $resolver),
+            UserService::class => new BoundConcrete(UserService::class, $func, $resolver)
         ];
 
         $this->assertEquals($expectedBindings, $container->getBindings());
         $this->assertSame('brown', $container->get('name'));
         $this->assertSame($auth, $container->get('auth'));
         $this->assertSame($router, $container->get(Router::class));
+        $this->assertEquals(call_user_func($func), $container->get(UserService::class));
     }
 
 
