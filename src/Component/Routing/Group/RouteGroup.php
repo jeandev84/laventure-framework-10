@@ -200,7 +200,11 @@ class RouteGroup implements RouteGroupInterface
      */
     public function resolvePath(string $path): string
     {
+        if ($prefix = $this->getPath()) {
+            $path = sprintf('%s/%s', trim($prefix, '/'), ltrim($path, '/'));
+        }
 
+        return $path;
     }
 
 
@@ -216,8 +220,9 @@ class RouteGroup implements RouteGroupInterface
     */
     public function resolveName(string $name): string
     {
-
+        return sprintf('%s%s', $this->getName(), $name);
     }
+
 
 
 
@@ -228,8 +233,16 @@ class RouteGroup implements RouteGroupInterface
      */
     public function resolveAction(mixed $action): mixed
     {
+         if ($this->hasSymbolArobase($action)) {
+             $action     = explode('@', $action, 2);
+             $controller = join("\\", [$this->getNamespace(), $action[0]]);
+             return [$controller, $action[1]];
+         }
 
+         return $action;
     }
+
+
 
 
 
@@ -247,4 +260,14 @@ class RouteGroup implements RouteGroupInterface
              ->middlewares($attributes->middlewares);
     }
 
+
+    /**
+     * @param $action
+     *
+     * @return bool
+    */
+    private function hasSymbolArobase($action): bool
+    {
+        return is_string($action) && stripos($action, '@') !== false;
+    }
 }
