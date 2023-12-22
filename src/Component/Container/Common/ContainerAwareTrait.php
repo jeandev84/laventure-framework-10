@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Container;
+namespace Laventure\Component\Container\Common;
+
+use Laventure\Component\Container\Container;
 
 /**
  * ContainerAwareTrait
@@ -11,7 +13,7 @@ namespace Laventure\Component\Container;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Container
+ * @package  Laventure\Component\Container\Common
  */
 trait ContainerAwareTrait
 {

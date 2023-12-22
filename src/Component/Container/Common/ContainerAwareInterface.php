@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Container;
+namespace Laventure\Component\Container\Common;
+
+use Laventure\Component\Container\Container;
 
 /**
  * ContainerAwareInterface

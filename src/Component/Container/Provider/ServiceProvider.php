@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Container\Provider;
 
-use Laventure\Component\Container\Container;
-use Laventure\Component\Container\ContainerAwareInterface;
-use Laventure\Component\Container\ContainerAwareTrait;
+use Laventure\Component\Container\Common\ContainerAwareInterface;
+use Laventure\Component\Container\Common\ContainerAwareTrait;
 use Laventure\Component\Container\Provider\Contract\ServiceProviderInterface;
 
 /**

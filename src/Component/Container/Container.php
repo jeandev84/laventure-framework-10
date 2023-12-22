@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Laventure\Component\Container;
 
 use Closure;
+use Laventure\Component\Container\Common\ContainerAwareInterface;
 use Laventure\Component\Container\Concrete\BoundConcrete;
 use Laventure\Component\Container\Concrete\Contract\ConcreteInterface;
 use Laventure\Component\Container\Concrete\SharedConcrete;
@@ -150,13 +151,13 @@ class Container implements ContainerInterface, \ArrayAccess
     /**
      * @param string $id
      *
-     * @param mixed $concrete
+     * @param mixed $value
      *
      * @return $this
     */
-    public function bind(string $id, mixed $concrete): static
+    public function bind(string $id, mixed $value): static
     {
-        return $this->bindConcrete(new BoundConcrete($id, $concrete));
+        return $this->bindConcrete(new BoundConcrete($id, $value));
     }
 
 
@@ -230,15 +231,13 @@ class Container implements ContainerInterface, \ArrayAccess
     /**
      * @param string $id
      *
-     * @param mixed $concrete
+     * @param mixed $value
      *
      * @return $this
     */
-    public function singleton(string $id, mixed $concrete): static
+    public function singleton(string $id, mixed $value): static
     {
-        $this->shared[$id] = new SharedConcrete($id, $concrete);
-
-        return $this->bindConcrete($this->shared[$id]);
+        return $this->bindConcrete(new SharedConcrete($id, $value));
     }
 
 
@@ -258,6 +257,9 @@ class Container implements ContainerInterface, \ArrayAccess
 
         return $this;
     }
+
+
+
 
 
     /**
@@ -328,18 +330,6 @@ class Container implements ContainerInterface, \ArrayAccess
     /**
      * @param string $id
      *
-     * @return bool
-    */
-    public function sharable(string $id): bool
-    {
-        return ($this->shared($id) || $this->hasInstance($id));
-    }
-
-
-
-    /**
-     * @param string $id
-     *
      * @param mixed $value
      *
      * @return mixed
@@ -354,6 +344,9 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
+
+
+
     /**
      * @inheritDoc
      * @throws ReflectionException
@@ -364,18 +357,24 @@ class Container implements ContainerInterface, \ArrayAccess
 
         if ($this->has($id)) {
 
-            $concrete = $this->getConcrete($id);
+            $concrete = $this->bindings[$id];
             $value    = $this->getConcreteValue($concrete);
 
-            if ($this->shared($id)) {
+            if ($concrete instanceof SharedConcrete) {
                 return $this->share($id, $value);
             }
 
             return $value;
         }
 
-        return $this->resolve($id);
+        if ($this->resolved($id)) {
+            return $this->resolved[$id];
+        }
+
+        return $this->resolved[$id] = $this->resolve($id);
     }
+
+
 
 
 
@@ -385,7 +384,7 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function has(string $id): bool
     {
-        return ($this->bound($id) || $this->hasInstance($id));
+        return $this->bound($id);
     }
 
 
@@ -421,6 +420,11 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function resolve(string $id, array $with = []): mixed
     {
+        if ($this->hasInstance($id)) {
+            return $this->instances[$id];
+        }
+
+
         // 1. Inspect the class that we are trying to get from the container
         $reflection = new ReflectionClass($id);
 
@@ -594,9 +598,11 @@ class Container implements ContainerInterface, \ArrayAccess
      */
     public function remove(string $id): void
     {
-        if ($this->has($id)) {
-            unset($this->bindings[$id]);
-        }
+        unset(
+            $this->bindings[$id],
+            $this->instances[$id],
+            $this->resolved[$id]
+        );
     }
 
 
@@ -679,19 +685,6 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
-
-
-
-
-    /**
-     * @param string $id
-     *
-     * @return BoundConcrete
-    */
-    private function getConcrete(string $id): BoundConcrete
-    {
-        return $this->bindings[$id];
-    }
 
 
 

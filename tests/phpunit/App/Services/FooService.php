@@ -19,8 +19,21 @@ class FooService
 
     protected Container $container;
 
-    public function __construct(Container $container)
+    protected string $demo;
+
+
+    public function __construct(Container $container, string $demo)
     {
         $this->container = $container;
+        $this->demo      = $demo;
+    }
+
+
+    /**
+     * @return string
+    */
+    public function getDemo(): string
+    {
+        return $this->demo;
     }
 }

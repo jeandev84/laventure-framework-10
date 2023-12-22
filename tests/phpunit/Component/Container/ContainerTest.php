@@ -83,13 +83,23 @@ class ContainerTest extends TestCase
     {
         $container = Container::getInstance();
         $container->bind('name', 'jean');
+        $container->alias(Container::class, 'app');
         $container->singleton(Container::class, $container);
         $container->singleton(RouterInterface::class, Router::class);
         $container->singleton(Router::class, Router::class);
+        $container->instance(Route::class, new Route(['GET'], '/', 'HomeConroller@index', 'home'));
+        $container->bind('foo', function (Container $c) {
+             return $c->get('name') . '-claude';
+        });
 
         $this->assertSame('jean', $container->get('name'));
+        $this->assertSame('jean-claude', $container->get('foo'));
         $this->assertInstanceOf(Container::class, $container->get(Container::class));
         $this->assertInstanceOf(ContainerInterface::class, $container->get(Container::class));
+
+        $this->assertInstanceOf(Container::class, $container->get('app'));
+        $this->assertInstanceOf(ContainerInterface::class, $container->get('app'));
+
         $this->assertInstanceOf(Router::class, $container->get(RouterInterface::class));
         $this->assertInstanceOf(Router::class, $container->get(Router::class));
     }
