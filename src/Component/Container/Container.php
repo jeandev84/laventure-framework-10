@@ -537,15 +537,11 @@ class Container implements ContainerInterface, \ArrayAccess
         }
 
         if (!$type) {
-            throw new ContainerException(
-                'Failed to resolve parameter because param "'. $name . '" is missing a type hint.'
-            );
+            throw new ContainerException('Failed to resolve parameter because param "'. $name . '" is missing a type hint.');
         }
 
         if ($type instanceof ReflectionUnionType) {
-            throw new ContainerException(
-                'Failed to resolve parameter because of union type for param "'. $name . '"'
-            );
+            throw new ContainerException('Failed to resolve parameter because of union type for param "'. $name . '"');
         }
 
         if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
