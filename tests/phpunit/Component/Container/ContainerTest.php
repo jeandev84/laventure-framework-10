@@ -103,4 +103,25 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Router::class, $container->get(RouterInterface::class));
         $this->assertInstanceOf(Router::class, $container->get(Router::class));
     }
+
+
+
+
+    public function testServiceProviders(): void
+    {
+        $container = Container::getInstance();
+
+        $providers = [
+            \PHPUnitTest\App\Providers\FilesystemServiceProvider::class,
+            \PHPUnitTest\App\Providers\ConfigurationServiceProvider::class,
+            \PHPUnitTest\App\Providers\RouterServiceProvider::class,
+            \PHPUnitTest\App\Providers\FooServiceProvider::class
+        ];
+
+        $container->addProviders($providers);
+
+        foreach ($providers as $provider) {
+            $this->assertArrayHasKey($provider, $container->getProviders());
+        }
+    }
 }

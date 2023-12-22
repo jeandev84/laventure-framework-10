@@ -19,21 +19,21 @@ class FooService
 
     protected Container $container;
 
-    protected string $demo;
+    protected string $path;
 
 
-    public function __construct(Container $container, string $demo)
+    public function __construct(Container $container,  string $path)
     {
         $this->container = $container;
-        $this->demo      = $demo;
+        $this->path      = $path;
     }
 
 
     /**
      * @return string
     */
-    public function getDemo(): string
+    public function getPath(): string
     {
-        return $this->demo;
+        return $this->path;
     }
 }

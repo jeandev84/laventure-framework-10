@@ -6,6 +6,7 @@ namespace Laventure\Component\Container\Provider;
 
 use Laventure\Component\Container\Common\ContainerAwareInterface;
 use Laventure\Component\Container\Common\ContainerAwareTrait;
+use Laventure\Component\Container\Container;
 use Laventure\Component\Container\Provider\Contract\ServiceProviderInterface;
 
 /**
@@ -17,24 +18,7 @@ use Laventure\Component\Container\Provider\Contract\ServiceProviderInterface;
  *
  * @package  Laventure\Component\Container\Provider
  */
-abstract class ServiceProvider implements ServiceProviderInterface, ContainerAwareInterface
+abstract class ServiceProvider implements ServiceProviderInterface
 {
-    use ContainerAwareTrait;
-
-
-    /**
-     * @var array
-    */
-    protected array $provides = [];
-
-
-
-
-    /**
-     * @return array
-    */
-    public function getProvides(): array
-    {
-        return $this->provides;
-    }
+    use ServiceProviderTrait;
 }

@@ -11,6 +11,7 @@ use Laventure\Component\Container\Concrete\Contract\ConcreteInterface;
 use Laventure\Component\Container\Concrete\SharedConcrete;
 use Laventure\Component\Container\Exception\ContainerException;
 use Laventure\Component\Container\Facade\Facade;
+use Laventure\Component\Container\Provider\Contract\BootableServiceProvider;
 use Laventure\Component\Container\Provider\ServiceProvider;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -65,7 +66,7 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
     /**
-     * @var SharedConcrete[]
+     * @var array
     */
     protected array $shared  = [];
 
@@ -241,18 +242,27 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
-
-
-
     /**
      * @param string $id
      *
-     * @param object $instance
+     * @param object|string $instance
      *
      * @return $this
+     *
+     * @throws ContainerException
+     *
+     * @throws ContainerExceptionInterface
+     *
+     * @throws NotFoundExceptionInterface
+     *
+     * @throws ReflectionException
     */
-    public function instance(string $id, object $instance): static
+    public function instance(string $id, object|string $instance): static
     {
+        if (is_string($instance)) {
+            $instance = $this->factory($instance);
+        }
+
         $this->instances[$id] = $instance;
 
         return $this;
@@ -276,6 +286,81 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
+
+
+    /**
+     * @param string $provider
+     *
+     * @return bool
+    */
+    public function hasProvider(string $provider): bool
+    {
+        return isset($this->providers[$provider]);
+    }
+
+
+
+
+    /**
+     * @param string $provider
+     * @return ServiceProvider
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+    */
+    public function makeProvider(string $provider): ServiceProvider
+    {
+        return $this->make($provider);
+    }
+
+
+
+
+
+
+    /**
+     * @param string $provider
+     * @return $this
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+    */
+    public function addProvider(string $provider): static
+    {
+        if (!$this->hasProvider($provider)) {
+            $service = $this->makeProvider($provider);
+            $this->addProvides($provider, $service->getProvides());
+            $service->setContainer($this);
+            $this->bootProvider($service);
+            $service->register();
+            $this->providers[$provider] = $service;
+        }
+
+        return $this;
+    }
+
+
+
+
+
+
+    /**
+     * @param array $providers
+     *
+     * @return $this
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+    */
+    public function addProviders(array $providers): static
+    {
+        foreach ($providers as $provider) {
+            $this->addProvider($provider);
+        }
+
+        return $this;
+    }
 
 
 
@@ -308,6 +393,7 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
 
+
     /**
      * @param string $id
      *
@@ -317,11 +403,11 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function share(string $id, mixed $value): mixed
     {
-        if (!$this->hasInstance($id)) {
-            $this->instances[$id] = $value;
+        if (!$this->shared($id)) {
+            $this->shared[$id] = $value;
         }
 
-        return $this->instances[$id];
+        return $this->shared[$id];
     }
 
 
@@ -504,6 +590,193 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
 
+
+
+
+
+
+
+    /**
+     * @param string $id
+     *
+     * @return void
+     */
+    public function remove(string $id): void
+    {
+        unset(
+            $this->bindings[$id],
+            $this->instances[$id],
+            $this->resolved[$id]
+        );
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return $this->has($offset);
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->get($offset);
+    }
+
+
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        $this->bind($offset, $value);
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        $this->remove($offset);
+    }
+
+
+
+
+
+    /**
+     * @param $name
+     * @return array|bool|mixed|object|string|null
+     */
+    public function __get($name)
+    {
+        return $this[$name];
+    }
+
+
+
+
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        $this[$name] = $value;
+    }
+
+
+
+    public function clear(): void
+    {
+        $this->bindings  = [];
+        $this->instances = [];
+        $this->aliases   = [];
+        $this->resolved  = [];
+    }
+
+
+
+
+
+
+    /**
+     * Returns all entries
+     *
+     * @return array
+     */
+    public function getBindings(): array
+    {
+        return $this->bindings;
+    }
+
+
+
+
+
+    /**
+     * Returns instances
+     *
+     * @return array
+     */
+    public function getInstances(): array
+    {
+        return $this->instances;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getAliases(): array
+    {
+        return $this->aliases;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getFacades(): array
+    {
+        return $this->facades;
+    }
+
+
+
+    /**
+     * @return array
+    */
+    public function getProviders(): array
+    {
+        return $this->providers;
+    }
+
+
+    /**
+     * @return array
+    */
+    public function getProvides(): array
+    {
+        return $this->provides;
+    }
+
+
+    /**
+     * @return array
+    */
+    public function getResolved(): array
+    {
+        return $this->resolved;
+    }
+
+
+
+    /**
+     * @return array
+    */
+    public function getShared(): array
+    {
+        return $this->shared;
+    }
+
+
+
+
     /**
      * @param ReflectionFunctionAbstract $func
      *
@@ -543,12 +816,16 @@ class Container implements ContainerInterface, \ArrayAccess
         $name = $parameter->getName();
         $type = $parameter->getType();
 
+        if (array_key_exists($name, $with)) {
+            return $with[$name];
+        }
+
         if ($parameter->isOptional()) {
             return $parameter->getDefaultValue();
         }
 
         if (!$type) {
-            throw new ContainerException('Failed to resolve parameter because param "'. $name . '" is missing a type hint.');
+            throw new ContainerException('Failed to resolve parameter "'. $name . '" is missing a type hint.');
         }
 
         if ($type instanceof ReflectionUnionType) {
@@ -559,135 +836,8 @@ class Container implements ContainerInterface, \ArrayAccess
             return $this->get($type->getName());
         }
 
-        if (array_key_exists($name, $with)) {
-            return $with[$name];
-        }
-
         throw new ContainerException('Failed to resolve because invalid param "'. $name . '"');
     }
-
-
-
-    /**
-     * Returns all entries
-     *
-     * @return array
-     */
-    public function getBindings(): array
-    {
-        return $this->bindings;
-    }
-
-
-
-
-
-    /**
-     * Returns instances
-     *
-     * @return array
-     */
-    public function getInstances(): array
-    {
-        return $this->instances;
-    }
-
-
-
-
-    /**
-     * @param string $id
-     *
-     * @return void
-     */
-    public function remove(string $id): void
-    {
-        unset(
-            $this->bindings[$id],
-            $this->instances[$id],
-            $this->resolved[$id]
-        );
-    }
-
-
-
-
-    /**
-     * @inheritDoc
-     */
-    public function offsetExists(mixed $offset): bool
-    {
-        return $this->has($offset);
-    }
-
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function offsetGet(mixed $offset): mixed
-    {
-        return $this->get($offset);
-    }
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        $this->bind($offset, $value);
-    }
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function offsetUnset(mixed $offset): void
-    {
-        $this->remove($offset);
-    }
-
-
-
-
-
-    /**
-     * @param $name
-     * @return array|bool|mixed|object|string|null
-    */
-    public function __get($name)
-    {
-        return $this[$name];
-    }
-
-
-
-
-    /**
-     * @param $name
-     * @param $value
-    */
-    public function __set($name, $value)
-    {
-        $this[$name] = $value;
-    }
-
-
-
-    public function clear(): void
-    {
-        $this->bindings  = [];
-        $this->instances = [];
-        $this->aliases   = [];
-        $this->resolved  = [];
-    }
-
 
 
 
@@ -714,5 +864,36 @@ class Container implements ContainerInterface, \ArrayAccess
         }
 
         return $value;
+    }
+
+
+    /**
+     * @param string $service
+     *
+     * @param array $provides
+     *
+     * @return void
+     */
+    private function addProvides(string $service, array $provides): void
+    {
+        foreach ($provides as $id => $aliases) {
+            $this->alias($id, $aliases);
+        }
+
+        $this->provides[$service] = $provides;
+    }
+
+
+
+    /**
+     * @param ServiceProvider $provider
+     *
+     * @return void
+    */
+    private function bootProvider(ServiceProvider $provider): void
+    {
+        if($provider instanceof BootableServiceProvider) {
+            $provider->boot();
+        }
     }
 }
