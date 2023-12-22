@@ -103,6 +103,13 @@ class Uri implements UriInterface
 
 
     /**
+     * @var string
+    */
+    protected string $authority = '';
+
+
+
+    /**
      * @param string $path
     */
     public function __construct(string $path = '')
@@ -131,8 +138,10 @@ class Uri implements UriInterface
     */
     public function getAuthority(): string
     {
-
+          return $this->authority;
     }
+
+
 
 
 
@@ -187,7 +196,7 @@ class Uri implements UriInterface
      */
     public function getQuery(): string
     {
-        return $this->query;
+        return $this->query ? "?$this->query" : '';
     }
 
 
@@ -198,7 +207,7 @@ class Uri implements UriInterface
     */
     public function getFragment(): string
     {
-         return $this->fragment;
+         return $this->fragment ? "#$this->fragment" : '';
     }
 
 
@@ -304,7 +313,11 @@ class Uri implements UriInterface
     */
     public function __toString(): string
     {
-         return '';
+         return sprintf('%s%s%s',
+             $this->getPath(),
+             $this->getQuery(),
+             $this->getFragment()
+         );
     }
 
 

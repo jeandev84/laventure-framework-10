@@ -27,7 +27,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getScheme(): string
     {
-        return (string)$this->get(PHP_URL_SCHEME);
+        return $this->get(PHP_URL_SCHEME);
     }
 
 
@@ -40,7 +40,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getUsername(): string
     {
-        return (string)$this->get(PHP_URL_USER);
+        return $this->get(PHP_URL_USER, '');
     }
 
 
@@ -50,7 +50,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getPassword(): string
     {
-        return $this->get(PHP_URL_PASS);
+        return $this->get(PHP_URL_PASS, '');
     }
 
 
@@ -62,7 +62,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getHost(): string
     {
-        return (string)$this->get(PHP_URL_HOST);
+        return $this->get(PHP_URL_HOST, '');
     }
 
 
@@ -74,7 +74,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getPort(): ?int
     {
-        return (int)$this->get(PHP_URL_PORT);
+        return $this->get(PHP_URL_PORT);
     }
 
 
@@ -85,7 +85,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getPath(): string
     {
-        return (string)$this->get(PHP_URL_PATH);
+        return $this->get(PHP_URL_PATH, '');
     }
 
 
@@ -96,7 +96,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getQuery(): string
     {
-        return (string)$this->get(PHP_URL_QUERY);
+        return $this->get(PHP_URL_QUERY, '');
     }
 
 
@@ -108,7 +108,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getFragment(): string
     {
-        return (string)$this->get(PHP_URL_FRAGMENT);
+        return $this->get(PHP_URL_FRAGMENT, '');
     }
 
 
@@ -127,10 +127,13 @@ class UrlInfo implements UrlInfoInterface
 
     /**
      * @param int $key
+     * @param null $default
      * @return array|false|int|string|null
     */
-    protected function get(int $key = 0): mixed
+    protected function get(int $key = 0, $default = null): mixed
     {
-        return parse_url($this->targetPath, $key);
+        $value = parse_url($this->targetPath, $key);
+
+        return ($value ?: $default);
     }
 }
