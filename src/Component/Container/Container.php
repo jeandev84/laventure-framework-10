@@ -268,7 +268,7 @@ class Container implements ContainerInterface, \ArrayAccess
     public function singletons(array $bindings): static
     {
         foreach ($bindings as $id => $value) {
-             $this->singleton($id, $value);
+            $this->singleton($id, $value);
         }
 
         return $this;

@@ -1,0 +1,358 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Laventure\Component\Http\Message\Request;
+
+use Laventure\Component\Http\Message\MessageTrait;
+use Laventure\Component\Http\Message\Request\Params\Attributes;
+use Laventure\Component\Http\Message\Request\Params\CookieParams;
+use Laventure\Component\Http\Message\Request\Params\ParsedBody;
+use Laventure\Component\Http\Message\Request\Params\QueryParams;
+use Laventure\Component\Http\Message\Request\Params\ServerParams;
+use Laventure\Component\Http\Message\Request\Params\UploadedFiles;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
+
+/**
+ * ServerRequest
+ *
+ * @author Jean-Claude <jeanyao@ymail.com>
+ *
+ * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
+ *
+ * @package  Laventure\Component\Http\Message\Request
+*/
+class ServerRequest implements ServerRequestInterface
+{
+    use MessageTrait;
+
+
+    /**
+     * @var string
+    */
+    protected string $method;
+
+
+
+    /**
+     * @var string
+    */
+    protected string $requestTarget;
+
+
+
+    /**
+     * @var UriInterface
+    */
+    protected UriInterface $uri;
+
+
+
+    /**
+     * @var ServerParams
+    */
+    public ServerParams $server;
+
+
+
+    /**
+     * @var CookieParams
+    */
+    public CookieParams $cookies;
+
+
+
+    /**
+     * @var ParsedBody
+    */
+    public ParsedBody $parsedBody;
+
+
+
+
+    /**
+     * @var QueryParams
+    */
+    public QueryParams $queries;
+
+
+
+
+    /**
+     * @var UploadedFiles
+    */
+    public UploadedFiles $files;
+
+
+
+
+    /**
+     * @var Attributes
+    */
+    public Attributes $attributes;
+
+
+
+
+    /**
+     * @param string $method
+     * @param string $url
+    */
+    public function __construct(string $method, string $url)
+    {
+        $this->withMethod($method)
+             ->withRequestTarget($url)
+             ->withUri(new Uri($url));
+
+        $this->initializeParams();
+    }
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getRequestTarget(): string
+    {
+        return $this->requestTarget;
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function withRequestTarget(string $requestTarget): RequestInterface
+    {
+         $this->requestTarget = $requestTarget;
+
+         return $this;
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function withMethod(string $method): RequestInterface
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getUri(): UriInterface
+    {
+        return $this->uri;
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+     */
+    public function withUri(UriInterface $uri, bool $preserveHost = false): RequestInterface
+    {
+         $this->uri = $uri;
+
+         return $this;
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getServerParams(): array
+    {
+        return $this->server->all();
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getCookieParams(): array
+    {
+        return $this->cookies->all();
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function withCookieParams(array $cookies): ServerRequestInterface
+    {
+        $this->cookies->add($cookies);
+
+        return $this;
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getQueryParams(): array
+    {
+        return $this->queries->all();
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function withQueryParams(array $query): ServerRequestInterface
+    {
+         $this->queries->add($query);
+
+         return $this;
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getUploadedFiles(): array
+    {
+        return $this->files->all();
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
+    {
+          $this->files->add($uploadedFiles);
+
+          return $this;
+    }
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getParsedBody(): array
+    {
+        return $this->parsedBody->all();
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function withParsedBody($data): ServerRequestInterface
+    {
+        $this->parsedBody->add($data);
+
+        return $this;
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getAttributes(): array
+    {
+         return $this->attributes->all();
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function getAttribute(string $name, $default = null)
+    {
+        return $this->attributes->get($name, $default);
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function withAttribute(string $name, $value): ServerRequestInterface
+    {
+        $this->attributes->set($name, $value);
+
+        return $this;
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function withoutAttribute(string $name): ServerRequestInterface
+    {
+         $this->attributes->remove($name);
+
+         return $this;
+    }
+
+
+
+
+    private function initializeParams(): void
+    {
+        $this->server     = new ServerParams();
+        $this->cookies    = new CookieParams();
+        $this->parsedBody = new ParsedBody();
+        $this->queries    = new QueryParams();
+        $this->files      = new UploadedFiles();
+        $this->attributes = new Attributes();
+    }
+}
