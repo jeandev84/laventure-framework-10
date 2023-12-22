@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request;
-
 
 use Laventure\Component\Http\Message\Request\Utils\UrlInfo;
 use Psr\Http\Message\UriInterface;
@@ -18,7 +18,6 @@ use Psr\Http\Message\UriInterface;
  */
 class Uri implements UriInterface
 {
-
     /**
      * Get scheme
      *
@@ -138,7 +137,7 @@ class Uri implements UriInterface
     */
     public function getAuthority(): string
     {
-          return $this->authority;
+        return $this->authority;
     }
 
 
@@ -150,7 +149,7 @@ class Uri implements UriInterface
     */
     public function getUserInfo(): string
     {
-       return "$this->username:$this->password";
+        return "$this->username:$this->password";
     }
 
 
@@ -207,7 +206,7 @@ class Uri implements UriInterface
     */
     public function getFragment(): string
     {
-         return $this->fragment;
+        return $this->fragment;
     }
 
 
@@ -219,9 +218,9 @@ class Uri implements UriInterface
     */
     public function withScheme(string $scheme): UriInterface
     {
-          $this->scheme = $scheme;
+        $this->scheme = $scheme;
 
-          return $this;
+        return $this;
     }
 
 
@@ -232,10 +231,10 @@ class Uri implements UriInterface
     */
     public function withUserInfo(string $user, ?string $password = null): UriInterface
     {
-          $this->username = $user;
-          $this->password = $password;
+        $this->username = $user;
+        $this->password = $password;
 
-          return $this;
+        return $this;
     }
 
 
@@ -247,9 +246,9 @@ class Uri implements UriInterface
     */
     public function withHost(string $host): UriInterface
     {
-         $this->host = $host;
+        $this->host = $host;
 
-         return $this;
+        return $this;
     }
 
 
@@ -273,9 +272,9 @@ class Uri implements UriInterface
     */
     public function withPath(string $path): UriInterface
     {
-          $this->path = $path;
+        $this->path = $path;
 
-          return $this;
+        return $this;
     }
 
 
@@ -300,9 +299,9 @@ class Uri implements UriInterface
     */
     public function withFragment(string $fragment): UriInterface
     {
-         $this->fragment = $fragment;
+        $this->fragment = $fragment;
 
-         return $this;
+        return $this;
     }
 
 
@@ -313,10 +312,10 @@ class Uri implements UriInterface
     */
     public function __toString(): string
     {
-         $qs       = $this->query ? "?$this->query" : '';
-         $fragment = $this->fragment ? "#$this->fragment" : '';
+        $qs       = $this->query ? "?$this->query" : '';
+        $fragment = $this->fragment ? "#$this->fragment" : '';
 
-         return sprintf('%s%s%s', $this->path, $qs, $fragment);
+        return sprintf('%s%s%s', $this->path, $qs, $fragment);
     }
 
 
@@ -330,14 +329,14 @@ class Uri implements UriInterface
     */
     private function parsePath(string $path): void
     {
-          $info = new UrlInfo($path);
+        $info = new UrlInfo($path);
 
-          $this->withScheme($info->getScheme())
-               ->withUserInfo($info->getUsername(), $info->getPassword())
-               ->withHost($info->getHost())
-               ->withPort($info->getPort())
-               ->withPath($info->getPath())
-               ->withQuery($info->getQuery())
-               ->withFragment($info->getFragment());
+        $this->withScheme($info->getScheme())
+             ->withUserInfo($info->getUsername(), $info->getPassword())
+             ->withHost($info->getHost())
+             ->withPort($info->getPort())
+             ->withPath($info->getPath())
+             ->withQuery($info->getQuery())
+             ->withFragment($info->getFragment());
     }
 }

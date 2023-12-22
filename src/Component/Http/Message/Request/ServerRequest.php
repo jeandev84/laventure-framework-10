@@ -42,7 +42,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * @var string
     */
-    protected string $requestTarget;
+    protected string $url;
 
 
 
@@ -108,11 +108,10 @@ class ServerRequest implements ServerRequestInterface
     */
     public function __construct(string $method, string $url, array $headers = [])
     {
-        $this->withMethod($method);
-        $this->withRequestTarget($url);
-        $this->withUri(new Uri($url));
-        $this->withBody(new RequestBody());
-
+        $this->method     = $method;
+        $this->url        = $url;
+        $this->uri        = new Uri($url);
+        $this->body       = new RequestBody();
         $this->headers    = new RequestHeaders($headers);
         $this->server     = new ServerParams();
         $this->cookies    = new CookieParams();
@@ -132,7 +131,7 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getRequestTarget(): string
     {
-        return $this->requestTarget;
+        return $this->url;
     }
 
 
@@ -143,9 +142,9 @@ class ServerRequest implements ServerRequestInterface
     */
     public function withRequestTarget(string $requestTarget): RequestInterface
     {
-         $this->requestTarget = $requestTarget;
+        $this->url = $requestTarget;
 
-         return $this;
+        return $this;
     }
 
 
@@ -193,9 +192,9 @@ class ServerRequest implements ServerRequestInterface
      */
     public function withUri(UriInterface $uri, bool $preserveHost = false): RequestInterface
     {
-         $this->uri = $uri;
+        $this->uri = $uri;
 
-         return $this;
+        return $this;
     }
 
 
@@ -255,9 +254,9 @@ class ServerRequest implements ServerRequestInterface
     */
     public function withQueryParams(array $query): ServerRequestInterface
     {
-         $this->queries->add($query);
+        $this->queries->add($query);
 
-         return $this;
+        return $this;
     }
 
 
@@ -280,9 +279,9 @@ class ServerRequest implements ServerRequestInterface
     */
     public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
     {
-          $this->files->add($uploadedFiles);
+        $this->files->add($uploadedFiles);
 
-          return $this;
+        return $this;
     }
 
 
@@ -292,6 +291,9 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getParsedBody(): array
     {
+        // get data from $_POST if empty, we will get parsed body from Stream
+        // via parsing content body
+
         return $this->parsedBody->all();
     }
 
@@ -316,7 +318,7 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getAttributes(): array
     {
-         return $this->attributes->all();
+        return $this->attributes->all();
     }
 
 
@@ -351,8 +353,8 @@ class ServerRequest implements ServerRequestInterface
     */
     public function withoutAttribute(string $name): ServerRequestInterface
     {
-         $this->attributes->remove($name);
+        $this->attributes->remove($name);
 
-         return $this;
+        return $this;
     }
 }

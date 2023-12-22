@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Params;
-
 
 use Laventure\Component\Http\Parameter\Parameter;
 
@@ -17,5 +17,4 @@ use Laventure\Component\Http\Parameter\Parameter;
 */
 class Attributes extends Parameter
 {
-
 }

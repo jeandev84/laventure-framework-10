@@ -1,11 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Response\Body;
 
-
 use Laventure\Component\Http\Message\Stream\Stream;
-
 
 /**
  * ResponseBody
@@ -18,5 +17,4 @@ use Laventure\Component\Http\Message\Stream\Stream;
  */
 class ResponseBody extends Stream
 {
-
 }

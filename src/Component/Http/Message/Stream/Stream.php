@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Stream;
-
 
 use Psr\Http\Message\StreamInterface;
 
@@ -17,7 +17,6 @@ use Psr\Http\Message\StreamInterface;
  */
 class Stream implements StreamInterface
 {
-
     /**
      * @inheritDoc
      */

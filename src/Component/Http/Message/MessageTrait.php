@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message;
-
 
 use Laventure\Component\Http\Parameter\Contract\ParameterInterface;
 use Psr\Http\Message\MessageInterface;

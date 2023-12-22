@@ -1,11 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Params;
 
-
 use Laventure\Component\Http\Parameter\Parameter;
-
 
 /**
  * ServerParams
@@ -18,5 +17,4 @@ use Laventure\Component\Http\Parameter\Parameter;
  */
 class ServerParams extends Parameter
 {
-
 }

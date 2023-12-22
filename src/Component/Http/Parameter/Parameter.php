@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Parameter;
-
 
 use Laventure\Component\Http\Parameter\Contract\ParameterInterface;
 
@@ -17,8 +17,6 @@ use Laventure\Component\Http\Parameter\Contract\ParameterInterface;
 */
 class Parameter implements ParameterInterface
 {
-
-
     /**
      * @var array
     */
@@ -80,7 +78,7 @@ class Parameter implements ParameterInterface
     */
     public function get($id, $default = null): mixed
     {
-         return $this->params[$id] ?? $default;
+        return $this->params[$id] ?? $default;
     }
 
 

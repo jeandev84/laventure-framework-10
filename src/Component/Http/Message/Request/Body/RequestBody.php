@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Body;
-
 
 use Laventure\Component\Http\Message\Stream\Stream;
 
@@ -17,5 +17,4 @@ use Laventure\Component\Http\Message\Stream\Stream;
 */
 class RequestBody extends Stream
 {
-
 }

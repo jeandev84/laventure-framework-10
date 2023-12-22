@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Utils;
-
 
 /**
  * UrlInfo
@@ -15,7 +15,6 @@ namespace Laventure\Component\Http\Message\Request\Utils;
 */
 class UrlInfo implements UrlInfoInterface
 {
-
     public function __construct(protected string $targetPath)
     {
     }
