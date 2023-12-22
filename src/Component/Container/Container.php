@@ -300,6 +300,9 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
 
+
+
+
     /**
      * @param string $id
      *
@@ -355,20 +358,20 @@ class Container implements ContainerInterface, \ArrayAccess
     {
         $id = $this->getAlias($id);
 
+        if ($this->resolved($id)) {
+            return $this->resolved[$id];
+        }
+
         if ($this->has($id)) {
 
             $concrete = $this->bindings[$id];
-            $value    = $this->getConcreteValue($concrete);
+            $value    = $this->resolveConcrete($concrete);
 
             if ($concrete instanceof SharedConcrete) {
                 return $this->share($id, $value);
             }
 
             return $value;
-        }
-
-        if ($this->resolved($id)) {
-            return $this->resolved[$id];
         }
 
         return $this->resolved[$id] = $this->resolve($id);
@@ -423,7 +426,6 @@ class Container implements ContainerInterface, \ArrayAccess
         if ($this->hasInstance($id)) {
             return $this->instances[$id];
         }
-
 
         // 1. Inspect the class that we are trying to get from the container
         $reflection = new ReflectionClass($id);
@@ -697,16 +699,17 @@ class Container implements ContainerInterface, \ArrayAccess
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
     */
-    private function getConcreteValue(BoundConcrete $concrete): mixed
+    private function resolveConcrete(BoundConcrete $concrete): mixed
     {
         $value = $concrete->getValue();
+        $id    = $concrete->getId();
+
+        if ($concrete->resolvable()) {
+            return $this->resolved[$id] = $this->resolve($value);
+        }
 
         if ($concrete->callable()) {
             $value = $this->callAnonymous($value);
-        }
-
-        if ($concrete->resolvable()) {
-            $value = $this->resolve($value);
         }
 
         return $value;
