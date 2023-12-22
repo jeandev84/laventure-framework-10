@@ -261,28 +261,6 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
 
-
-    /**
-     * @param string $id
-     *
-     * @param array $with
-     *
-     * @return mixed
-     * @throws ContainerException
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-    */
-    public function make(string $id, array $with = []): mixed
-    {
-        return $this->resolve($id, $with);
-    }
-
-
-
-
-
     /**
      * @param string $id
      *
@@ -358,10 +336,6 @@ class Container implements ContainerInterface, \ArrayAccess
     {
         $id = $this->getAlias($id);
 
-        if ($this->resolved($id)) {
-            return $this->resolved[$id];
-        }
-
         if ($this->has($id)) {
 
             $concrete = $this->bindings[$id];
@@ -374,7 +348,7 @@ class Container implements ContainerInterface, \ArrayAccess
             return $value;
         }
 
-        return $this->resolved[$id] = $this->resolve($id);
+        return $this->resolve($id);
     }
 
 
@@ -423,10 +397,37 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function resolve(string $id, array $with = []): mixed
     {
-        if ($this->hasInstance($id)) {
-            return $this->instances[$id];
+        if ($this->resolved($id)) {
+            return $this->resolved[$id];
         }
 
+        if ($this->hasInstance($id)) {
+            $instance = $this->instances[$id];
+        } else {
+            $instance = $this->make($id, $with);
+        }
+
+        return $this->resolved[$id] = $instance;
+    }
+
+
+
+
+
+    /**
+     * @param string $id
+     *
+     * @param array $with
+     *
+     * @return mixed
+     * @throws ContainerException
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+    */
+    public function make(string $id, array $with = []): mixed
+    {
         // 1. Inspect the class that we are trying to get from the container
         $reflection = new ReflectionClass($id);
 
@@ -450,6 +451,7 @@ class Container implements ContainerInterface, \ArrayAccess
 
         return $reflection->newInstanceArgs($dependencies);
     }
+
 
 
 
@@ -702,10 +704,9 @@ class Container implements ContainerInterface, \ArrayAccess
     private function resolveConcrete(BoundConcrete $concrete): mixed
     {
         $value = $concrete->getValue();
-        $id    = $concrete->getId();
 
         if ($concrete->resolvable()) {
-            return $this->resolved[$id] = $this->resolve($value);
+            return $this->resolve($value);
         }
 
         if ($concrete->callable()) {
