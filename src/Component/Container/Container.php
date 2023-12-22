@@ -418,7 +418,6 @@ class Container implements ContainerInterface, \ArrayAccess
             return $id;
         }
 
-
         // 1. Inspect the class that we are trying to get from the container
         $reflection = new ReflectionClass($id);
 
@@ -440,7 +439,7 @@ class Container implements ContainerInterface, \ArrayAccess
 
         $dependencies = $this->resolveDependencies($constructor, $with);
 
-        return $reflection->newInstanceArgs($dependencies);
+        return $this->resolved[$id] = $reflection->newInstanceArgs($dependencies);
     }
 
 
@@ -479,14 +478,19 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function call(string $class, string $method, array $with = []): mixed
     {
-        $object = $this->get($class);
-
+        $object = $this->make($class);
         $method = new ReflectionMethod($class, $method);
+
+        if ($object instanceof ContainerAwareInterface) {
+            $object->setContainer($this);
+        }
 
         $with = $this->resolveDependencies($method, $with);
 
         return call_user_func_array([$object, $method->name], $with);
     }
+
+
 
 
     /**
@@ -507,6 +511,8 @@ class Container implements ContainerInterface, \ArrayAccess
 
         }, $func->getParameters());
     }
+
+
 
 
     /**
