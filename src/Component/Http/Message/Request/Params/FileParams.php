@@ -16,7 +16,7 @@ use Laventure\Component\Http\Parameter\Parameter;
  *
  * @package  Laventure\Component\Http\Message\Request\Params
  */
-class UploadedFiles extends Parameter
+class FileParams extends Parameter
 {
 
 }

@@ -12,7 +12,7 @@ use Laventure\Component\Http\Message\Request\Params\ParsedBody;
 use Laventure\Component\Http\Message\Request\Params\QueryParams;
 use Laventure\Component\Http\Message\Request\Params\RequestHeaders;
 use Laventure\Component\Http\Message\Request\Params\ServerParams;
-use Laventure\Component\Http\Message\Request\Params\UploadedFiles;
+use Laventure\Component\Http\Message\Request\Params\FileParams;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -84,9 +84,9 @@ class ServerRequest implements ServerRequestInterface
 
 
     /**
-     * @var UploadedFiles
+     * @var FileParams
     */
-    public UploadedFiles $files;
+    public FileParams $files;
 
 
 
@@ -118,7 +118,7 @@ class ServerRequest implements ServerRequestInterface
         $this->cookies    = new CookieParams();
         $this->parsedBody = new ParsedBody();
         $this->queries    = new QueryParams();
-        $this->files      = new UploadedFiles();
+        $this->files      = new FileParams();
         $this->attributes = new Attributes();
     }
 
@@ -354,13 +354,5 @@ class ServerRequest implements ServerRequestInterface
          $this->attributes->remove($name);
 
          return $this;
-    }
-
-
-
-
-    private function initializeParams(): void
-    {
-
     }
 }
