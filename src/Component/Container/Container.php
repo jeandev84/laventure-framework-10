@@ -301,22 +301,6 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
 
-    /**
-     * @param string $provider
-     * @return ServiceProvider
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-    */
-    public function makeProvider(string $provider): ServiceProvider
-    {
-        return $this->make($provider);
-    }
-
-
-
-
-
 
     /**
      * @param string $provider
@@ -362,6 +346,57 @@ class Container implements ContainerInterface, \ArrayAccess
         return $this;
     }
 
+
+
+
+
+    /**
+     * @param string $facade
+     * @return bool
+    */
+    public function hasFacade(string $facade): bool
+    {
+         return isset($this->facades[$facade]);
+    }
+
+
+
+
+    /**
+     * @param string $facade
+     * @return $this
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+    */
+    public function addFacade(string $facade): static
+    {
+         if (! $this->hasFacade($facade)) {
+             $this->facades[$facade] = $this->makeFacade($facade);
+         }
+
+         return $this;
+    }
+
+
+
+
+    /**
+     * @param array $facades
+     *
+     * @return $this
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+    */
+    public function addFacades(array $facades): static
+    {
+         foreach ($facades as $facade) {
+             $this->addFacade($facade);
+         }
+
+         return $this;
+    }
 
 
 
@@ -541,6 +576,37 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
 
+    /**
+     * @param string $provider
+     * @return ServiceProvider
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+    */
+    public function makeProvider(string $provider): ServiceProvider
+    {
+        return $this->make($provider);
+    }
+
+
+
+
+
+    /**
+     * @param string $facade
+     * @return Facade
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+    */
+    public function makeFacade(string $facade): Facade
+    {
+        return $this->make($facade);
+    }
+
+
+
+
 
 
     /**
@@ -586,10 +652,6 @@ class Container implements ContainerInterface, \ArrayAccess
 
         return call_user_func_array([$object, $method->name], $with);
     }
-
-
-
-
 
 
 
@@ -867,6 +929,9 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
+
+
+
     /**
      * @param string $service
      *
@@ -890,7 +955,7 @@ class Container implements ContainerInterface, \ArrayAccess
      *
      * @return void
     */
-    private function bootProvider(ServiceProvider $provider): void
+    protected function bootProvider(ServiceProvider $provider): void
     {
         if($provider instanceof BootableServiceProvider) {
             $provider->boot();
