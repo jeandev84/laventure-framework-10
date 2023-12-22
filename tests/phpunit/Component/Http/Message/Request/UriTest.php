@@ -25,8 +25,8 @@ class UriTest extends TestCase
           $this->assertSame(':', $uri->getUserInfo());
           $this->assertSame(8000, $uri->getPort());
           $this->assertSame('/users/profile', $uri->getPath());
-          $this->assertSame('?username=john&active=1', $uri->getQuery());
-          $this->assertSame('#anchor1', $uri->getFragment());
+          $this->assertSame('username=john&active=1', $uri->getQuery());
+          $this->assertSame('anchor1', $uri->getFragment());
           $this->assertSame('/users/profile?username=john&active=1#anchor1', (string)$uri);
       }
 }

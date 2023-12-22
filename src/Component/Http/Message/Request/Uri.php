@@ -196,7 +196,7 @@ class Uri implements UriInterface
      */
     public function getQuery(): string
     {
-        return $this->query ? "?$this->query" : '';
+        return $this->query;
     }
 
 
@@ -207,7 +207,7 @@ class Uri implements UriInterface
     */
     public function getFragment(): string
     {
-         return $this->fragment ? "#$this->fragment" : '';
+         return $this->fragment;
     }
 
 
@@ -313,12 +313,12 @@ class Uri implements UriInterface
     */
     public function __toString(): string
     {
-         return sprintf('%s%s%s',
-             $this->getPath(),
-             $this->getQuery(),
-             $this->getFragment()
-         );
+         $qs       = $this->query ? "?$this->query" : '';
+         $fragment = $this->fragment ? "#$this->fragment" : '';
+
+         return sprintf('%s%s%s', $this->path, $qs, $fragment);
     }
+
 
 
 

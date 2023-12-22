@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Message\Request;
 
 use Laventure\Component\Http\Message\MessageTrait;
+use Laventure\Component\Http\Message\Request\Body\RequestBody;
 use Laventure\Component\Http\Message\Request\Params\Attributes;
 use Laventure\Component\Http\Message\Request\Params\CookieParams;
 use Laventure\Component\Http\Message\Request\Params\ParsedBody;
 use Laventure\Component\Http\Message\Request\Params\QueryParams;
+use Laventure\Component\Http\Message\Request\Params\RequestHeaders;
 use Laventure\Component\Http\Message\Request\Params\ServerParams;
 use Laventure\Component\Http\Message\Request\Params\UploadedFiles;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -98,15 +101,25 @@ class ServerRequest implements ServerRequestInterface
 
     /**
      * @param string $method
+     *
      * @param string $url
+     *
+     * @param array $headers
     */
-    public function __construct(string $method, string $url)
+    public function __construct(string $method, string $url, array $headers = [])
     {
-        $this->withMethod($method)
-             ->withRequestTarget($url)
-             ->withUri(new Uri($url));
+        $this->withMethod($method);
+        $this->withRequestTarget($url);
+        $this->withUri(new Uri($url));
+        $this->withBody(new RequestBody());
 
-        $this->initializeParams();
+        $this->headers    = new RequestHeaders($headers);
+        $this->server     = new ServerParams();
+        $this->cookies    = new CookieParams();
+        $this->parsedBody = new ParsedBody();
+        $this->queries    = new QueryParams();
+        $this->files      = new UploadedFiles();
+        $this->attributes = new Attributes();
     }
 
 
@@ -348,11 +361,6 @@ class ServerRequest implements ServerRequestInterface
 
     private function initializeParams(): void
     {
-        $this->server     = new ServerParams();
-        $this->cookies    = new CookieParams();
-        $this->parsedBody = new ParsedBody();
-        $this->queries    = new QueryParams();
-        $this->files      = new UploadedFiles();
-        $this->attributes = new Attributes();
+
     }
 }
