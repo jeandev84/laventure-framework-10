@@ -163,6 +163,22 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
 
+    /**
+     * @param array $bindings
+     *
+     * @return $this
+    */
+    public function binds(array $bindings): static
+    {
+        foreach ($bindings as $id => $value) {
+            $this->bind($id, $value);
+        }
+
+        return $this;
+    }
+
+
+
 
     /**
      * @param string $id
@@ -242,6 +258,26 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
+
+
+
+    /**
+     * @param array $bindings
+     * @return $this
+    */
+    public function singletons(array $bindings): static
+    {
+        foreach ($bindings as $id => $value) {
+             $this->singleton($id, $value);
+        }
+
+        return $this;
+    }
+
+
+
+
+
     /**
      * @param string $id
      *
@@ -271,6 +307,7 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
 
+
     /**
      * @param string $id
      *
@@ -284,6 +321,25 @@ class Container implements ContainerInterface, \ArrayAccess
     {
         return $this->make($id);
     }
+
+
+    /**
+     * @param array $factories
+     * @return array
+     * @throws ContainerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+    */
+    public function factories(array $factories): array
+    {
+        return array_map(function (string $id) {
+            return $this->factory($id);
+        }, $factories);
+    }
+
+
+
 
 
 
@@ -356,7 +412,7 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function hasFacade(string $facade): bool
     {
-         return isset($this->facades[$facade]);
+        return isset($this->facades[$facade]);
     }
 
 
@@ -371,11 +427,11 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function addFacade(string $facade): static
     {
-         if (! $this->hasFacade($facade)) {
-             $this->facades[$facade] = $this->makeFacade($facade);
-         }
+        if (!$this->hasFacade($facade)) {
+            $this->facades[$facade] = $this->makeFacade($facade);
+        }
 
-         return $this;
+        return $this;
     }
 
 
@@ -391,11 +447,11 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function addFacades(array $facades): static
     {
-         foreach ($facades as $facade) {
-             $this->addFacade($facade);
-         }
+        foreach ($facades as $facade) {
+            $this->addFacade($facade);
+        }
 
-         return $this;
+        return $this;
     }
 
 
