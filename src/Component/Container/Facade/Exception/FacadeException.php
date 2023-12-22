@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Container\Concrete;
+namespace Laventure\Component\Container\Facade\Exception;
 
 /**
- * InstanceConcrete
+ * FacadeException
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Container\Concrete
+ * @package  Laventure\Component\Container\Facade\Exception
  */
-class InstanceConcrete extends SharedConcrete
+class FacadeException extends \Exception
 {
 }

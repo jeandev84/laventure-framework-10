@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace PHPUnitTest\App\Services;
 
+use Laventure\Component\Container\Container;
+
 /**
  * FooService
  *
@@ -15,4 +17,10 @@ namespace PHPUnitTest\App\Services;
 class FooService
 {
 
+    protected Container $container;
+
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
 }

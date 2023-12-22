@@ -8,6 +8,7 @@ use Laventure\Component\Container\Concrete\SharedConcrete;
 use Laventure\Component\Container\Container;
 use Laventure\Component\Routing\Route\Route;
 use Laventure\Component\Routing\Router;
+use Laventure\Component\Routing\RouterInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnitTest\App\Services\Auth\Auth;
 use PHPUnitTest\App\Services\FooService;
@@ -77,29 +78,17 @@ class ContainerTest extends TestCase
 
 
 
-    public function testResolvedId()
-    {
-        $container = Container::getInstance();
-
-        $container->singleton(Container::class, $container);
-
-        $container->bind('name', 'jean');
-
-        $container->singleton(Auth::class, function (Container $c) {
-            echo $c->get('name'). "\n";
-            return new Auth();
-        });
-
-        $container->get(Auth::class);
-        die;
-
-        $container->singleton(Router::class, function (Auth $auth) {
-
-            return new Router();
-        });
-
-
-        $this->assertInstanceOf(FooService::class, $container->get(FooService::class));
-        $this->assertInstanceOf(UserService::class, $container->get(UserService::class));
-    }
+//    public function testResolvedId()
+//    {
+//        $container = Container::getInstance();
+//        $container->bind('name', 'jean');
+//        $container->singleton(Container::class, $container);
+//        $container->singleton(RouterInterface::class, Router::class);
+//
+//        dd($container->get(RouterInterface::class));
+//
+//        $this->assertSame('jean', $container->get('name'));
+//        $this->assertSame($container, $container->get(Container::class));
+//        $this->assertInstanceOf(Router::class, $container->get(RouterInterface::class));
+//    }
 }

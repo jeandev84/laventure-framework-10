@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Laventure\Component\Container\Concrete;
 
 use Laventure\Component\Container\Concrete\Contract\ConcreteInterface;
-use Laventure\Component\Container\Resolver\Resolver;
-use Psr\Container\ContainerInterface;
 
 /**
- * BindValue
+ * BoundConcrete
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -21,14 +19,14 @@ class BoundConcrete implements ConcreteInterface
 {
     /**
      * @var string
-    */
+     */
     protected string $id;
 
 
 
     /**
      * @var mixed
-    */
+     */
     protected mixed $value;
 
 
@@ -36,7 +34,7 @@ class BoundConcrete implements ConcreteInterface
      * @param string $id
      *
      * @param mixed $value
-    */
+     */
     public function __construct(string $id, mixed $value)
     {
         $this->id       = $id;
@@ -47,7 +45,7 @@ class BoundConcrete implements ConcreteInterface
 
     /**
      * @inheritdoc
-    */
+     */
     public function getId(): string
     {
         return $this->id;
@@ -57,7 +55,7 @@ class BoundConcrete implements ConcreteInterface
 
     /**
      * @inheritdoc
-    */
+     */
     public function getValue(): mixed
     {
         return $this->value;
@@ -68,7 +66,7 @@ class BoundConcrete implements ConcreteInterface
 
     /**
      * @return bool
-    */
+     */
     public function callable(): bool
     {
         return is_callable($this->value);

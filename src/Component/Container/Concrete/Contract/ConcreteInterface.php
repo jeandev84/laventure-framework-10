@@ -12,7 +12,7 @@ namespace Laventure\Component\Container\Concrete\Contract;
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
  * @package  Laventure\Component\Container\Concrete\Contract
- */
+*/
 interface ConcreteInterface
 {
     /**
