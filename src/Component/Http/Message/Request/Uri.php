@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Message\Request;
 
 
+use Laventure\Component\Http\Message\Request\Utils\UrlInfo;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -309,8 +310,21 @@ class Uri implements UriInterface
 
 
 
-    private function parsePath(string $path)
+    /**
+     * @param string $path
+     *
+     * @return void
+    */
+    private function parsePath(string $path): void
     {
+          $info = new UrlInfo($path);
 
+          $this->withScheme($info->getScheme())
+               ->withUserInfo($info->getUsername(), $info->getPassword())
+               ->withHost($info->getHost())
+               ->withPort($info->getPort())
+               ->withPath($info->getPath())
+               ->withQuery($info->getQuery())
+               ->withFragment($info->getFragment());
     }
 }
