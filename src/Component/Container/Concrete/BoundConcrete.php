@@ -71,4 +71,15 @@ class BoundConcrete implements ConcreteInterface
     {
         return is_callable($this->value);
     }
+
+
+
+
+    /**
+     * @return bool
+    */
+    public function resolvable(): bool
+    {
+        return is_string($this->value) && class_exists($this->value);
+    }
 }

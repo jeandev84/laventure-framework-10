@@ -260,15 +260,17 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
 
-
-
-
     /**
      * @param string $id
      *
      * @param array $with
      *
      * @return mixed
+     * @throws ContainerException
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
     */
     public function make(string $id, array $with = []): mixed
     {
@@ -278,10 +280,15 @@ class Container implements ContainerInterface, \ArrayAccess
 
 
 
+
     /**
      * @param string $id
      *
      * @return mixed
+     * @throws ContainerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
     */
     public function factory(string $id): mixed
     {
@@ -414,10 +421,6 @@ class Container implements ContainerInterface, \ArrayAccess
     */
     public function resolve(string $id, array $with = []): mixed
     {
-        if (!class_exists($id)) {
-            return $id;
-        }
-
         // 1. Inspect the class that we are trying to get from the container
         $reflection = new ReflectionClass($id);
 
@@ -439,7 +442,7 @@ class Container implements ContainerInterface, \ArrayAccess
 
         $dependencies = $this->resolveDependencies($constructor, $with);
 
-        return $this->resolved[$id] = $reflection->newInstanceArgs($dependencies);
+        return $reflection->newInstanceArgs($dependencies);
     }
 
 
@@ -706,26 +709,13 @@ class Container implements ContainerInterface, \ArrayAccess
         $value = $concrete->getValue();
 
         if ($concrete->callable()) {
-            $value = $this->callAnonymous($value, [$this]);
+            $value = $this->callAnonymous($value);
         }
 
-        if (is_string($value) && class_exists($value)) {
+        if ($concrete->resolvable()) {
             $value = $this->resolve($value);
         }
 
         return $value;
-    }
-
-
-
-
-    /**
-     * @param $id
-     *
-     * @return bool
-    */
-    private function resolvable($id): bool
-    {
-        return (is_string($id) && class_exists($id));
     }
 }
