@@ -124,4 +124,28 @@ class ContainerTest extends TestCase
             $this->assertArrayHasKey($provider, $container->getProviders());
         }
     }
+
+
+
+    public function testCallFunctions()
+    {
+        $app = Container::getInstance();
+
+        $app->instance(ContainerInterface::class, $app);
+        $app['name'] = 'Laventure';
+        $app['path'] = __DIR__;
+
+        $func = $app->callAnonymous(function (ContainerInterface $c) {
+            return $c->get('name') .'-Framework';
+        });
+
+
+        $action = $app->call(\PHPUnitTest\App\Controllers\HomeController::class, 'index', [
+            'id' => 1,
+            'slug' => 'new-favorite'
+        ]);
+
+        $this->assertSame("Laventure-Framework", $func);
+        $this->assertSame("Laventure-(new-favorite-1|1-new-favorite)", $action);
+    }
 }

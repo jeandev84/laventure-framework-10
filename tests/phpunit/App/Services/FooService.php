@@ -22,7 +22,7 @@ class FooService
     protected string $path;
 
 
-    public function __construct(Container $container,  string $path)
+    public function __construct(Container $container,  string $path = '')
     {
         $this->container = $container;
         $this->path      = $path;
