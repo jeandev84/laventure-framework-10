@@ -199,9 +199,12 @@ class Stream implements StreamInterface
     */
     public function isWritable(): bool
     {
-        # ['w', 'w+', 'a', 'a+', 'c', 'c+'
+        # ['w', 'w+', 'a', 'a+', 'c', 'c+']
         return $this->matchAccessModes(['x', 'w', 'c', 'a', '+']);
     }
+
+
+
 
 
 
@@ -211,9 +214,9 @@ class Stream implements StreamInterface
     */
     public function write(string $string): int
     {
-        fwrite($this->stream, $string);
-
-        return 1;
+        $id = fwrite($this->stream, $string);
+        $this->close();
+        return $id;
     }
 
 
@@ -234,6 +237,8 @@ class Stream implements StreamInterface
 
 
 
+
+
     /**
      * @inheritDoc
     */
@@ -241,6 +246,7 @@ class Stream implements StreamInterface
     {
         return (string)fgets($this->stream, $length);
     }
+
 
 
 
