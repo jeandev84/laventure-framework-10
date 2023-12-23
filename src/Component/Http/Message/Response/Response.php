@@ -41,20 +41,18 @@ class Response implements ResponseInterface
      protected string $reasonPhrase = '';
 
 
-
-
-
      /**
       * @param int $status
       *
       * @param array $headers
+      *
+      * @param StreamInterface|null $body
      */
-     public function __construct(int $status = 200, array $headers = [])
+     public function __construct(int $status = 200, array $headers = [], StreamInterface $body = null)
      {
-          $this->withBody(new ResponseBody())
-               ->withStatus($status);
-
+          $this->status  = $status;
           $this->headers = new ResponseHeaders($headers);
+          $this->body    = ($body ?: new ResponseBody());
      }
 
 
@@ -101,7 +99,7 @@ class Response implements ResponseInterface
 
      public function send(): void
      {
-
+          http_response_code($this->status);
      }
 
 
