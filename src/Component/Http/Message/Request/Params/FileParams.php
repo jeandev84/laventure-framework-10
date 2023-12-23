@@ -35,7 +35,7 @@ class FileParams extends Parameter
     public function add(array $params): static
     {
          foreach ($params as $id => $uploadedFiles) {
-             $this->addUploadedFile($id, (array)$uploadedFiles);
+             $this->addFiles($id, (array)$uploadedFiles);
          }
 
          return $this;
@@ -64,7 +64,7 @@ class FileParams extends Parameter
      *
      * @return void
      */
-    private function addUploadedFile($id, array $uploadedFiles): void
+    private function addFiles($id, array $uploadedFiles): void
     {
         foreach ($uploadedFiles as $uploadedFile) {
             if (is_array($uploadedFile)) {
