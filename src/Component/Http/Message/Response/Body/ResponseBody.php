@@ -18,7 +18,6 @@ use Laventure\Component\Http\Message\Stream\Stream;
  */
 class ResponseBody extends Stream
 {
-
     /**
      * @var string|null
     */
@@ -41,13 +40,13 @@ class ResponseBody extends Stream
      * @param string $string
      * @return int
     */
-   public function write(string $string): int
-   {
-       ob_start();
-       parent::write($string);
-       $this->content = ob_get_clean();
-       return 1;
-   }
+    public function write(string $string): int
+    {
+        ob_start();
+        parent::write($string);
+        $this->content = ob_get_clean();
+        return 1;
+    }
 
 
 

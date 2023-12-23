@@ -74,6 +74,18 @@ class Parameter implements ParameterInterface
 
 
     /**
+     * @return bool
+    */
+    public function empty(): bool
+    {
+        return empty($this->params);
+    }
+
+
+
+
+
+    /**
      * @inheritDoc
     */
     public function get($id, $default = null): mixed

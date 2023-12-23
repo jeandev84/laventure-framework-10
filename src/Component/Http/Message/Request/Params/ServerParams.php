@@ -114,6 +114,19 @@ class ServerParams extends Parameter
 
 
 
+    /**
+     * @param string $method
+     *
+     * @return void
+    */
+    public function setMethod(string $method): void
+    {
+        $this->set('REQUEST_METHOD', strtoupper($method));
+    }
+
+
+
+
 
 
     /**

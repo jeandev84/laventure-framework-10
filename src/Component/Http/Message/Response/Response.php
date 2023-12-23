@@ -65,9 +65,9 @@ class Response implements ResponseInterface
     */
     public function setContent(string $content): static
     {
-         $this->body->write($content);
+        $this->body->write($content);
 
-         return $this;
+        return $this;
     }
 
 

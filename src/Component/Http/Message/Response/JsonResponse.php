@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Response;
 
+use Laventure\Component\Http\Message\Response\Encoder\JsonEncoder;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -44,26 +45,6 @@ class JsonResponse extends Response
     public function __construct(array|object $data, int $status = 200, array $headers = [])
     {
         parent::__construct($status, array_merge($this->defaultHeaders, $headers));
-        $this->setContent($this->encode($data));
-    }
-
-
-
-
-
-    /**
-     * @param array|object $data
-     *
-     * @return false|string
-    */
-    private function encode(array|object $data): bool|string
-    {
-        $content = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
-
-        if (json_last_error()) {
-            trigger_error(json_last_error_msg());
-        }
-
-        return $content;
+        $this->setContent(JsonEncoder::encode($data));
     }
 }

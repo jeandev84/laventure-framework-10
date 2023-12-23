@@ -22,7 +22,7 @@ class RequestBody extends Stream
      * @param string $resource
      * @param string $accessMode
      * @throws StreamException
-     */
+    */
     public function __construct(string $resource = '', string $accessMode = 'r+')
     {
         parent::__construct($resource ?: 'php://input', $accessMode);

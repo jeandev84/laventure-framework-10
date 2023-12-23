@@ -111,13 +111,13 @@ class ServerRequest implements ServerRequestInterface
     public function __construct(string $method, string $url, array $serverParams = [])
     {
         $this->method     = $method;
-        $this->target        = $url;
+        $this->target     = $url;
         $this->uri        = new Uri($url);
         $this->body       = new RequestBody();
         $this->headers    = new RequestHeaders();
         $this->server     = new ServerParams($serverParams);
         $this->cookies    = new CookieParams();
-        $this->request = new ParsedBody();
+        $this->request    = new ParsedBody();
         $this->queries    = new QueryParams();
         $this->files      = new FileParams();
         $this->attributes = new RequestAttributes();
@@ -157,8 +157,9 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getMethod(): string
     {
-        return $this->method;
+        return $this->server->requestMethod();
     }
+
 
 
 
@@ -172,8 +173,11 @@ class ServerRequest implements ServerRequestInterface
     {
         $this->method = $method;
 
+        $this->server->setMethod($method);
+
         return $this;
     }
+
 
 
 
@@ -299,10 +303,8 @@ class ServerRequest implements ServerRequestInterface
     public function getParsedBody(): array
     {
         if ($this->isMethod('POST')) {
-            return $this->request->all();
+             return $this->request->all();
         }
-
-        //TODO add some logic for override methods PUT, PATCH, DELETE ...
 
         parse_str($this->getContent(), $data);
         return $data;
@@ -348,6 +350,8 @@ class ServerRequest implements ServerRequestInterface
 
         return $this;
     }
+
+
 
 
 
