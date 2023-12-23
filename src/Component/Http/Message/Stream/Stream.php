@@ -246,6 +246,37 @@ class Stream implements StreamInterface
 
 
     /**
+     * @param int $length
+     *
+     * @return $this
+     */
+    public function length(int $length): static
+    {
+        $this->length = $length;
+
+        return $this;
+    }
+
+
+
+
+
+    /**
+     * @param int $offset
+     *
+     * @return $this
+    */
+    public function offset(int $offset): static
+    {
+        $this->offset = $offset;
+
+        return $this;
+    }
+
+
+
+
+    /**
      * @inheritDoc
     */
     public function getContents(): string

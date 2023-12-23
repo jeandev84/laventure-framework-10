@@ -409,7 +409,7 @@ class ServerRequest implements ServerRequestInterface
     public static function fromGlobals(): static
     {
          $server  = new ServerParams($_SERVER);
-         $request = new static($server->requestMethod(), $server->url(), $server->all());
+         $request = new self($server->requestMethod(), $server->url(), $server->all());
 
          return $request->withQueryParams($_GET)
                         ->withParsedBody($_POST)

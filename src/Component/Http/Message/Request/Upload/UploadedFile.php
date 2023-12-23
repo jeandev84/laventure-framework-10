@@ -112,7 +112,7 @@ class UploadedFile implements UploadedFileInterface
     */
     public function getStream(): StreamInterface
     {
-        return new Stream();
+        return new Stream('php://temp');
     }
 
 
