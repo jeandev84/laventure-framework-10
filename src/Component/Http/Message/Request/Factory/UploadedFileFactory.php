@@ -36,4 +36,23 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
         $uploadedFile->withStream($stream);
         return $uploadedFile;
     }
+
+
+
+    /**
+     * @param array $file
+     *
+     * @return UploadedFileInterface
+    */
+    public static function createFromArray(array $file): UploadedFileInterface
+    {
+        return new UploadedFile(
+            $file['name'],
+            $file['full_path'],
+            $file['type'],
+            $file['tmp_name'],
+            $file['error'],
+            $file['size']
+        );
+    }
 }

@@ -25,7 +25,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @var string
     */
-    protected string $clientFilename;
+    protected string $name;
 
 
 
@@ -43,7 +43,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @var string
     */
-    protected string $clientMediaType;
+    protected string $type;
 
 
 
@@ -107,9 +107,9 @@ class UploadedFile implements UploadedFileInterface
         ?int $size
     )
     {
-        $this->clientFilename = $name;
+        $this->name = $name;
         $this->path = $path;
-        $this->clientMediaType = $type;
+        $this->type = $type;
         $this->temp = $temp;
         $this->error = $error;
         $this->size = $size;
@@ -151,7 +151,7 @@ class UploadedFile implements UploadedFileInterface
     */
     public function isOk(): bool
     {
-        return is_uploaded_file($this->clientFilename);
+        return is_uploaded_file($this->name);
     }
 
 
@@ -206,7 +206,7 @@ class UploadedFile implements UploadedFileInterface
     */
     public function getClientFilename(): ?string
     {
-        return $this->clientFilename;
+        return $this->name;
     }
 
 
@@ -218,6 +218,6 @@ class UploadedFile implements UploadedFileInterface
     */
     public function getClientMediaType(): ?string
     {
-        return $this->clientMediaType;
+        return $this->type;
     }
 }

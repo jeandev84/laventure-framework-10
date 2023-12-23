@@ -13,6 +13,7 @@ use Laventure\Component\Http\Message\Request\Params\QueryParams;
 use Laventure\Component\Http\Message\Request\Params\RequestHeaders;
 use Laventure\Component\Http\Message\Request\Params\ServerParams;
 use Laventure\Component\Http\Message\Request\Params\FileParams;
+use Laventure\Component\Http\Message\Request\Upload\UploadedFileTransformer;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -413,13 +414,14 @@ class ServerRequest implements ServerRequestInterface
     public static function fromGlobals(): static
     {
         $server  = new ServerParams($_SERVER);
-        $request = new self($server->requestMethod(), $server->url(), $server->all());
+        $files   = UploadedFileTransformer::transformFromGlobals($_FILES);
 
-        return $request->withQueryParams($_GET)
-                       ->withParsedBody($_POST)
-                       ->withProtocolVersion($server->protocolVersion())
-                       ->withCookieParams($_COOKIE)
-                       ->withUploadedFiles($_FILES);
+        return (new self($server->requestMethod(), $server->url(), $server->all()))
+               ->withQueryParams($_GET)
+               ->withParsedBody($_POST)
+               ->withProtocolVersion($server->protocolVersion())
+               ->withCookieParams($_COOKIE)
+               ->withUploadedFiles($files);
     }
 
 }
