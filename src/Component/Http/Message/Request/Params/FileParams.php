@@ -22,18 +22,25 @@ class FileParams extends Parameter
 
 
 
+      public function __construct(array $params = [])
+      {
+          parent::__construct($params);
+      }
+
+
+
       /**
-       * @param array $params
+       * @param array $files
        *
        * @return $this
      */
      public function add(array $params): static
      {
-         $params = $this->transformInformationFiles($params);
+         $files = $this->transformInfoFiles($params);
 
-         foreach ($params as $id => $files) {
-              foreach ($files as $file) {
-                   $this->params[$id][] = $this->createUploadedFileFromArray($file);
+         foreach ($files as $id => $fileArray) {
+              foreach ($fileArray as $file) {
+                   $this->params[$id][] = $this->makeUploadedFile($file);
               }
          }
 
@@ -43,11 +50,12 @@ class FileParams extends Parameter
 
 
 
+
      /**
       * @param array $files
       * @return array
      */
-     public function transformInformationFiles(array $files): array
+     public function transformInfoFiles(array $files): array
      {
          $transformed = [];
 
@@ -101,7 +109,7 @@ class FileParams extends Parameter
      *
      * @return UploadedFile
     */
-    public function createUploadedFileFromArray(array $file): UploadedFile
+    public function makeUploadedFile(array $file): UploadedFile
     {
         return new UploadedFile(
             $file['name'],
