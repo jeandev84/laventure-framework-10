@@ -6,7 +6,7 @@ namespace Laventure\Component\Http\Message\Request\Params;
 
 use Laventure\Component\Http\Message\Request\Factory\UploadedFileFactory;
 use Laventure\Component\Http\Message\Request\Upload\UploadedFile;
-use Laventure\Component\Http\Parameter\Parameter;
+use Laventure\Component\Http\Utils\Parameter;
 use Psr\Http\Message\UploadedFileInterface;
 
 /**

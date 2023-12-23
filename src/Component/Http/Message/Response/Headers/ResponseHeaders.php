@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Response\Headers;
 
-use Laventure\Component\Http\Parameter\Parameter;
+use Laventure\Component\Http\Utils\Parameter;
 
 /**
  * ResponseHeaders

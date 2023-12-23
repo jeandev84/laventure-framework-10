@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Parameter;
+namespace Laventure\Component\Http\Utils;
 
-use Laventure\Component\Http\Parameter\Contract\ParameterInterface;
+use Laventure\Component\Http\Utils\Contract\ParameterInterface;
 
 /**
  * Parameter
@@ -13,7 +13,7 @@ use Laventure\Component\Http\Parameter\Contract\ParameterInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Parameter
+ * @package  Laventure\Component\Http\Utils
 */
 class Parameter implements ParameterInterface
 {

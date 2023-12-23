@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Parameter\Contract;
+namespace Laventure\Component\Http\Utils\Contract;
 
 /**
  * ParameterInterface

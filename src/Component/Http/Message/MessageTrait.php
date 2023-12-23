@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message;
 
-use Laventure\Component\Http\Parameter\Contract\ParameterInterface;
+use Laventure\Component\Http\Utils\Contract\ParameterInterface;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
