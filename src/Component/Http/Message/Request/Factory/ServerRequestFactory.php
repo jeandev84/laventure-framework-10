@@ -36,6 +36,6 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
     */
     public static function createFromGlobals(): ServerRequestInterface
     {
-          return ServerRequest::createFromGlobals();
+          return ServerRequest::fromGlobals();
     }
 }

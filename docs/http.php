@@ -6,7 +6,7 @@ use Laventure\Component\Http\Message\Request\Uri;
 require 'vendor/autoload.php';
 
 
-$request = ServerRequest::createFromGlobals();
+$request = ServerRequest::fromGlobals();
 $request->withAttribute('user', new \PHPUnitTest\App\Entity\User(1, 'john@doe.com'));
 
 dump($request);
