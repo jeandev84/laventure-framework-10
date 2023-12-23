@@ -11,7 +11,7 @@ namespace Laventure\Component\Http\Utils\Contract;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Parameter\Contract
+ * @package  Laventure\Component\Http\Utils\Contract
 */
 interface ParameterInterface
 {
