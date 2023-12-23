@@ -25,7 +25,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @var string
     */
-    protected string $name;
+    protected string $clientFilename;
 
 
 
@@ -43,7 +43,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @var string
     */
-    protected string $type;
+    protected string $clientMediaType;
 
 
 
@@ -78,25 +78,38 @@ class UploadedFile implements UploadedFileInterface
 
 
     /**
+     * @var StreamInterface|null
+    */
+    protected ?StreamInterface $stream = null;
+
+
+    /**
      * File constructor.
      *
      * @param string $name
      *
-     * @param string $path
+     * @param string|null $path
      *
      * @param string $type
      *
-     * @param string $temp
+     * @param string|null $temp
      *
-     * @param int $error
+     * @param int|null $error
      *
-     * @param int $size
-    */
-    public function __construct(string $name, string $path, string $type, string $temp, int $error, int $size)
+     * @param int|null $size
+     */
+    public function __construct(
+        string $name,
+        ?string $path,
+        string $type,
+        ?string $temp,
+        ?int $error,
+        ?int $size
+    )
     {
-        $this->name = $name;
+        $this->clientFilename = $name;
         $this->path = $path;
-        $this->type = $type;
+        $this->clientMediaType = $type;
         $this->temp = $temp;
         $this->error = $error;
         $this->size = $size;
@@ -106,11 +119,27 @@ class UploadedFile implements UploadedFileInterface
 
 
     /**
+     * @param StreamInterface $stream
+     *
+     * @return $this
+    */
+    public function withStream(StreamInterface $stream): static
+    {
+         $this->stream = $stream;
+
+         return $this;
+    }
+
+
+
+
+
+    /**
      * @inheritDoc
     */
     public function getStream(): StreamInterface
     {
-        return new Stream('php://temp');
+        return $this->stream ?: new Stream('php://temp');
     }
 
 
@@ -122,7 +151,7 @@ class UploadedFile implements UploadedFileInterface
     */
     public function isOk(): bool
     {
-        return is_uploaded_file($this->name);
+        return is_uploaded_file($this->clientFilename);
     }
 
 
@@ -177,7 +206,7 @@ class UploadedFile implements UploadedFileInterface
     */
     public function getClientFilename(): ?string
     {
-        return $this->name;
+        return $this->clientFilename;
     }
 
 
@@ -189,6 +218,6 @@ class UploadedFile implements UploadedFileInterface
     */
     public function getClientMediaType(): ?string
     {
-        return $this->type;
+        return $this->clientMediaType;
     }
 }
