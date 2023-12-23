@@ -1,12 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Message\Request\File;
+namespace Laventure\Component\Http\Message\Request\Upload;
 
 
+use Laventure\Component\Http\Message\Request\Upload\Exception\UploadedFileException;
 use Laventure\Component\Http\Message\Stream\Stream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+
+
 
 /**
  * UploadedFile
@@ -15,7 +18,7 @@ use Psr\Http\Message\UploadedFileInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Message\Request\File
+ * @package  Laventure\Component\Http\Message\Request\Upload
  */
 class UploadedFile implements UploadedFileInterface
 {
@@ -90,7 +93,7 @@ class UploadedFile implements UploadedFileInterface
      * @param int $error
      *
      * @param int $size
-   */
+    */
     public function __construct(string $name, string $path, string $type, string $temp, int $error, int $size)
     {
         $this->name = $name;
@@ -117,11 +120,32 @@ class UploadedFile implements UploadedFileInterface
 
 
     /**
+     * @return bool
+    */
+    public function isOk(): bool
+    {
+        return is_uploaded_file($this->name);
+    }
+
+
+
+
+    /**
      * @inheritDoc
     */
     public function moveTo(string $targetPath): void
     {
+          if($this->error !== UPLOAD_ERR_OK) {
+                throw new UploadedFileException('message', $this->error);
+          }
 
+          $dirname = dirname($targetPath);
+
+          if(! is_dir($dirname)) {
+             @mkdir($dirname, 0777, true);
+          }
+
+          move_uploaded_file($this->temp, $targetPath);
     }
 
 

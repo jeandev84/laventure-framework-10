@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Params;
 
-use Laventure\Component\Http\Message\Request\File\UploadedFile;
+use Laventure\Component\Http\Message\Request\Upload\UploadedFile;
 use Laventure\Component\Http\Parameter\Parameter;
 use Psr\Http\Message\UploadedFileInterface;
 

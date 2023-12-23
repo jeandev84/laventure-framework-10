@@ -16,6 +16,7 @@ use Laventure\Component\Http\Message\Request\Params\FileParams;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -265,6 +266,8 @@ class ServerRequest implements ServerRequestInterface
 
     /**
      * @inheritDoc
+     *
+     * @return UploadedFileInterface[]
     */
     public function getUploadedFiles(): array
     {
