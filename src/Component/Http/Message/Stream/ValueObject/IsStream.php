@@ -7,7 +7,7 @@ namespace Laventure\Component\Http\Message\Stream\ValueObject;
 use Laventure\Component\Http\Message\Stream\Exception\StreamException;
 
 /**
- * StreamResource
+ * IsStream
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -15,7 +15,7 @@ use Laventure\Component\Http\Message\Stream\Exception\StreamException;
  *
  * @package  Laventure\Component\Http\Message\Stream\ValueObject
  */
-class StreamResource
+class IsStream
 {
 
 

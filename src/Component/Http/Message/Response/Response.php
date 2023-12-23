@@ -8,7 +8,7 @@ use Laventure\Component\Http\Message\MessageTrait;
 use Laventure\Component\Http\Message\Request\Body\RequestBody;
 use Laventure\Component\Http\Message\Response\Body\ResponseBody;
 use Laventure\Component\Http\Message\Response\Headers\ResponseHeaders;
-use Laventure\Component\Http\Message\Stream\ValueObject\StreamResource;
+use Laventure\Component\Http\Message\Stream\ValueObject\IsStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -52,7 +52,7 @@ class Response implements ResponseInterface
      {
           $this->status  = $status;
           $this->headers = new ResponseHeaders($headers);
-          $this->body    = ($body ?: new ResponseBody());
+          $this->body    = $body ?: new ResponseBody();
      }
 
 
@@ -97,6 +97,10 @@ class Response implements ResponseInterface
 
 
 
+
+     /**
+      * @return void
+     */
      public function send(): void
      {
           http_response_code($this->status);
@@ -110,6 +114,6 @@ class Response implements ResponseInterface
      */
      public function __toString(): string
      {
-          return (string)$this->body;
+          return (string)$this->getBody();
      }
 }

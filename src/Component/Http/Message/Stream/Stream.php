@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Message\Stream;
 
 use Laventure\Component\Http\Message\Stream\Exception\StreamException;
-use Laventure\Component\Http\Message\Stream\ValueObject\StreamResource;
+use Laventure\Component\Http\Message\Stream\ValueObject\IsStream;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -85,18 +85,18 @@ class Stream implements StreamInterface
              $resource = fopen($resource, $accessMode);
          }
 
-         $this->openResource(new StreamResource($resource));
+         $this->openResource(new IsStream($resource));
     }
 
 
 
 
     /**
-     * @param StreamResource $stream
+     * @param IsStream $stream
      *
      * @return void
     */
-    public function openResource(StreamResource $stream): void
+    public function openResource(IsStream $stream): void
     {
          $this->stream = $stream->getValue();
     }
