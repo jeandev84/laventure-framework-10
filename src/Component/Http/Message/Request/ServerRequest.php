@@ -42,7 +42,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * @var string
     */
-    protected string $url;
+    protected string $target;
 
 
 
@@ -70,7 +70,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * @var ParsedBody
     */
-    public ParsedBody $parsedBody;
+    public ParsedBody $request;
 
 
 
@@ -110,13 +110,13 @@ class ServerRequest implements ServerRequestInterface
     public function __construct(string $method, string $url, array $serverParams = [])
     {
         $this->method     = $method;
-        $this->url        = $url;
+        $this->target        = $url;
         $this->uri        = new Uri($url);
         $this->body       = new RequestBody();
         $this->headers    = new RequestHeaders();
         $this->server     = new ServerParams($serverParams);
         $this->cookies    = new CookieParams();
-        $this->parsedBody = new ParsedBody();
+        $this->request = new ParsedBody();
         $this->queries    = new QueryParams();
         $this->files      = new FileParams();
         $this->attributes = new RequestAttributes();
@@ -132,7 +132,7 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getRequestTarget(): string
     {
-        return $this->url;
+        return $this->target;
     }
 
 
@@ -143,7 +143,7 @@ class ServerRequest implements ServerRequestInterface
     */
     public function withRequestTarget(string $requestTarget): RequestInterface
     {
-        $this->url = $requestTarget;
+        $this->target = $requestTarget;
 
         return $this;
     }
@@ -287,6 +287,9 @@ class ServerRequest implements ServerRequestInterface
 
 
 
+
+
+
     /**
      * @inheritDoc
     */
@@ -295,7 +298,7 @@ class ServerRequest implements ServerRequestInterface
         // get data from $_POST if empty, we will get parsed body from Stream
         // via parsing content body
 
-        return $this->parsedBody->all();
+        return $this->request->all();
     }
 
 
@@ -306,7 +309,7 @@ class ServerRequest implements ServerRequestInterface
     */
     public function withParsedBody($data): ServerRequestInterface
     {
-        $this->parsedBody->add($data);
+        $this->request->add($data);
 
         return $this;
     }
@@ -371,13 +374,14 @@ class ServerRequest implements ServerRequestInterface
     public static function createFromGlobals(): static
     {
          $server  = new ServerParams($_SERVER);
+
          $request = new static($server->requestMethod(), $server->url(), $server->all());
          return $request->withQueryParams($_GET)
                         ->withParsedBody($_POST)
                         ->withProtocolVersion($server->protocolVersion())
                         ->withCookieParams($_COOKIE)
                         ->withHeaders(getallheaders())
-                        ->withUploadedFiles([]);
+                        ->withUploadedFiles($_FILES);
     }
 
 }
