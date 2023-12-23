@@ -201,7 +201,7 @@ class Stream implements StreamInterface
     */
     public function isWritable(): bool
     {
-        # # ['w', 'w+', 'a', 'a+', 'c', 'c+'
+        # ['w', 'w+', 'a', 'a+', 'c', 'c+'
         return $this->matchAccessModes(['x', 'w', 'c', 'a', '+']);
     }
 
