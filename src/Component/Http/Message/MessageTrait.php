@@ -84,6 +84,24 @@ trait MessageTrait
 
 
 
+
+    /**
+     * @param array $headers
+     *
+     * @return $this
+    */
+    public function withHeaders(array $headers): static
+    {
+        $this->headers->add($headers);
+
+        return $this;
+    }
+
+
+
+
+
+
     /**
      * Retrieves all message header values.
      *

@@ -85,6 +85,109 @@ class Parameter implements ParameterInterface
 
 
 
+
+
+     /**
+      * @param string $id
+      *
+      * @return string
+     */
+     public function toUpper(string $id): string
+     {
+          return strtoupper($this->string($id));
+     }
+
+
+
+
+
+     /**
+      * @param string $id
+      *
+      * @return string
+     */
+     public function toLower(string $id): string
+     {
+         return strtolower($this->string($id));
+     }
+
+
+
+
+
+
+
+     /**
+      * @param $id
+      *
+      * @return string
+     */
+     public function string($id): string
+     {
+          return (string)$this->get($id, '');
+     }
+
+
+
+
+     /**
+      * @param $id
+      * @param $value
+      * @return bool
+     */
+     public function match($id, $value): bool
+     {
+          return $this->get($id) === $value;
+     }
+
+
+
+
+    /**
+     * @param $id
+     * @param int $default
+     * @return int
+    */
+    public function integer($id, int $default = 0): int
+    {
+        return (int)$this->get($id, $default);
+    }
+
+
+
+
+
+    /**
+     * @param $id
+     * @param int $default
+     * @return float
+    */
+    public function float($id, int $default = 0): float
+    {
+        return (float)$this->get($id, $default);
+    }
+
+
+
+
+    /**
+     * @param $id
+     * @param bool $default
+     * @return bool
+    */
+    public function boolean($id, bool $default = false): bool
+    {
+        return (bool)$this->get($id, $default);
+    }
+
+
+
+
+
+
+
+
+
     /**
      * @inheritDoc
     */

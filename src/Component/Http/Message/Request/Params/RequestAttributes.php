@@ -15,6 +15,6 @@ use Laventure\Component\Http\Parameter\Parameter;
  *
  * @package  Laventure\Component\Http\Message\Request\Params
 */
-class Attributes extends Parameter
+class RequestAttributes extends Parameter
 {
 }

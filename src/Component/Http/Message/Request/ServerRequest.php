@@ -6,7 +6,7 @@ namespace Laventure\Component\Http\Message\Request;
 
 use Laventure\Component\Http\Message\MessageTrait;
 use Laventure\Component\Http\Message\Request\Body\RequestBody;
-use Laventure\Component\Http\Message\Request\Params\Attributes;
+use Laventure\Component\Http\Message\Request\Params\RequestAttributes;
 use Laventure\Component\Http\Message\Request\Params\CookieParams;
 use Laventure\Component\Http\Message\Request\Params\ParsedBody;
 use Laventure\Component\Http\Message\Request\Params\QueryParams;
@@ -92,9 +92,10 @@ class ServerRequest implements ServerRequestInterface
 
 
     /**
-     * @var Attributes
+     * @var RequestAttributes
     */
-    public Attributes $attributes;
+    public RequestAttributes $attributes;
+
 
 
 
@@ -104,21 +105,21 @@ class ServerRequest implements ServerRequestInterface
      *
      * @param string $url
      *
-     * @param array $headers
+     * @param array $serverParams
     */
-    public function __construct(string $method, string $url, array $headers = [])
+    public function __construct(string $method, string $url, array $serverParams = [])
     {
         $this->method     = $method;
         $this->url        = $url;
         $this->uri        = new Uri($url);
         $this->body       = new RequestBody();
-        $this->headers    = new RequestHeaders($headers);
-        $this->server     = new ServerParams();
+        $this->headers    = new RequestHeaders();
+        $this->server     = new ServerParams($serverParams);
         $this->cookies    = new CookieParams();
         $this->parsedBody = new ParsedBody();
         $this->queries    = new QueryParams();
         $this->files      = new FileParams();
-        $this->attributes = new Attributes();
+        $this->attributes = new RequestAttributes();
     }
 
 
@@ -313,6 +314,7 @@ class ServerRequest implements ServerRequestInterface
 
 
 
+
     /**
      * @inheritDoc
     */
@@ -357,4 +359,25 @@ class ServerRequest implements ServerRequestInterface
 
         return $this;
     }
+
+
+
+
+
+
+    /**
+     * @return static
+    */
+    public static function createFromGlobals(): static
+    {
+         $server  = new ServerParams($_SERVER);
+         $request = new static($server->requestMethod(), $server->url(), $server->all());
+         return $request->withQueryParams($_GET)
+                        ->withParsedBody($_POST)
+                        ->withProtocolVersion($server->protocolVersion())
+                        ->withCookieParams($_COOKIE)
+                        ->withHeaders(getallheaders())
+                        ->withUploadedFiles([]);
+    }
+
 }
