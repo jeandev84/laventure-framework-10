@@ -201,7 +201,8 @@ class Stream implements StreamInterface
     */
     public function isWritable(): bool
     {
-
+        # # ['w', 'w+', 'a', 'a+', 'c', 'c+'
+        return $this->matchAccessModes(['x', 'w', 'c', 'a', '+']);
     }
 
 
@@ -225,7 +226,8 @@ class Stream implements StreamInterface
     */
     public function isReadable(): bool
     {
-
+         # # ['r', 'r+', 'x', 'x+']
+         return $this->matchAccessModes(['r', 'x', '+']);
     }
 
 
@@ -288,5 +290,25 @@ class Stream implements StreamInterface
     public function __toString(): string
     {
         return $this->getContents();
+    }
+
+
+
+
+     /**
+      * @param array $modes
+      * @return bool
+     */
+    private function matchAccessModes(array $modes): bool
+    {
+        $mode = $this->getMetadata('mode');
+
+        foreach ($modes as $accessMode) {
+            if(strstr($mode, $accessMode)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
