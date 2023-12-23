@@ -33,7 +33,23 @@ class FileParams extends Parameter
     */
     public function add(array $params): static
     {
-        $files = $this->transformInfoFiles($params);
+        return $this->addFromGlobals($params);
+    }
+
+
+
+
+
+
+
+    /**
+     * @param array $files
+     *
+     * @return $this
+     */
+    private function addFromGlobals(array $files): static
+    {
+        $files = $this->transformInfoFiles($files);
 
         foreach ($files as $id => $fileArray) {
             foreach ($fileArray as $file) {
@@ -52,7 +68,7 @@ class FileParams extends Parameter
      * @param array $files
      * @return array
     */
-    public function transformInfoFiles(array $files): array
+    private function transformInfoFiles(array $files): array
     {
         $transformed = [];
 
@@ -69,20 +85,6 @@ class FileParams extends Parameter
         }
 
         return $transformed;
-    }
-
-
-
-    /**
-     * @param string $id
-     *
-     * @param UploadedFile $file
-     *
-     * @return $this
-    */
-    public function setUploadedFile(string $id, UploadedFile $file): static
-    {
-        return $this->set($id, $file);
     }
 
 
@@ -106,7 +108,7 @@ class FileParams extends Parameter
      *
      * @return UploadedFile
     */
-    public function makeUploadedFile(array $file): UploadedFile
+    private function makeUploadedFile(array $file): UploadedFile
     {
         return new UploadedFile(
             $file['name'],
