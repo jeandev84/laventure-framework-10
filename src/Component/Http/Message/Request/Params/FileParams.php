@@ -34,11 +34,11 @@ class FileParams extends Parameter
     */
     public function add(array $params): static
     {
-         foreach ($params as $id => $uploadedFiles) {
-             $this->addFiles($id, (array)$uploadedFiles);
-         }
+        foreach ($params as $id => $uploadedFiles) {
+            $this->addFiles($id, (array)$uploadedFiles);
+        }
 
-         return $this;
+        return $this;
     }
 
 

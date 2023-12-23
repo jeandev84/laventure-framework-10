@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Stream\Factory;
-
 
 use Laventure\Component\Http\Message\Stream\Exception\StreamException;
 use Laventure\Component\Http\Message\Stream\Stream;
@@ -20,17 +20,16 @@ use Psr\Http\Message\StreamInterface;
  */
 class StreamFactory implements StreamFactoryInterface
 {
-
     /**
      * @inheritDoc
      */
     public function createStream(string $content = ''): StreamInterface
     {
-          $stream = new Stream('php://temp', 'w');
-          if ($content) {
-              $stream->write($content);
-          }
-          return $stream;
+        $stream = new Stream('php://temp', 'w');
+        if ($content) {
+            $stream->write($content);
+        }
+        return $stream;
     }
 
 
@@ -42,7 +41,7 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
-         return new Stream($filename, $mode);
+        return new Stream($filename, $mode);
     }
 
 
@@ -52,6 +51,6 @@ class StreamFactory implements StreamFactoryInterface
     */
     public function createStreamFromResource($resource): StreamInterface
     {
-         return new Stream($resource);
+        return new Stream($resource);
     }
 }

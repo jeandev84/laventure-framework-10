@@ -304,7 +304,7 @@ class ServerRequest implements ServerRequestInterface
     public function getParsedBody(): array
     {
         if ($this->isMethod('POST')) {
-             return $this->request->all();
+            return $this->request->all();
         }
 
         parse_str($this->getContent(), $data);

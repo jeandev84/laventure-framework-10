@@ -105,8 +105,7 @@ class UploadedFile implements UploadedFileInterface
         ?string $temp,
         ?int $error,
         ?int $size
-    )
-    {
+    ) {
         $this->name = $name;
         $this->path = $path;
         $this->type = $type;
@@ -125,9 +124,9 @@ class UploadedFile implements UploadedFileInterface
     */
     public function withStream(StreamInterface $stream): static
     {
-         $this->stream = $stream;
+        $this->stream = $stream;
 
-         return $this;
+        return $this;
     }
 
 

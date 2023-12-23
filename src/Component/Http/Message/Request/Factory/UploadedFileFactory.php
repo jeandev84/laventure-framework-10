@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Factory;
-
 
 use Laventure\Component\Http\Message\Request\Upload\UploadedFile;
 use Psr\Http\Message\StreamInterface;
@@ -20,7 +20,6 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class UploadedFileFactory implements UploadedFileFactoryInterface
 {
-
     /**
      * @inheritDoc
     */
@@ -30,8 +29,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
         int $error = \UPLOAD_ERR_OK,
         string $clientFilename = null,
         string $clientMediaType = null
-    ): UploadedFileInterface
-    {
+    ): UploadedFileInterface {
         $uploadedFile = new UploadedFile($clientFilename, null, $clientMediaType, null, $error, $size);
         $uploadedFile->withStream($stream);
         return $uploadedFile;
