@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Body;
 
+use Laventure\Component\Http\Message\Stream\Exception\StreamException;
 use Laventure\Component\Http\Message\Stream\Stream;
 
 /**
@@ -17,4 +18,14 @@ use Laventure\Component\Http\Message\Stream\Stream;
 */
 class RequestBody extends Stream
 {
+
+      /**
+       * @param string $resource
+       * @param string $accessMode
+       * @throws StreamException
+     */
+     public function __construct(string $resource = '', string $accessMode = 'r+')
+     {
+         parent::__construct($resource ?: 'php://input', $accessMode);
+     }
 }

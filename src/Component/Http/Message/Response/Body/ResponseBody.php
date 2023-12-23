@@ -17,4 +17,8 @@ use Laventure\Component\Http\Message\Stream\Stream;
  */
 class ResponseBody extends Stream
 {
+     public function __construct(string $resource = '', string $accessMode = 'w')
+     {
+         parent::__construct($resource ?: 'php://output', $accessMode);
+     }
 }

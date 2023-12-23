@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Stream;
 
+use Laventure\Component\Http\Message\Stream\Exception\StreamException;
+use Laventure\Component\Http\Message\Stream\ValueObject\StreamResource;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -17,123 +19,274 @@ use Psr\Http\Message\StreamInterface;
  */
 class Stream implements StreamInterface
 {
+
+
     /**
-     * @inheritDoc
+     * @var resource|string
      */
-    public function __toString(): string
+    protected $stream;
+
+
+
+    /**
+     * @var ?int
+    */
+    protected ?int $length = null;
+
+
+    /**
+     * @var int
+    */
+    protected int $offset = -1;
+
+
+
+
+    /**
+     * @var string|null
+    */
+    protected ?string $path;
+
+
+
+
+
+    /**
+     * @var string|null
+    */
+    protected ?string $accessMode;
+
+
+
+    /**
+     * @var bool|null
+    */
+    protected ?bool $includePath = false;
+
+
+
+    /**
+     * @var resource|null
+    */
+    protected $context;
+
+
+
+
+    /**
+     * @param $resource
+     *
+     * @param string $accessMode
+     * @throws StreamException
+    */
+    public function __construct($resource, string $accessMode = '')
     {
-        // TODO: Implement __toString() method.
+         if (is_string($resource)) {
+             $resource = fopen($resource, $accessMode);
+         }
+
+         $this->openResource(new StreamResource($resource));
     }
+
+
+
+
+    /**
+     * @param StreamResource $stream
+     *
+     * @return void
+    */
+    public function openResource(StreamResource $stream): void
+    {
+         $this->stream = $stream->getValue();
+    }
+
+
+
 
     /**
      * @inheritDoc
-     */
-    public function close(): void
+    */
+    public function detach(): void
     {
-        // TODO: Implement close() method.
+        $this->stream = null;
     }
+
+
+
+
+
 
     /**
      * @inheritDoc
-     */
-    public function detach()
-    {
-        // TODO: Implement detach() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
+    */
     public function getSize(): ?int
     {
-        // TODO: Implement getSize() method.
+        return fstat($this->stream)['size'];
     }
+
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function tell(): int
     {
-        // TODO: Implement tell() method.
+        return ftell($this->stream);
     }
+
+
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function eof(): bool
     {
-        // TODO: Implement eof() method.
+        return feof($this->stream);
     }
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function isSeekable(): bool
     {
-        // TODO: Implement isSeekable() method.
+        $meta = $this->getMetadata();
+
+        return $meta['seekable'] ?? false;
     }
+
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function seek(int $offset, int $whence = SEEK_SET): void
     {
-        // TODO: Implement seek() method.
+         fseek($this->stream, $offset, $whence);
     }
+
+
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function rewind(): void
     {
-        // TODO: Implement rewind() method.
+        rewind($this->stream);
     }
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function isWritable(): bool
     {
-        // TODO: Implement isWritable() method.
+
     }
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function write(string $string): int
     {
-        // TODO: Implement write() method.
+        return (int)fwrite($this->stream, $string);
     }
+
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function isReadable(): bool
     {
-        // TODO: Implement isReadable() method.
+
     }
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function read(int $length): string
     {
-        // TODO: Implement read() method.
+        return (string)fgets($this->stream, $length);
     }
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function getContents(): string
     {
-        // TODO: Implement getContents() method.
+        return stream_get_contents($this->stream, $this->length, $this->offset);
     }
+
+
+
+
 
     /**
      * @inheritDoc
-     */
+    */
     public function getMetadata(?string $key = null)
     {
-        // TODO: Implement getMetadata() method.
+        $meta = stream_get_meta_data($this->stream);
+
+        return $key ? $meta[$key] : $meta;
+    }
+
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function close(): void
+    {
+        fclose($this->stream);
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function __toString(): string
+    {
+        return $this->getContents();
     }
 }

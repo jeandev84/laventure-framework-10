@@ -8,7 +8,9 @@ use Laventure\Component\Http\Message\MessageTrait;
 use Laventure\Component\Http\Message\Request\Body\RequestBody;
 use Laventure\Component\Http\Message\Response\Body\ResponseBody;
 use Laventure\Component\Http\Message\Response\Headers\ResponseHeaders;
+use Laventure\Component\Http\Message\Stream\ValueObject\StreamResource;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Response
@@ -21,7 +23,24 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Response implements ResponseInterface
 {
+
      use MessageTrait;
+
+
+
+     /**
+      * @var int
+     */
+     protected int $status;
+
+
+
+     /**
+      * @var string
+     */
+     protected string $reasonPhrase = '';
+
+
 
 
 
@@ -32,9 +51,12 @@ class Response implements ResponseInterface
      */
      public function __construct(int $status = 200, array $headers = [])
      {
-          $this->body    = new ResponseBody();
+          $this->withBody(new ResponseBody())
+               ->withStatus($status);
+
           $this->headers = new ResponseHeaders($headers);
      }
+
 
 
 
@@ -44,7 +66,7 @@ class Response implements ResponseInterface
      */
      public function getStatusCode(): int
      {
-         return 200;
+         return $this->status;
      }
 
 
@@ -56,6 +78,9 @@ class Response implements ResponseInterface
      */
      public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface
      {
+          $this->status       = $code;
+          $this->reasonPhrase = $reasonPhrase;
+
           return $this;
      }
 
@@ -68,7 +93,7 @@ class Response implements ResponseInterface
      */
      public function getReasonPhrase(): string
      {
-         return '';
+         return $this->reasonPhrase;
      }
 
 

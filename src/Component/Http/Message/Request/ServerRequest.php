@@ -298,11 +298,43 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getParsedBody(): array
     {
-        // get data from $_POST if empty, we will get parsed body from Stream
-        // via parsing content body
+         if ($this->isMethod('POST')) {
+              return $this->request->all();
+         }
 
-        return $this->request->all();
+         //TODO add some logic for override methods PUT, PATCH, DELETE ...
+
+         parse_str($this->getContent(), $data);
+         return $data;
     }
+
+
+
+
+
+    /**
+     * @param string $method
+     *
+     * @return bool
+    */
+    public function isMethod(string $method): bool
+    {
+         return $this->method === strtoupper($method);
+    }
+
+
+
+
+
+    /**
+     * @return string
+    */
+    public function getContent(): string
+    {
+        return (string)$this->getBody();
+    }
+
+
 
 
 
@@ -378,11 +410,11 @@ class ServerRequest implements ServerRequestInterface
     {
          $server  = new ServerParams($_SERVER);
          $request = new static($server->requestMethod(), $server->url(), $server->all());
+
          return $request->withQueryParams($_GET)
                         ->withParsedBody($_POST)
                         ->withProtocolVersion($server->protocolVersion())
                         ->withCookieParams($_COOKIE)
-                        ->withHeaders(getallheaders())
                         ->withUploadedFiles($_FILES);
     }
 

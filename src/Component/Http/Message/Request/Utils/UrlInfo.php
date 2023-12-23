@@ -26,7 +26,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getScheme(): string
     {
-        return $this->get(PHP_URL_SCHEME);
+        return $this->get(PHP_URL_SCHEME, '');
     }
 
 
@@ -41,6 +41,7 @@ class UrlInfo implements UrlInfoInterface
     {
         return $this->get(PHP_URL_USER, '');
     }
+
 
 
 
@@ -73,7 +74,7 @@ class UrlInfo implements UrlInfoInterface
     */
     public function getPort(): ?int
     {
-        return $this->get(PHP_URL_PORT);
+        return $this->get(PHP_URL_PORT, 0);
     }
 
 
