@@ -60,6 +60,21 @@ class Response implements ResponseInterface
 
 
      /**
+      * @param string $content
+      *
+      * @return void
+     */
+     public function setContent(string $content): void
+     {
+          $this->body->write($content);
+     }
+
+
+
+
+
+
+     /**
       * @inheritDoc
      */
      public function getStatusCode(): int
