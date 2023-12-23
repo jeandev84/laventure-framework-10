@@ -25,6 +25,16 @@ class JsonResponse extends Response
 
 
     /**
+     * @var array|string[]
+    */
+    private array $defaultHeaders = [
+        'Content-Type' => 'application/json; charset=UTF-8'
+    ];
+
+
+
+
+    /**
      * @param array|object $data
      *
      * @param int $status
@@ -33,9 +43,8 @@ class JsonResponse extends Response
     */
     public function __construct(array|object $data, int $status = 200, array $headers = [])
     {
-        parent::__construct($status, ['Content-Type' => 'application/json; charset=UTF-8']);
+        parent::__construct($status, array_merge($this->defaultHeaders, $headers));
         $this->data = $data;
-        $this->headers->add($headers);
     }
 
 
