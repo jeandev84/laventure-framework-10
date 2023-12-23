@@ -44,21 +44,10 @@ class JsonResponse extends Response
     public function __construct(array|object $data, int $status = 200, array $headers = [])
     {
         parent::__construct($status, array_merge($this->defaultHeaders, $headers));
-        $this->data = $data;
+        $this->setContent($this->encode($data));
     }
 
 
-
-
-    /**
-     * @return string
-    */
-    public function __toString(): string
-    {
-        $this->body->write($this->encode($this->data));
-
-        return (string)$this->body;
-    }
 
 
 
