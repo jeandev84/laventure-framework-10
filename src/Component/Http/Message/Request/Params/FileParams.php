@@ -29,10 +29,10 @@ class FileParams extends Parameter
 
 
 
-      /**
-       * @param array $files
-       *
-       * @return $this
+     /**
+      * @param array $params
+      *
+      * @return $this
      */
      public function add(array $params): static
      {

@@ -6,3 +6,4 @@ tools
 .phpunit.result.cache
 demo.php
 storage
+views

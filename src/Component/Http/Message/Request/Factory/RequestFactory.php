@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Message\Request\Factory;
 
 
+use Laventure\Component\Http\Message\Request\Request;
 use Laventure\Component\Http\Message\Request\ServerRequest;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
@@ -25,6 +26,20 @@ class RequestFactory implements RequestFactoryInterface
     */
     public function createRequest(string $method, $uri): RequestInterface
     {
-         return new ServerRequest($method, $uri);
+         return new Request($method, $uri);
+    }
+
+
+
+
+
+    /**
+     * @param string $method
+     * @param $uri
+     * @return RequestInterface
+    */
+    public static function create(string $method, $uri): RequestInterface
+    {
+         return new Request($method, $uri);
     }
 }
