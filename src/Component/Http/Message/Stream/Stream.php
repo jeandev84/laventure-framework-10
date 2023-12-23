@@ -214,9 +214,7 @@ class Stream implements StreamInterface
     */
     public function write(string $string): int
     {
-        $id = fwrite($this->stream, $string);
-        $this->close();
-        return $id;
+        return fwrite($this->stream, $string);
     }
 
 

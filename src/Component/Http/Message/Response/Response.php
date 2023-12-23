@@ -49,7 +49,6 @@ class Response implements ResponseInterface
     */
     public function __construct(int $status = 200, array $headers = [], StreamInterface $body = null)
     {
-        ob_start();
         $this->status  = $status;
         $this->headers = new ResponseHeaders($headers);
         $this->body    = $body ?: new ResponseBody();
@@ -62,11 +61,13 @@ class Response implements ResponseInterface
     /**
      * @param string $content
      *
-     * @return void
+     * @return $this
     */
-    public function setContent(string $content): void
+    public function setContent(string $content): static
     {
          $this->body->write($content);
+
+         return $this;
     }
 
 

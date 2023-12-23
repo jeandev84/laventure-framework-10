@@ -16,5 +16,8 @@ use PHPUnit\Framework\TestCase;
 */
 class ServerRequestTest extends TestCase
 {
-
+    public function testSomething()
+    {
+        $this->assertTrue(true);
+    }
 }

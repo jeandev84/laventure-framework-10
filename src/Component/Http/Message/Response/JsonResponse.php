@@ -34,11 +34,9 @@ class JsonResponse extends Response
     public function __construct(array|object $data, int $status = 200, array $headers = [])
     {
         parent::__construct($status, ['Content-Type' => 'application/json; charset=UTF-8']);
-        $this->headers->add($headers);
         $this->data = $data;
+        $this->headers->add($headers);
     }
-
-
 
 
 
@@ -48,12 +46,10 @@ class JsonResponse extends Response
     */
     public function __toString(): string
     {
-        $this->setContent($this->encode($this->data));
+        $this->body->write($this->encode($this->data));
 
         return (string)$this->body;
     }
-
-
 
 
 
@@ -64,7 +60,7 @@ class JsonResponse extends Response
     */
     private function encode(array|object $data): bool|string
     {
-        $content = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $content = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 
         if (json_last_error()) {
             trigger_error(json_last_error_msg());
