@@ -1,15 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Upload;
-
 
 use Laventure\Component\Http\Message\Request\Upload\Exception\UploadedFileException;
 use Laventure\Component\Http\Message\Stream\Stream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
-
-
 
 /**
  * UploadedFile
@@ -135,17 +133,17 @@ class UploadedFile implements UploadedFileInterface
     */
     public function moveTo(string $targetPath): void
     {
-          if($this->error !== UPLOAD_ERR_OK) {
-                throw new UploadedFileException('message', $this->error);
-          }
+        if($this->error !== UPLOAD_ERR_OK) {
+            throw new UploadedFileException('message', $this->error);
+        }
 
-          $dirname = dirname($targetPath);
+        $dirname = dirname($targetPath);
 
-          if(! is_dir($dirname)) {
-             @mkdir($dirname, 0777, true);
-          }
+        if(!is_dir($dirname)) {
+            @mkdir($dirname, 0777, true);
+        }
 
-          move_uploaded_file($this->temp, $targetPath);
+        move_uploaded_file($this->temp, $targetPath);
     }
 
 
@@ -157,7 +155,7 @@ class UploadedFile implements UploadedFileInterface
     */
     public function getSize(): ?int
     {
-         return $this->size;
+        return $this->size;
     }
 
 
@@ -179,7 +177,7 @@ class UploadedFile implements UploadedFileInterface
     */
     public function getClientFilename(): ?string
     {
-         return $this->name;
+        return $this->name;
     }
 
 

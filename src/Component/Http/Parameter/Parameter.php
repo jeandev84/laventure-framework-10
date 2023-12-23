@@ -87,29 +87,29 @@ class Parameter implements ParameterInterface
 
 
 
-     /**
-      * @param string $id
-      *
-      * @return string
-     */
-     public function toUpper(string $id): string
-     {
-          return strtoupper($this->string($id));
-     }
+    /**
+     * @param string $id
+     *
+     * @return string
+    */
+    public function toUpper(string $id): string
+    {
+        return strtoupper($this->string($id));
+    }
 
 
 
 
 
-     /**
-      * @param string $id
-      *
-      * @return string
-     */
-     public function toLower(string $id): string
-     {
-         return strtolower($this->string($id));
-     }
+    /**
+     * @param string $id
+     *
+     * @return string
+    */
+    public function toLower(string $id): string
+    {
+        return strtolower($this->string($id));
+    }
 
 
 
@@ -117,28 +117,28 @@ class Parameter implements ParameterInterface
 
 
 
-     /**
-      * @param $id
-      *
-      * @return string
-     */
-     public function string($id): string
-     {
-          return (string)$this->get($id, '');
-     }
+    /**
+     * @param $id
+     *
+     * @return string
+    */
+    public function string($id): string
+    {
+        return (string)$this->get($id, '');
+    }
 
 
 
 
-     /**
-      * @param $id
-      * @param $value
-      * @return bool
-     */
-     public function match($id, $value): bool
-     {
-          return $this->get($id) === $value;
-     }
+    /**
+     * @param $id
+     * @param $value
+     * @return bool
+    */
+    public function match($id, $value): bool
+    {
+        return $this->get($id) === $value;
+    }
 
 
 

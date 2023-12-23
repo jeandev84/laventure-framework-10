@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Params;
@@ -16,15 +17,13 @@ use Laventure\Component\Http\Parameter\Parameter;
  */
 class ServerParams extends Parameter
 {
-
-
-     /**
-      * @return string
-     */
-     public function name(): string
-     {
-          return $this->string('SERVER_NAME');
-     }
+    /**
+     * @return string
+    */
+    public function name(): string
+    {
+        return $this->string('SERVER_NAME');
+    }
 
 
 
@@ -107,23 +106,23 @@ class ServerParams extends Parameter
     /**
        * @return string
       */
-      public function requestMethod(): string
-      {
-          return $this->toUpper('REQUEST_METHOD');
-      }
+    public function requestMethod(): string
+    {
+        return $this->toUpper('REQUEST_METHOD');
+    }
 
 
 
 
 
 
-      /**
-       * @return string
-      */
-      public function requestUri(): string
-      {
-          return $this->string('REQUEST_URI');
-      }
+    /**
+     * @return string
+    */
+    public function requestUri(): string
+    {
+        return $this->string('REQUEST_URI');
+    }
 
 
 
@@ -131,61 +130,61 @@ class ServerParams extends Parameter
 
 
 
-      /**
-       * @return string
-      */
-      public function queryString(): string
-      {
-          return $this->string('REQUEST_QUERY');
-      }
+    /**
+     * @return string
+    */
+    public function queryString(): string
+    {
+        return $this->string('REQUEST_QUERY');
+    }
 
 
 
 
 
 
-      /**
-       * @return int
-      */
-      public function requestTime(): int
-      {
-          return $this->integer("REQUEST_TIME");
-      }
+    /**
+     * @return int
+    */
+    public function requestTime(): int
+    {
+        return $this->integer("REQUEST_TIME");
+    }
 
 
 
 
 
-      /**
-       * @return float
-      */
-      public function requestTimeAsFloat(): float
-      {
-           return $this->float("REQUEST_TIME_FLOAT");
-      }
+    /**
+     * @return float
+    */
+    public function requestTimeAsFloat(): float
+    {
+        return $this->float("REQUEST_TIME_FLOAT");
+    }
 
 
 
 
-      /**
-       * @return string
-      */
-      public function documentRoot(): string
-      {
-          return $this->string('DOCUMENT_ROOT');
-      }
+    /**
+     * @return string
+    */
+    public function documentRoot(): string
+    {
+        return $this->string('DOCUMENT_ROOT');
+    }
 
 
 
 
 
-      /**
-       * @return string
-      */
-      public function scriptName(): string
-      {
-          return $this->string('SCRIPT_NAME');
-      }
+    /**
+     * @return string
+    */
+    public function scriptName(): string
+    {
+        return $this->string('SCRIPT_NAME');
+    }
 
 
 
@@ -193,119 +192,119 @@ class ServerParams extends Parameter
 
 
 
-      /**
-       * @return string
-      */
-      public function scriptFilename(): string
-      {
-          return $this->string('SCRIPT_FILENAME');
-      }
+    /**
+     * @return string
+    */
+    public function scriptFilename(): string
+    {
+        return $this->string('SCRIPT_FILENAME');
+    }
 
 
 
 
 
 
-      /**
-       * @return string
-      */
-      public function phpSelf(): string
-      {
-           return $this->string('PHP_SELF');
-      }
+    /**
+     * @return string
+    */
+    public function phpSelf(): string
+    {
+        return $this->string('PHP_SELF');
+    }
 
 
 
 
-      /**
-       * @return string
-      */
-      public function remoteAddress(): string
-      {
-          return $this->string('REMOTE_ADDR');
-      }
+    /**
+     * @return string
+    */
+    public function remoteAddress(): string
+    {
+        return $this->string('REMOTE_ADDR');
+    }
 
 
 
 
 
-      /**
-       * @return int
-      */
-      public function remotePort(): int
-      {
-          return $this->integer('REMOTE_PORT');
-      }
+    /**
+     * @return int
+    */
+    public function remotePort(): int
+    {
+        return $this->integer('REMOTE_PORT');
+    }
 
 
 
 
 
 
-      /**
-       * @return string
-      */
-      public function pathInfo(): string
-      {
-           $path = strtok($this->requestUri(), '?');
+    /**
+     * @return string
+    */
+    public function pathInfo(): string
+    {
+        $path = strtok($this->requestUri(), '?');
 
-           return $this->get('PATH_INFO', $path);
-      }
+        return $this->get('PATH_INFO', $path);
+    }
 
 
 
 
 
-      /**
-       * @return string
-      */
-      public function username(): string
-      {
-          return $this->string('PHP_AUTH_USER');
-      }
+    /**
+     * @return string
+    */
+    public function username(): string
+    {
+        return $this->string('PHP_AUTH_USER');
+    }
 
 
 
 
 
 
-      /**
-       * @return string
-      */
-      public function password(): string
-      {
-          return $this->string('PHP_AUTH_PW');
-      }
+    /**
+     * @return string
+    */
+    public function password(): string
+    {
+        return $this->string('PHP_AUTH_PW');
+    }
 
 
 
 
 
-      /**
-       * @return string
-      */
-      public function authority(): string
-      {
-           if (! $user = $this->username()) {
-               return '';
-           }
+    /**
+     * @return string
+    */
+    public function authority(): string
+    {
+        if (!$user = $this->username()) {
+            return '';
+        }
 
-           return sprintf('%s:%s@', $user, $this->password());
-      }
+        return sprintf('%s:%s@', $user, $this->password());
+    }
 
 
 
 
 
-     /**
-      * Determine if request via xhr http request
-      *
-      * @return bool
-     */
-     public function isXhr(): bool
-     {
-           return $this->match('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
-     }
+    /**
+     * Determine if request via xhr http request
+     *
+     * @return bool
+    */
+    public function isXhr(): bool
+    {
+        return $this->match('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
+    }
 
 
 
@@ -363,7 +362,7 @@ class ServerParams extends Parameter
     */
     public function baseUrl(): string
     {
-         return sprintf('%s://%s%s', $this->scheme(), $this->authority(), $this->host());
+        return sprintf('%s://%s%s', $this->scheme(), $this->authority(), $this->host());
     }
 
 

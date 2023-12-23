@@ -19,8 +19,6 @@ use Psr\Http\Message\StreamInterface;
  */
 class Stream implements StreamInterface
 {
-
-
     /**
      * @var resource|string
      */
@@ -81,11 +79,11 @@ class Stream implements StreamInterface
     */
     public function __construct($resource, string $accessMode = '')
     {
-         if (is_string($resource)) {
-             $resource = fopen($resource, $accessMode);
-         }
+        if (is_string($resource)) {
+            $resource = fopen($resource, $accessMode);
+        }
 
-         $this->openResource(new IsStream($resource));
+        $this->openResource(new IsStream($resource));
     }
 
 
@@ -98,7 +96,7 @@ class Stream implements StreamInterface
     */
     public function openResource(IsStream $stream): void
     {
-         $this->stream = $stream->getValue();
+        $this->stream = $stream->getValue();
     }
 
 
@@ -175,7 +173,7 @@ class Stream implements StreamInterface
     */
     public function seek(int $offset, int $whence = SEEK_SET): void
     {
-         fseek($this->stream, $offset, $whence);
+        fseek($this->stream, $offset, $whence);
     }
 
 
@@ -228,8 +226,8 @@ class Stream implements StreamInterface
     */
     public function isReadable(): bool
     {
-         # # ['r', 'r+', 'x', 'x+']
-         return $this->matchAccessModes(['r', 'x', '+']);
+        # # ['r', 'r+', 'x', 'x+']
+        return $this->matchAccessModes(['r', 'x', '+']);
     }
 
 
@@ -328,10 +326,10 @@ class Stream implements StreamInterface
 
 
 
-     /**
-      * @param array $modes
-      * @return bool
-     */
+    /**
+     * @param array $modes
+     * @return bool
+    */
     private function matchAccessModes(array $modes): bool
     {
         $mode = $this->getMetadata('mode');

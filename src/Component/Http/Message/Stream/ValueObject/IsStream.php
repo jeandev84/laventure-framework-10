@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Stream\ValueObject;
-
 
 use Laventure\Component\Http\Message\Stream\Exception\StreamException;
 
@@ -17,44 +17,42 @@ use Laventure\Component\Http\Message\Stream\Exception\StreamException;
  */
 class IsStream
 {
-
-
-     /**
-      * @var resource
-     */
-     private $value;
+    /**
+     * @var resource
+    */
+    private $value;
 
 
 
 
-     /**
-      * @param resource $value
-      *
-      * @throws StreamException
-     */
-     public function __construct($value)
-     {
-           if (! is_resource($value)) {
-                throw new \InvalidArgumentException("Invalid resource type provide.");
-           }
+    /**
+     * @param resource $value
+     *
+     * @throws StreamException
+    */
+    public function __construct($value)
+    {
+        if (!is_resource($value)) {
+            throw new \InvalidArgumentException("Invalid resource type provide.");
+        }
 
-           if (get_resource_type($value) !== 'stream') {
-                throw new StreamException('Invalid stream provided. must be string or resource stream type provided.');
-           }
+        if (get_resource_type($value) !== 'stream') {
+            throw new StreamException('Invalid stream provided. must be string or resource stream type provided.');
+        }
 
-           $this->value = $value;
-     }
+        $this->value = $value;
+    }
 
 
 
 
 
 
-     /**
-      * @return resource
-     */
-     public function getValue()
-     {
-         return $this->value;
-     }
+    /**
+     * @return resource
+    */
+    public function getValue()
+    {
+        return $this->value;
+    }
 }

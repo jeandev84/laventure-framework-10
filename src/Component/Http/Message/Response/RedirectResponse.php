@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Response;
-
 
 use Psr\Http\Message\StreamInterface;
 
@@ -17,15 +17,13 @@ use Psr\Http\Message\StreamInterface;
  */
 class RedirectResponse extends Response
 {
-
-
-       /**
-        * @param string $path
-        *
-        * @param int $status
-       */
-       public function __construct(string $path, int $status = 302)
-       {
-           parent::__construct($status, ['Location' => $path]);
-       }
+    /**
+     * @param string $path
+     *
+     * @param int $status
+    */
+    public function __construct(string $path, int $status = 302)
+    {
+        parent::__construct($status, ['Location' => $path]);
+    }
 }

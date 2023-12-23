@@ -298,14 +298,14 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getParsedBody(): array
     {
-         if ($this->isMethod('POST')) {
-              return $this->request->all();
-         }
+        if ($this->isMethod('POST')) {
+            return $this->request->all();
+        }
 
-         //TODO add some logic for override methods PUT, PATCH, DELETE ...
+        //TODO add some logic for override methods PUT, PATCH, DELETE ...
 
-         parse_str($this->getContent(), $data);
-         return $data;
+        parse_str($this->getContent(), $data);
+        return $data;
     }
 
 
@@ -319,7 +319,7 @@ class ServerRequest implements ServerRequestInterface
     */
     public function isMethod(string $method): bool
     {
-         return $this->method === strtoupper($method);
+        return $this->method === strtoupper($method);
     }
 
 
@@ -408,14 +408,14 @@ class ServerRequest implements ServerRequestInterface
     */
     public static function fromGlobals(): static
     {
-         $server  = new ServerParams($_SERVER);
-         $request = new self($server->requestMethod(), $server->url(), $server->all());
+        $server  = new ServerParams($_SERVER);
+        $request = new self($server->requestMethod(), $server->url(), $server->all());
 
-         return $request->withQueryParams($_GET)
-                        ->withParsedBody($_POST)
-                        ->withProtocolVersion($server->protocolVersion())
-                        ->withCookieParams($_COOKIE)
-                        ->withUploadedFiles($_FILES);
+        return $request->withQueryParams($_GET)
+                       ->withParsedBody($_POST)
+                       ->withProtocolVersion($server->protocolVersion())
+                       ->withCookieParams($_COOKIE)
+                       ->withUploadedFiles($_FILES);
     }
 
 }

@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Factory;
-
 
 use Laventure\Component\Http\Message\Request\Request;
 use Laventure\Component\Http\Message\Request\ServerRequest;
@@ -20,13 +20,12 @@ use Psr\Http\Message\RequestInterface;
 */
 class RequestFactory implements RequestFactoryInterface
 {
-
     /**
      * @inheritDoc
     */
     public function createRequest(string $method, $uri): RequestInterface
     {
-         return new Request($method, $uri);
+        return new Request($method, $uri);
     }
 
 
@@ -40,6 +39,6 @@ class RequestFactory implements RequestFactoryInterface
     */
     public static function create(string $method, $uri): RequestInterface
     {
-         return new Request($method, $uri);
+        return new Request($method, $uri);
     }
 }

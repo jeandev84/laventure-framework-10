@@ -23,112 +23,111 @@ use Psr\Http\Message\StreamInterface;
  */
 class Response implements ResponseInterface
 {
-
-     use MessageTrait;
-
-
-
-     /**
-      * @var int
-     */
-     protected int $status;
+    use MessageTrait;
 
 
 
-     /**
-      * @var string
-     */
-     protected string $reasonPhrase = '';
-
-
-     /**
-      * @param int $status
-      *
-      * @param array $headers
-      *
-      * @param StreamInterface|null $body
-     */
-     public function __construct(int $status = 200, array $headers = [], StreamInterface $body = null)
-     {
-          $this->status  = $status;
-          $this->headers = new ResponseHeaders($headers);
-          $this->body    = $body ?: new ResponseBody();
-     }
+    /**
+     * @var int
+    */
+    protected int $status;
 
 
 
+    /**
+     * @var string
+    */
+    protected string $reasonPhrase = '';
 
 
-     /**
-      * @param string $content
-      *
-      * @return void
-     */
-     public function setContent(string $content): void
-     {
-          $this->body->write($content);
-     }
+    /**
+     * @param int $status
+     *
+     * @param array $headers
+     *
+     * @param StreamInterface|null $body
+    */
+    public function __construct(int $status = 200, array $headers = [], StreamInterface $body = null)
+    {
+        $this->status  = $status;
+        $this->headers = new ResponseHeaders($headers);
+        $this->body    = $body ?: new ResponseBody();
+    }
 
 
 
 
 
-
-     /**
-      * @inheritDoc
-     */
-     public function getStatusCode(): int
-     {
-         return $this->status;
-     }
-
-
-
-
-
-     /**
-      * @inheritDoc
-     */
-     public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface
-     {
-          $this->status       = $code;
-          $this->reasonPhrase = $reasonPhrase;
-
-          return $this;
-     }
+    /**
+     * @param string $content
+     *
+     * @return void
+    */
+    public function setContent(string $content): void
+    {
+        $this->body->write($content);
+    }
 
 
 
 
 
-     /**
-      * @inheritDoc
-     */
-     public function getReasonPhrase(): string
-     {
-         return $this->reasonPhrase;
-     }
+
+    /**
+     * @inheritDoc
+    */
+    public function getStatusCode(): int
+    {
+        return $this->status;
+    }
 
 
 
 
 
-     /**
-      * @return void
-     */
-     public function send(): void
-     {
-          http_response_code($this->status);
-     }
+    /**
+     * @inheritDoc
+    */
+    public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface
+    {
+        $this->status       = $code;
+        $this->reasonPhrase = $reasonPhrase;
+
+        return $this;
+    }
 
 
 
 
-     /**
-      * @return string
-     */
-     public function __toString(): string
-     {
-          return (string)$this->getBody();
-     }
+
+    /**
+     * @inheritDoc
+    */
+    public function getReasonPhrase(): string
+    {
+        return $this->reasonPhrase;
+    }
+
+
+
+
+
+    /**
+     * @return void
+    */
+    public function send(): void
+    {
+        http_response_code($this->status);
+    }
+
+
+
+
+    /**
+     * @return string
+    */
+    public function __toString(): string
+    {
+        return (string)$this->getBody();
+    }
 }

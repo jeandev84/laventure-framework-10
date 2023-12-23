@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Response;
-
 
 /**
  * XmlResponse
@@ -15,5 +15,4 @@ namespace Laventure\Component\Http\Message\Response;
 */
 class XmlResponse extends Response
 {
-
 }

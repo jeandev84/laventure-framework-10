@@ -17,14 +17,13 @@ use Laventure\Component\Http\Parameter\Parameter;
  */
 class RequestHeaders extends Parameter
 {
-
     /**
      * @param array $params
     */
     public function __construct(array $params = [])
     {
         if (function_exists('getallheaders')) {
-             $params = getallheaders();
+            $params = getallheaders();
         }
 
         parent::__construct($params);
