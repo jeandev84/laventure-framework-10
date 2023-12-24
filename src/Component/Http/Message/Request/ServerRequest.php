@@ -104,18 +104,20 @@ class ServerRequest implements ServerRequestInterface
     /**
      * @param string $method
      *
-     * @param string $url
+     * @param string $path
      *
-     * @param array $serverParams
+     * @param array $server
+     *
+     * TODO reviews uri may be both param UriInterface|string
     */
-    public function __construct(string $method, string $url, array $serverParams = [])
+    public function __construct(string $method, string $path, array $server = [])
     {
         $this->method     = $method;
-        $this->target     = $url;
-        $this->uri        = new Uri($url);
+        $this->target     = $path;
+        $this->uri        = new Uri($path);
         $this->body       = new RequestBody();
         $this->headers    = new RequestHeaders();
-        $this->server     = new ServerParams($serverParams);
+        $this->server     = new ServerParams($server);
         $this->cookies    = new CookieParams();
         $this->request    = new ParsedBody();
         $this->queries    = new QueryParams();
