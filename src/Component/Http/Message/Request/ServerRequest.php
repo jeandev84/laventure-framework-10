@@ -303,6 +303,8 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getParsedBody(): array
     {
+        // TODO code reviews
+
         if ($this->isMethod('POST')) {
             return $this->request->all();
         }
