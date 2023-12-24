@@ -303,8 +303,8 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getParsedBody(): array
     {
-        if (! $this->request->empty()) {
-             return $this->request->all();
+        if (!$this->request->empty()) {
+            return $this->request->all();
         }
 
         parse_str($this->getContent(), $data);
