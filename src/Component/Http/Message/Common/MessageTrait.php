@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Message;
+namespace Laventure\Component\Http\Message\Common;
 
 use Laventure\Component\Http\Utils\Parameter;
 use Psr\Http\Message\MessageInterface;
@@ -15,7 +15,7 @@ use Psr\Http\Message\StreamInterface;
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
- * @package Laventure\Component\Http\Message
+ * @package Laventure\Component\Http\Message\Common
 */
 trait MessageTrait
 {

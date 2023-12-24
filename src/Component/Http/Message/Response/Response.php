@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Response;
 
-use Laventure\Component\Http\Message\MessageTrait;
-use Laventure\Component\Http\Message\Request\Body\RequestBody;
+use Laventure\Component\Http\Message\Common\MessageTrait;
 use Laventure\Component\Http\Message\Response\Body\ResponseBody;
 use Laventure\Component\Http\Message\Response\Headers\ResponseHeaders;
-use Laventure\Component\Http\Message\Stream\ValueObject\IsStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
