@@ -303,10 +303,8 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getParsedBody(): array
     {
-        // TODO code reviews
-
-        if ($this->isMethod('POST')) {
-            return $this->request->all();
+        if (! $this->request->empty()) {
+             return $this->request->all();
         }
 
         parse_str($this->getContent(), $data);
@@ -425,5 +423,20 @@ class ServerRequest implements ServerRequestInterface
                ->withCookieParams($_COOKIE)
                ->withUploadedFiles($files);
     }
+
+
+
+
+    /**
+     * @return bool
+    */
+    public function hasMethodOverride(): bool
+    {
+        return in_array($this->getMethod(), ['PUT', 'DELETE', 'PATCH']);
+    }
+
+
+
+
 
 }
