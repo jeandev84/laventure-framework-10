@@ -1,11 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client\Service\Contract;
 
-
 use Psr\Http\Client\ClientInterface;
-
 
 /**
  * ClientServiceInterface
@@ -18,7 +17,6 @@ use Psr\Http\Client\ClientInterface;
  */
 interface ClientServiceInterface extends ClientInterface
 {
-
     /**
      * Client options
      *

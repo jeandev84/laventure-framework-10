@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Dotenv;
-
 
 use Laventure\Component\Dotenv\Contract\DotenvInterface;
 
@@ -17,125 +17,124 @@ use Laventure\Component\Dotenv\Contract\DotenvInterface;
  */
 class Dotenv implements DotenvInterface
 {
-
-      /**
-       * @var string
-      */
-      protected string $basePath;
-
-
-
-
-      /**
-       * @var array
-      */
-      protected array $only = ['.env', '.env.local'];
+    /**
+     * @var string
+    */
+    protected string $basePath;
 
 
 
 
-      /**
-       * @param string $basePath
-      */
-      public function __construct(string $basePath)
-      {
-          $this->basePath = $basePath;
-      }
+    /**
+     * @var array
+    */
+    protected array $only = ['.env', '.env.local'];
 
 
 
 
-
-      /**
-       * @param array $allowedFiles
-       *
-       * @return $this
-      */
-      public function only(array $allowedFiles): static
-      {
-           $this->only = array_merge($this->only, $allowedFiles);
-
-           return $this;
-      }
+    /**
+     * @param string $basePath
+    */
+    public function __construct(string $basePath)
+    {
+        $this->basePath = $basePath;
+    }
 
 
 
 
 
+    /**
+     * @param array $allowedFiles
+     *
+     * @return $this
+    */
+    public function only(array $allowedFiles): static
+    {
+        $this->only = array_merge($this->only, $allowedFiles);
 
-      /**
-       * @inheritDoc
-      */
-      public function load(string $file = '.env'): void
-      {
-          $this->loadFromArray($this->loadEnvironments($file));
-      }
-
-
-
-
-
-      /**
-       * @inheritDoc
-      */
-      public function export(string $file = '.env.local'): bool
-      {
-          if (! $this->allowed($file)) {
-              throw new \RuntimeException(
-          "'$file' is not allowed. you must load only (". join(', ', $this->only) . ")"
-              );
-          }
-
-          $file = $this->prepareToExport(
-              $this->loadPath($file)
-          );
-
-          foreach ($_ENV as $name => $value) {
-              file_put_contents($file, "$name=$value". PHP_EOL, FILE_APPEND);
-          }
-
-          return empty(file($file));
-      }
+        return $this;
+    }
 
 
 
 
 
-      /**
-       * @param array $data
-       *
-       * @return void
-      */
-      public function loadFromArray(array $data): void
-      {
-           foreach ($data as $env) {
-               if (stripos($env, '#') !== false) {
-                   continue;
-               }
-               $this->put($env);
-           }
-      }
+
+    /**
+     * @inheritDoc
+    */
+    public function load(string $file = '.env'): void
+    {
+        $this->loadFromArray($this->loadEnvironments($file));
+    }
 
 
 
 
-      /**
-       * @param string $env
-       *
-       * @return bool
-      */
-      public function put(string $env): bool
-      {
-          preg_match('#^(?=[A-Z])(.*)=(.*)$#', $env, $matches);
 
-          if (! empty($matches)) {
-              putenv($env);
-              [$key, $value] = $this->envAsArray($matches[0]);
-              $_SERVER[$key] = $_ENV[$key] = $value;
-              return true;
-          }
-          return false;
-     }
+    /**
+     * @inheritDoc
+    */
+    public function export(string $file = '.env.local'): bool
+    {
+        if (!$this->allowed($file)) {
+            throw new \RuntimeException(
+                "'$file' is not allowed. you must load only (". join(', ', $this->only) . ")"
+            );
+        }
+
+        $file = $this->prepareToExport(
+            $this->loadPath($file)
+        );
+
+        foreach ($_ENV as $name => $value) {
+            file_put_contents($file, "$name=$value". PHP_EOL, FILE_APPEND);
+        }
+
+        return empty(file($file));
+    }
+
+
+
+
+
+    /**
+     * @param array $data
+     *
+     * @return void
+    */
+    public function loadFromArray(array $data): void
+    {
+        foreach ($data as $env) {
+            if (stripos($env, '#') !== false) {
+                continue;
+            }
+            $this->put($env);
+        }
+    }
+
+
+
+
+    /**
+     * @param string $env
+     *
+     * @return bool
+    */
+    public function put(string $env): bool
+    {
+        preg_match('#^(?=[A-Z])(.*)=(.*)$#', $env, $matches);
+
+        if (!empty($matches)) {
+            putenv($env);
+            [$key, $value] = $this->envAsArray($matches[0]);
+            $_SERVER[$key] = $_ENV[$key] = $value;
+            return true;
+        }
+        return false;
+    }
 
 
 
@@ -144,26 +143,26 @@ class Dotenv implements DotenvInterface
     */
     public function clear(): void
     {
-        if (! empty($_ENV)) {
+        if (!empty($_ENV)) {
             foreach (array_keys($_ENV) as $name) {
-                 unset($_SERVER[$name], $_ENV[$name]);
+                unset($_SERVER[$name], $_ENV[$name]);
             }
         }
     }
 
 
 
-     /**
-      * @param string $env
-      *
-      * @return array
-     */
-     private function envAsArray(string $env): array
-     {
-         $parameters = str_replace(' ', '', trim($env));
+    /**
+     * @param string $env
+     *
+     * @return array
+    */
+    private function envAsArray(string $env): array
+    {
+        $parameters = str_replace(' ', '', trim($env));
 
-         return explode("=", $parameters, 2);
-     }
+        return explode("=", $parameters, 2);
+    }
 
 
 
@@ -174,7 +173,7 @@ class Dotenv implements DotenvInterface
     */
     private function loadPath(string $file): string
     {
-         return $this->basePath . DIRECTORY_SEPARATOR . trim($file, DIRECTORY_SEPARATOR);
+        return $this->basePath . DIRECTORY_SEPARATOR . trim($file, DIRECTORY_SEPARATOR);
     }
 
 
@@ -200,17 +199,17 @@ class Dotenv implements DotenvInterface
     */
     private function loadEnvironments(string $file): array
     {
-        if (! $this->allowed($file)) {
+        if (!$this->allowed($file)) {
             throw new \RuntimeException(
-        "File '$file' is not allowed. you must load only (". join(', ', $this->only) . ")"
+                "File '$file' is not allowed. you must load only (". join(', ', $this->only) . ")"
             );
         }
 
-        if (! $path = realpath($this->loadPath($file))) {
+        if (!$path = realpath($this->loadPath($file))) {
             throw new \RuntimeException("File $file does not exist.");
         }
 
-        $data = file($path, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+        $data = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
         if (empty($data)) {
             throw new \RuntimeException("empty contents for '$file'");
@@ -225,11 +224,11 @@ class Dotenv implements DotenvInterface
     {
         $dir  = dirname($file);
 
-        if (! is_dir($dir)) {
+        if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
 
-        if (! touch($file) || empty($_ENV)) {
+        if (!touch($file) || empty($_ENV)) {
             throw new \RuntimeException(
                 "Something went wrong the moment touch file or may be empty environments."
             );

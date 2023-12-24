@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client\Exception;
-
 
 use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Message\RequestInterface;
@@ -18,7 +18,6 @@ use Psr\Http\Message\RequestInterface;
  */
 class NetworkException extends ClientException implements NetworkExceptionInterface
 {
-
     /**
      * @inheritDoc
     */

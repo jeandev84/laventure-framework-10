@@ -1,11 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client;
 
-
 use Psr\Http\Message\ResponseInterface;
-
 
 /**
  * HttpClientInterface
@@ -18,7 +17,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 interface HttpClientInterface
 {
-
     /**
      * Send request to client and get a response by each method
      *

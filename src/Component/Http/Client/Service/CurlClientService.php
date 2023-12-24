@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client\Service;
-
 
 use Laventure\Component\Http\Client\Service\Contract\ClientService;
 use Laventure\Component\Http\Message\Response\Response;

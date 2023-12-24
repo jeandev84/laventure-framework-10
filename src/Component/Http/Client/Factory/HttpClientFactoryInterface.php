@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client\Factory;
-
 
 use Psr\Http\Message\ResponseInterface;
 
@@ -17,11 +17,11 @@ use Psr\Http\Message\ResponseInterface;
  */
 interface HttpClientFactoryInterface
 {
-      /**
-       * @param string $method
-       * @param string $url
-       * @param array $options
-       * @return ResponseInterface
-      */
-      public function createRequest(string $method, string $url, array $options = []): ResponseInterface;
+    /**
+     * @param string $method
+     * @param string $url
+     * @param array $options
+     * @return ResponseInterface
+    */
+    public function createRequest(string $method, string $url, array $options = []): ResponseInterface;
 }

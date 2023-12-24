@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client;
-
 
 use Laventure\Component\Http\Client\Service\Contract\ClientServiceInterface;
 use Laventure\Component\Http\Client\Service\CurlClientService;
@@ -21,8 +21,6 @@ use Psr\Http\Message\ResponseInterface;
 */
 class HttpClient implements HttpClientInterface
 {
-
-
     /**
      * @var ClientServiceInterface
     */
@@ -37,7 +35,7 @@ class HttpClient implements HttpClientInterface
     */
     public function __construct(ClientServiceInterface $client)
     {
-         $this->client = $client;
+        $this->client = $client;
     }
 
 
@@ -49,7 +47,7 @@ class HttpClient implements HttpClientInterface
     */
     public static function create(): static
     {
-         return new self(new CurlClientService());
+        return new self(new CurlClientService());
     }
 
 

@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 */
 class UriTest extends TestCase
 {
-      public function testParsingURI()
+      public function testParsingURI(): void
       {
           $uri = new Uri('http://localhost:8000/users/profile?username=john&active=1#anchor1');
 
@@ -27,6 +27,15 @@ class UriTest extends TestCase
           $this->assertSame('/users/profile', $uri->getPath());
           $this->assertSame('username=john&active=1', $uri->getQuery());
           $this->assertSame('anchor1', $uri->getFragment());
-          $this->assertSame('/users/profile?username=john&active=1#anchor1', (string)$uri);
+          $this->assertSame('http://localhost:8000/users/profile?username=john&active=1#anchor1', (string)$uri);
+      }
+
+
+
+      public function testUriToString(): void
+      {
+          $uri = new Uri('http://username:password@hostname:9090/path?arg=value#anchor');
+
+          $this->assertSame('http://username:password@hostname:9090/path?arg=value#anchor', (string)$uri);
       }
 }

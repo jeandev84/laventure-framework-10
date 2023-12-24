@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client\Service\Contract;
-
 
 /**
  * ClientService
@@ -69,7 +69,7 @@ abstract class ClientService implements ClientServiceInterface
     */
     public function __construct(array $options = [])
     {
-         $this->withOptions($options);
+        $this->withOptions($options);
     }
 
 
