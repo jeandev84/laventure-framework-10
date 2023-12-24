@@ -149,15 +149,20 @@ class Response implements ResponseInterface
     /**
      * @return void
     */
-    private function sendResponseCode(): void
+    protected function sendResponseCode(): void
     {
-        http_response_code($this->status);
+         if ($this->reasonPhrase) {
+             header(sprintf('%s %s %s', $this->version, $this->status, $this->reasonPhrase));
+             return;
+         }
+
+         http_response_code($this->status);
     }
 
 
 
 
-    private function sendHeaders(): void
+    protected function sendHeaders(): void
     {
         foreach ($this->getHeaders() as $name => $values) {
             header(sprintf('%s: %s', $name, join(", ", $values)));
