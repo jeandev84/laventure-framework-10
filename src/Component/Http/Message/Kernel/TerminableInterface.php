@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Handlers\Kernel;
+namespace Laventure\Component\Http\Message\Kernel;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Laventure\Component\Http\Message\Request\Request;
+use Laventure\Component\Http\Message\Response\Response;
 
 /**
  * TerminableInterface
@@ -19,11 +19,11 @@ use Psr\Http\Message\ServerRequestInterface;
 interface TerminableInterface
 {
     /**
-     * @param ServerRequestInterface $request
+     * @param Request $request
      *
-     * @param ResponseInterface $response
+     * @param Response $response
      *
      * @return mixed
     */
-    public function terminate(ServerRequestInterface $request, ResponseInterface $response): mixed;
+    public function terminate(Request $request, Response $response): mixed;
 }
