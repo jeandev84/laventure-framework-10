@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Handlers\Middlewares;
+namespace Laventure\Usage\Http\Handlers\Middlewares;
 
-use Laventure\Component\Http\Handlers\Service\Routing\Router;
+use Laventure\Usage\Http\Handlers\Service\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -17,7 +17,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Handlers\Middlewares
+ * @package  Laventure\Usage\Http\Handlers\Middlewares
  */
 class RoutingMiddleware implements MiddlewareInterface
 {

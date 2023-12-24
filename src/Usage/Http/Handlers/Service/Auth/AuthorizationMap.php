@@ -1,8 +1,7 @@
 <?php
-
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Handlers\Service\Auth;
+namespace Laventure\Usage\Http\Handlers\Service\Auth;
 
 use Laventure\Component\Http\Message\Response\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -15,7 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Handlers\Service\Auth
+ * @package  Laventure\Usage\Http\Handlers\Service\Auth
  */
 class AuthorizationMap
 {

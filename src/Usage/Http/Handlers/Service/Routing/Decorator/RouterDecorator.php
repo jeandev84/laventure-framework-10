@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Handlers\Service\Routing\Decorator;
+namespace Laventure\Usage\Http\Handlers\Service\Routing\Decorator;
 
-use Closure;
 use Laventure\Component\Routing\Route\Route;
 use Laventure\Component\Routing\Router;
-use Laventure\Component\Routing\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -17,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Handlers\Service\Routing\Decorator
+ * @package  Laventure\Usage\Http\Handlers\Service\Routing\Decorator
  */
 class RouterDecorator
 {
