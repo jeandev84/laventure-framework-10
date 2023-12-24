@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message;
@@ -130,7 +131,7 @@ trait MessageTrait
      */
     public function getHeaders(): array
     {
-         return $this->headers->all();
+        return $this->headers->all();
     }
 
 
@@ -198,7 +199,7 @@ trait MessageTrait
      */
     public function getHeaderLine(string $name): string
     {
-         return join(', ', $this->getHeader($name));
+        return join(', ', $this->getHeader($name));
     }
 
 

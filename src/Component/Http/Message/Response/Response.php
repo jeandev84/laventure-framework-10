@@ -151,12 +151,17 @@ class Response implements ResponseInterface
     */
     protected function sendResponseCode(): void
     {
-         if ($this->reasonPhrase) {
-             header(sprintf('%s %s %s', $this->version, $this->status, $this->reasonPhrase));
-             return;
-         }
+        if ($this->reasonPhrase) {
+            header(sprintf(
+                '%s %s %s',
+                $this->version,
+                $this->status,
+                $this->reasonPhrase
+            ));
+            return;
+        }
 
-         http_response_code($this->status);
+        http_response_code($this->status);
     }
 
 
@@ -174,4 +179,3 @@ class Response implements ResponseInterface
         }
     }
 }
-
