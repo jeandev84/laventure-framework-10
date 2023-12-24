@@ -1,10 +1,9 @@
 <?php
-
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Message\Request\Upload;
+namespace Laventure\Component\Http\Message\Request\File;
 
-use Laventure\Component\Http\Message\Request\Upload\Exception\UploadedFileException;
+use Laventure\Component\Http\Message\Request\File\Exception\UploadedFileException;
 use Laventure\Component\Http\Message\Stream\Stream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -16,7 +15,7 @@ use Psr\Http\Message\UploadedFileInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Message\Request\Upload
+ * @package  Laventure\Component\Http\Message\Request\File
  */
 class UploadedFile implements UploadedFileInterface
 {

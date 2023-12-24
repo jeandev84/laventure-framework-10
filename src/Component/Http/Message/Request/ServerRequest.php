@@ -13,7 +13,7 @@ use Laventure\Component\Http\Message\Request\Params\QueryParams;
 use Laventure\Component\Http\Message\Request\Params\RequestAttributes;
 use Laventure\Component\Http\Message\Request\Params\RequestHeaders;
 use Laventure\Component\Http\Message\Request\Params\ServerParams;
-use Laventure\Component\Http\Message\Request\Upload\UploadedFileTransformer;
+use Laventure\Component\Http\Message\Request\File\UploadedFileTransformer;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
