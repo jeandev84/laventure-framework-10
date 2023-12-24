@@ -159,7 +159,7 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getMethod(): string
     {
-        return $this->server->requestMethod();
+        return $this->method ?: $this->server->requestMethod();
     }
 
 

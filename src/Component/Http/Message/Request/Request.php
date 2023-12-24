@@ -15,4 +15,8 @@ namespace Laventure\Component\Http\Message\Request;
  */
 class Request extends ServerRequest
 {
+    public function __construct(string $method, string $url, array $server = [])
+    {
+        parent::__construct($method, $url, $server);
+    }
 }

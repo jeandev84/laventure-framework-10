@@ -25,10 +25,9 @@ class CurlClientService extends ClientService
     */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
-        $uri      = $request->getUri();
-        $url      = 'http://'. $uri->getHost() .':' . $uri->getPort() . ($uri->__toString());
-        $response = new Response();
-        $response->getBody()->write("Response from $url");
-        return $response;
+        $method   = $request->getMethod();
+        $uri      = $this->resolveUri($request->getUri());
+
+        return $this->createResponse("Response from $uri|$method");
     }
 }

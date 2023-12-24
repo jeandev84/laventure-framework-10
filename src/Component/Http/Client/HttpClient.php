@@ -41,14 +41,16 @@ class HttpClient implements HttpClientInterface
 
 
 
-
     /**
+     * @param array $options
+     *
      * @return static
     */
-    public static function create(): static
+    public static function create(array $options = []): static
     {
-        return new self(new CurlClientService());
+        return new self(new CurlClientService($options));
     }
+
 
 
 
