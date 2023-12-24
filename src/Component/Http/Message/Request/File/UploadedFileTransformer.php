@@ -1,8 +1,7 @@
 <?php
-
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Message\Request\Upload;
+namespace Laventure\Component\Http\Message\Request\File;
 
 /**
  * UploadedFileTransformer
@@ -11,7 +10,7 @@ namespace Laventure\Component\Http\Message\Request\Upload;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Message\Request\Upload
+ * @package  Laventure\Component\Http\Message\Request\File
  */
 class UploadedFileTransformer
 {
