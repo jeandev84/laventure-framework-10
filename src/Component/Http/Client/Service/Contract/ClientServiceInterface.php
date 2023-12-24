@@ -5,13 +5,13 @@ namespace Laventure\Component\Http\Client\Service\Contract;
 
 
 /**
- * ClientRequestInterface
+ * ClientServiceInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Client\Request\Contract
+ * @package  Laventure\Component\Http\Client\Service\Contract
  */
 interface ClientServiceInterface
 {
@@ -22,7 +22,7 @@ interface ClientServiceInterface
      *
      * @return $this
     */
-    public function uri(string $path): static;
+    public function url(string $path): static;
 
 
 

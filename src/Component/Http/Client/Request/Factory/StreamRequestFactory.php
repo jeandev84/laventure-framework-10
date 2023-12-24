@@ -5,7 +5,7 @@ namespace Laventure\Component\Http\Client\Request\Factory;
 
 
 /**
- * StreamClientRequestFactory
+ * StreamRequestFactory
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -13,7 +13,7 @@ namespace Laventure\Component\Http\Client\Request\Factory;
  *
  * @package  Laventure\Component\Http\Client\Factory
  */
-class StreamClientRequestFactory
+class StreamRequestFactory
 {
 
 }

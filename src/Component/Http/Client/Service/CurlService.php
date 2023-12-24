@@ -86,7 +86,7 @@ class CurlService implements ClientServiceInterface
     /**
      * @inheritDoc
     */
-    public function uri(string $path): static
+    public function url(string $path): static
     {
           $this->setOption(CURLOPT_URL, $path);
 

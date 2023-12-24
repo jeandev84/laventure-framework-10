@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Client\Request\Contract;
+namespace Laventure\Component\Http\Client\Request\Common;
 
 use Laventure\Component\Http\Client\Exception\NetworkException;
 use Laventure\Component\Http\Client\Exception\RequestException;
+use Laventure\Component\Http\Client\Request\Contract\ClientRequestInterface;
 use Laventure\Component\Http\Client\Service\Contract\ClientServiceInterface;
 use Laventure\Component\Http\Message\Response\Factory\ResponseFactory;
 use Psr\Http\Client\NetworkExceptionInterface;
@@ -15,13 +16,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
- * Client
+ * ClientRequest
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Client\Types\Contract
+ * @package  Laventure\Component\Http\Client\Request\Common
  */
 abstract class ClientRequest implements ClientRequestInterface
 {
@@ -155,6 +156,9 @@ abstract class ClientRequest implements ClientRequestInterface
     {
         return new NetworkException($request, $e->getMessage(), $e->getCode());
     }
+
+
+
 
 
     /**

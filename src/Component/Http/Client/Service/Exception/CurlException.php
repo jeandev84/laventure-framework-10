@@ -11,7 +11,7 @@ namespace Laventure\Component\Http\Client\Service\Exception;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Client\Request\Exception
+ * @package  Laventure\Component\Http\Client\Service\Exception
 */
 class CurlException extends \Exception
 {

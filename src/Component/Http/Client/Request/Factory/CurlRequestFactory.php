@@ -9,7 +9,7 @@ use Laventure\Component\Http\Client\Request\CurlRequest;
 use Laventure\Component\Http\Client\Service\CurlService;
 
 /**
- * CurlClientRequestFactory
+ * CurlRequestFactory
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -17,7 +17,7 @@ use Laventure\Component\Http\Client\Service\CurlService;
  *
  * @package  Laventure\Component\Http\Client\Request\Factory
  */
-class CurlClientRequestFactory
+class CurlRequestFactory
 {
      public static function create(): ClientRequestInterface
      {

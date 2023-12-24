@@ -6,7 +6,7 @@ namespace Laventure\Component\Http\Client;
 
 use Laventure\Component\Http\Client\Request\Contract\ClientRequestInterface;
 use Laventure\Component\Http\Client\Request\CurlRequest;
-use Laventure\Component\Http\Client\Request\Factory\CurlClientRequestFactory;
+use Laventure\Component\Http\Client\Request\Factory\CurlRequestFactory;
 use Laventure\Component\Http\Message\Request\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -47,7 +47,7 @@ class HttpClient implements HttpClientInterface
     */
     public static function create(): static
     {
-        return new self(CurlClientRequestFactory::create());
+        return new self(CurlRequestFactory::create());
     }
 
 
