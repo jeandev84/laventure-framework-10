@@ -119,17 +119,54 @@ class Response implements ResponseInterface
     */
     public function send(): void
     {
-        http_response_code($this->status);
+        if (php_sapi_name() !== 'cli') {
+            $this->sendResponseCode();
+            $this->sendHeaders();
+        }
     }
 
 
 
 
+
+
+
+
     /**
+     * Returns response has string
+     *
      * @return string
     */
     public function __toString(): string
     {
         return (string)$this->getBody();
     }
+
+
+
+
+
+    /**
+     * @return void
+    */
+    private function sendResponseCode(): void
+    {
+        http_response_code($this->status);
+    }
+
+
+
+
+    private function sendHeaders(): void
+    {
+        foreach ($this->getHeaders() as $name => $values) {
+            header(sprintf('%s: %s', $name, join(", ", $values)));
+        }
+
+        if (ob_get_status()) {
+            $content = ob_get_clean();
+            $this->setContent($content);
+        }
+    }
 }
+

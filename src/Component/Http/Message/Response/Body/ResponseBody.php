@@ -19,9 +19,9 @@ use Laventure\Component\Http\Message\Stream\Stream;
 class ResponseBody extends Stream
 {
     /**
-     * @var string|null
+     * @var string
     */
-    protected ?string $content = null;
+    protected string $content = '';
 
 
 
@@ -44,9 +44,10 @@ class ResponseBody extends Stream
     {
         ob_start();
         parent::write($string);
-        $this->content = ob_get_clean();
+        $this->content .= ob_get_clean();
         return 1;
     }
+
 
 
 

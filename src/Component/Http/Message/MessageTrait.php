@@ -1,10 +1,9 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message;
 
-use Laventure\Component\Http\Utils\Contract\ParameterInterface;
+use Laventure\Component\Http\Utils\Parameter;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -27,7 +26,7 @@ trait MessageTrait
 
 
     /**
-     * @var ParameterInterface
+     * @var Parameter
     */
     protected $headers;
 
@@ -92,7 +91,9 @@ trait MessageTrait
     */
     public function withHeaders(array $headers): static
     {
-        $this->headers->add($headers);
+        foreach ($headers as $name => $value) {
+            $this->withHeader($name, $value);
+        }
 
         return $this;
     }
@@ -129,7 +130,7 @@ trait MessageTrait
      */
     public function getHeaders(): array
     {
-        return $this->headers->all();
+         return $this->headers->all();
     }
 
 
@@ -197,8 +198,9 @@ trait MessageTrait
      */
     public function getHeaderLine(string $name): string
     {
-        return '';
+         return join(', ', $this->getHeader($name));
     }
+
 
 
 

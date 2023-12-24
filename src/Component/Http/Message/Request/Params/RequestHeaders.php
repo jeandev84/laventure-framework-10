@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Params;
 
+use Laventure\Component\Http\Utils\HeaderParameter;
 use Laventure\Component\Http\Utils\Parameter;
 
 /**
