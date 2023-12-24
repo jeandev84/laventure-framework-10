@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request;
 
-use Laventure\Component\Http\Message\MessageTrait;
+use Laventure\Component\Http\Message\Common\MessageTrait;
 use Laventure\Component\Http\Message\Request\Body\RequestBody;
-use Laventure\Component\Http\Message\Request\Params\RequestAttributes;
 use Laventure\Component\Http\Message\Request\Params\CookieParams;
+use Laventure\Component\Http\Message\Request\Params\FileParams;
 use Laventure\Component\Http\Message\Request\Params\ParsedBody;
 use Laventure\Component\Http\Message\Request\Params\QueryParams;
+use Laventure\Component\Http\Message\Request\Params\RequestAttributes;
 use Laventure\Component\Http\Message\Request\Params\RequestHeaders;
 use Laventure\Component\Http\Message\Request\Params\ServerParams;
-use Laventure\Component\Http\Message\Request\Params\FileParams;
 use Laventure\Component\Http\Message\Request\Upload\UploadedFileTransformer;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 
