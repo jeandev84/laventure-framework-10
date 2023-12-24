@@ -14,7 +14,7 @@ use Laventure\Component\Http\Message\Response\Response;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Kernel
+ * @package  Laventure\Component\Http\Message\Kernel
  */
 interface TerminableInterface
 {
