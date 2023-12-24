@@ -14,29 +14,29 @@ use Psr\Http\Client\ClientInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Client\Service\Contract;
+ * @package  Laventure\Component\Http\Client\Service\Contract
  */
 interface ClientServiceInterface extends ClientInterface
 {
 
-        /**
-          * Client options
-          *
-          * @param array $options
-          *
-          * @return mixed
-        */
-        public function withOptions(array $options): static;
+    /**
+     * Client options
+     *
+     * @param array $options
+     *
+     * @return static
+    */
+    public function withOptions(array $options): static;
 
 
 
 
 
 
-        /**
-         * Returns options
-         *
-         * @return array
-        */
-        public function getOptions(): array;
+    /**
+     * Returns options
+     *
+     * @return array
+    */
+    public function getOptions(): array;
 }

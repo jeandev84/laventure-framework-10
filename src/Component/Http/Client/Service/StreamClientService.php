@@ -9,16 +9,17 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * CurlClientService
+ * StreamClientService
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
  * @package  Laventure\Component\Http\Client\Service
- */
-class CurlService extends ClientService
+*/
+class StreamClientService extends ClientService
 {
+
     /**
      * @inheritDoc
     */
