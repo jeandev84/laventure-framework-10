@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client;
 
-use Laventure\Component\Http\Client\Service\Contract\ClientServiceInterface;
-use Laventure\Component\Http\Client\Service\CurlClientService;
+use Laventure\Component\Http\Client\Request\Contract\ClientRequestInterface;
+use Laventure\Component\Http\Client\Request\CurlRequest;
+use Laventure\Component\Http\Client\Request\Factory\CurlClientRequestFactory;
 use Laventure\Component\Http\Message\Request\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,18 +23,18 @@ use Psr\Http\Message\ResponseInterface;
 class HttpClient implements HttpClientInterface
 {
     /**
-     * @var ClientServiceInterface
+     * @var ClientRequestInterface
     */
-    protected ClientServiceInterface $client;
+    protected ClientRequestInterface $client;
 
 
 
 
 
     /**
-     * @param ClientServiceInterface $client
+     * @param ClientRequestInterface $client
     */
-    public function __construct(ClientServiceInterface $client)
+    public function __construct(ClientRequestInterface $client)
     {
         $this->client = $client;
     }
@@ -42,13 +43,11 @@ class HttpClient implements HttpClientInterface
 
 
     /**
-     * @param array $options
-     *
      * @return static
     */
-    public static function create(array $options = []): static
+    public static function create(): static
     {
-        return new self(new CurlClientService($options));
+        return new self(CurlClientRequestFactory::create());
     }
 
 

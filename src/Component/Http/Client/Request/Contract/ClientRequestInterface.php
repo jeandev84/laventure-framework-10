@@ -1,79 +1,40 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client\Request\Contract;
 
+use Psr\Http\Client\ClientInterface;
 
 /**
- * ClientRequestInterface
+ * ClientServiceInterface
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Client\Request\Contract
+ * @package  Laventure\Component\Http\Client\Service\Contract
  */
-interface ClientRequestInterface
+interface ClientRequestInterface extends ClientInterface
 {
-
-
     /**
-     * @return string
+     * Client options
+     *
+     * @param array $options
+     *
+     * @return static
     */
-    public function getUri(): string;
+    public function withOptions(array $options): static;
 
-
-
-
-    /**
-     * @return string
-    */
-    public function getMethod(): string;
 
 
 
 
 
     /**
-     * @return string
-    */
-    public function getBody(): string;
-
-
-
-
-    /**
+     * Returns options
+     *
      * @return array
     */
-    public function getHeaders(): array;
-
-
-
-
-
-    /**
-     * @return int
-    */
-    public function getStatusCode(): int;
-
-
-
-
-
-
-    /**
-     * @return array
-    */
-    public function getInfo(): array;
-
-
-
-
-
-
-
-    /**
-     * @return mixed
-    */
-    public function send(): mixed;
+    public function getOptions(): array;
 }

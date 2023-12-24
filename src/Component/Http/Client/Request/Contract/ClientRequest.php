@@ -2,23 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Client\Service\Contract;
+namespace Laventure\Component\Http\Client\Request\Contract;
 
+use Laventure\Component\Http\Client\Exception\NetworkException;
+use Laventure\Component\Http\Client\Exception\RequestException;
+use Laventure\Component\Http\Client\Service\Contract\ClientServiceInterface;
 use Laventure\Component\Http\Message\Response\Factory\ResponseFactory;
-use Laventure\Component\Http\Message\Response\Response;
+use Psr\Http\Client\NetworkExceptionInterface;
+use Psr\Http\Client\RequestExceptionInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
- * ClientService
+ * Client
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Client\Service\Contract
+ * @package  Laventure\Component\Http\Client\Types\Contract
  */
-abstract class ClientService implements ClientServiceInterface
+abstract class ClientRequest implements ClientRequestInterface
 {
     protected array $options = [
         'query'    => [],
@@ -29,12 +34,12 @@ abstract class ClientService implements ClientServiceInterface
 
 
 
+
     /**
-     * @param array $options
+     * @param ClientServiceInterface $service
     */
-    public function __construct(array $options = [])
+    public function __construct(protected ClientServiceInterface $service)
     {
-         $this->withOptions($options);
     }
 
 
@@ -138,5 +143,27 @@ abstract class ClientService implements ClientServiceInterface
         $response = $factory->createResponse($code, $reasonPhrase);
         $response->getBody()->write($content);
         return $response;
+    }
+
+
+    /**
+     * @param RequestInterface $request
+     * @param \Throwable $e
+     * @return NetworkExceptionInterface
+     */
+    protected function createNetworkException(RequestInterface $request, \Throwable $e): NetworkExceptionInterface
+    {
+        return new NetworkException($request, $e->getMessage(), $e->getCode());
+    }
+
+
+    /**
+     * @param RequestInterface $request
+     * @param \Throwable $e
+     * @return RequestExceptionInterface
+    */
+    protected function createRequestException(RequestInterface $request, \Throwable $e): RequestExceptionInterface
+    {
+        return new RequestException($request, $e->getMessage(), $e->getCode());
     }
 }

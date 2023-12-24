@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Client\Request\Exception;
+namespace Laventure\Component\Http\Client\Service\Exception;
 
 
 /**
