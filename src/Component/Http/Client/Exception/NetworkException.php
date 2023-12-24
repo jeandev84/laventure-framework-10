@@ -16,13 +16,6 @@ use Psr\Http\Message\RequestInterface;
  *
  * @package  Laventure\Component\Http\Client\Exception
  */
-class NetworkException extends ClientException implements NetworkExceptionInterface
+class NetworkException extends RequestException implements NetworkExceptionInterface
 {
-    /**
-     * @inheritDoc
-    */
-    public function getRequest(): RequestInterface
-    {
-
-    }
 }

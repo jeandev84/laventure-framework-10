@@ -98,16 +98,30 @@ abstract class ClientService implements ClientServiceInterface
      * @param UriInterface $uri
      * @return string
     */
-    protected function resolveUri(UriInterface $uri): string
+    protected function resolvedUri(UriInterface $uri): string
     {
          $path = (string)$uri;
 
          if ($queries = $this->getOption('query', [])) {
-             $path .= "?". http_build_query($queries);
+             $path .= "?". $this->buildQueryParams($queries);
          }
 
          return $path;
     }
+
+
+
+
+    /**
+     * @param array $params
+     *
+     * @return string
+    */
+    protected function buildQueryParams(array $params): string
+    {
+        return http_build_query($params);
+    }
+
 
 
 

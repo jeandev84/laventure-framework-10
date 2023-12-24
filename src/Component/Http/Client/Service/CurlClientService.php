@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client\Service;
 
+use Laventure\Component\Http\Client\Exception\NetworkException;
+use Laventure\Component\Http\Client\Exception\RequestException;
+use Laventure\Component\Http\Client\Request\CurlRequest;
 use Laventure\Component\Http\Client\Service\Contract\ClientService;
-use Laventure\Component\Http\Message\Response\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -25,9 +27,22 @@ class CurlClientService extends ClientService
     */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
-        $method   = $request->getMethod();
-        $uri      = $this->resolveUri($request->getUri());
+        try {
 
-        return $this->createResponse("Response from $uri|$method");
+            $client = new CurlRequest($this->resolvedUri($request->getUri()));
+            $client->method($request->getMethod());
+            $client->send();
+
+            return $this->createResponse($client->getBody(), $client->getStatusCode());
+
+        } catch (\Throwable $e) {
+
+            $code = $e->getCode();
+
+            return match ($code) {
+                7       => throw new NetworkException($request, $e->getMessage(), $e->getCode()),
+                default => throw new RequestException($request, $e->getMessage(), $e->getCode())
+            };
+        }
     }
 }

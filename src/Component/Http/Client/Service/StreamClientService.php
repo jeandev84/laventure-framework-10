@@ -24,6 +24,9 @@ class StreamClientService extends ClientService
     */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
+        $method   = $request->getMethod();
+        $uri      = $this->resolvedUri($request->getUri());
 
+        return $this->createResponse("Response from $uri|$method");
     }
 }
