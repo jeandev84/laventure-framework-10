@@ -153,4 +153,25 @@ class HttpClientService
 
         echo $response;
     }
+
+
+
+    public function auth(): void
+    {
+        // Auth Basic
+        try {
+            $response = $this->client->post( 'http://localhost:8000/auth/login.php', [
+                'auth_basic' => [
+                    'login' => 'john',
+                    'password' => 'secret'
+                ]
+            ]);
+        } catch (Exception $e) {
+            $response = new Response(500);
+            $response->setContent($e->getMessage());
+        }
+
+
+        echo $response;
+    }
 }
