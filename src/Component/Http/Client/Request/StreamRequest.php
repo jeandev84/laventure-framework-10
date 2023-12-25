@@ -25,7 +25,7 @@ class StreamRequest extends ClientRequest
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $method   = $request->getMethod();
-        $uri      = $this->resolvedUri($request->getUri());
+        $uri      = (string)$request->getUri();
 
         return $this->createResponse("Response from $uri|$method");
     }

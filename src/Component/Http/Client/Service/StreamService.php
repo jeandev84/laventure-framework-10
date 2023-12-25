@@ -35,15 +35,17 @@ class StreamService extends ClientService
      */
     public function getInfo($key): mixed
     {
-        // TODO: Implement getInfo() method.
+        return '';
     }
+
+
 
     /**
      * @inheritDoc
      */
     public function getInfos(): array
     {
-        // TODO: Implement getInfos() method.
+        return [];
     }
 
     /**
@@ -51,6 +53,6 @@ class StreamService extends ClientService
      */
     public function send(): mixed
     {
-        // TODO: Implement send() method.
+        return true;
     }
 }

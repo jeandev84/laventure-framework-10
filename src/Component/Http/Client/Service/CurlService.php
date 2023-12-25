@@ -219,9 +219,17 @@ class CurlService extends ClientService
         $body = $this->getParsedBody();
 
         if (in_array($this->method, ['POST', 'PUT', 'PATCH'])) {
-            if ($this->isMethod('POST')) {
-                $this->setOption(CURLOPT_POST, 1);
-            }
+            switch ($this->method):
+                case 'POST':
+                    $this->setOption(CURLOPT_POST, 1);
+                    break;
+                case 'PUT':
+                    $this->setOption(CURLOPT_PUT, 1);
+                    break;
+                default:
+
+            endswitch;
+
             $this->setOption(CURLOPT_POSTFIELDS, $body);
         }
     }
