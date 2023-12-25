@@ -133,7 +133,7 @@ abstract class ClientService implements ClientServiceInterface
     /**
      * @return string
     */
-    public function getParsedBody(): string
+    public function getRequestBody(): string
     {
         if ($this->jsonBody) {
             return $this->jsonBody;

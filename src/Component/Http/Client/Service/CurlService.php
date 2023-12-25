@@ -408,7 +408,7 @@ class CurlService extends ClientService
 
         // set parsed body
         if (in_array($this->method, ['POST', 'PUT', 'PATCH'])) {
-            $this->setOption(CURLOPT_POSTFIELDS, $this->getParsedBody());
+            $this->setOption(CURLOPT_POSTFIELDS, $this->getRequestBody());
         }
     }
 
