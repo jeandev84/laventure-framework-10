@@ -54,12 +54,12 @@ class CurlRequest extends ClientRequest
 
     /**
      * @param RequestInterface $request
-     * @param Exception $e
+     * @param \Throwable $e
      * @return mixed
      * @throws NetworkExceptionInterface
      * @throws RequestExceptionInterface
     */
-    protected function abort(RequestInterface $request, Exception $e): mixed
+    protected function abort(RequestInterface $request, \Throwable $e): mixed
     {
         $code = $e->getCode();
 

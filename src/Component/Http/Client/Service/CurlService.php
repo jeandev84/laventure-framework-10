@@ -67,8 +67,8 @@ class CurlService extends ClientService
          switch ($method):
              case 'GET':
              case 'HEAD':
-                  $this->setOption(CURLOPT_HEADER, false);
-                  break;
+                 $this->setOption(CURLOPT_HEADER, false);
+                 break;
              case 'POST':
                  $this->setOption(CURLOPT_POST, 1);
                  break;
@@ -81,6 +81,7 @@ class CurlService extends ClientService
 
          return parent::method($method);
      }
+
 
 
 
@@ -114,7 +115,7 @@ class CurlService extends ClientService
     /**
      * @inheritDoc
     */
-    public function oAuth(string $accessToken): static
+    public function authAccessToken(string $accessToken): static
     {
         return $this->headers([
             "Authorization: $accessToken"
@@ -129,6 +130,8 @@ class CurlService extends ClientService
     */
     public function headers(array $headers): static
     {
+        $headers = $this->resolveHeaders($headers);
+
         $this->headers = array_merge($this->headers, $headers);
 
         return $this->setOption(CURLOPT_HTTPHEADER, $this->headers);
@@ -162,9 +165,9 @@ class CurlService extends ClientService
     public function json(array|string $json): static
     {
         $this->headers(['Content-Type' => 'application/json; charset=UTF-8']);
-        $this->jsonBody = (is_array($json) ? $this->encodeJson($json) : $json);
+        $body = (is_array($json) ? $this->encodeJson($json) : $json);
 
-        return $this;
+        return $this->body($body);
     }
 
 
@@ -289,6 +292,19 @@ class CurlService extends ClientService
         curl_setopt_array($this->ch, $options);
 
         return $this;
+    }
+
+
+
+
+    /**
+     * @param $key
+     *
+     * @return bool
+    */
+    private function hasOption($key): bool
+    {
+        return empty($this->getInfo($key));
     }
 
 

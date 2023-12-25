@@ -21,18 +21,17 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
      * @var array
     */
     protected array $params = [
-        'auth_basic' => [
-           'login'    => '',
-           'password' => ''
-        ],
-        'oauth'    => '',
         'query'    => [],
-        'headers'  => [],
         'body'     => '',
         'json'     => null,
+        'headers'  => [],
         'proxy'    => '',
-        'files'    => [],
-        'cookies'  => []
+        'cookies'  => [],
+        'auth_basic' => [],
+        'auth_access_token' => '',
+        'upload'      => null,
+        'download'    => null,
+        'files'       => []
     ];
 
 
@@ -97,7 +96,7 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
     */
     public function accessToken(): string
     {
-        return $this->get('oauth', '');
+        return $this->get('auth_access_token', '');
     }
 
 

@@ -69,6 +69,25 @@ class HttpClientService
          }
 
          echo $response;
+
+
+         // POST with headers
+         try {
+             $response = $this->client->post( 'http://localhost:8000/create.php', [
+                 'headers' => [
+                     'Content-Type' => 'application/json'
+                 ],
+                 'body' => [
+                     'username' => 'brown',
+                     'password' => '12345'
+                 ]
+             ]);
+         } catch (Exception $e) {
+             $response = new Response(500);
+             $response->setContent($e->getMessage());
+         }
+
+         echo $response;
      }
 
 
@@ -104,6 +123,24 @@ class HttpClientService
                 'query' => [
                    'id' => 3
                 ]
+            ]);
+        } catch (Exception $e) {
+            $response = new Response(500);
+            $response->setContent($e->getMessage());
+        }
+
+
+        echo $response;
+    }
+
+
+
+    public function proxy(): void
+    {
+        // Proxy
+        try {
+            $response = $this->client->post( 'https://example.com', [
+               'proxy' => '165.22.115.179:8080'
             ]);
         } catch (Exception $e) {
             $response = new Response(500);

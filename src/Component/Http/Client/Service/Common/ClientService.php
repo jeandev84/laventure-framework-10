@@ -12,6 +12,7 @@ use Laventure\Component\Http\Client\Service\Files\ClientFileInterface;
 use Laventure\Component\Http\Client\Service\Options\AuthBasicOptions;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOption;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOptionInterface;
+use Laventure\Component\Http\Client\Service\Options\Exception\ClientOptionException;
 
 /**
  * ClientService
@@ -62,6 +63,28 @@ abstract class ClientService implements ClientServiceInterface
      * @var array
     */
     protected array $headers = [];
+
+
+
+
+    /**
+     * @var array
+    */
+    private array $handlers = [
+        'query'      => 'query',
+        'body'       => 'body',
+        'json'       => 'json',
+        'headers'    => 'headers',
+        'proxy'      => 'proxy',
+        'cookies'    => 'cookies',
+        'auth_basic' => 'authBasic',
+        'auth_access_token' => 'authAccessToken',
+        'upload'      => 'upload',
+        'download'    => 'download',
+        'files'       => 'files'
+    ];
+
+
 
 
 
@@ -135,10 +158,6 @@ abstract class ClientService implements ClientServiceInterface
     */
     public function getRequestBody(): string
     {
-        if ($this->jsonBody) {
-            return $this->jsonBody;
-        }
-
         return $this->parsedBody;
     }
 
@@ -152,15 +171,20 @@ abstract class ClientService implements ClientServiceInterface
     */
     public function options(ClientServiceOptionInterface $options): static
     {
-         $this->queries($options->query())
-              ->proxy($options->proxy())
-              ->authBasic($options->authBasic())
-              ->oAuth($options->accessToken())
-              ->headers($options->headers())
-              ->body($options->body())
-              ->json($options->json())
-              ->files($options->files())
-              ->cookies($options->cookies());
+         foreach ($options->all() as $key => $value) {
+             if (!empty($value)) {
+                 if (array_key_exists($key, $this->handlers)) {
+                     $method = $this->handlers[$key];
+                     if (! method_exists($this, $method)) {
+                          throw new ClientOptionException(
+                      "Method '{$method}' does not exist inside : ". get_called_class()
+                          );
+                     }
+                     call_user_func_array([$this, $method], [$value]);
+                 }
+             }
+         }
+
 
          return $this;
     }
@@ -201,7 +225,7 @@ abstract class ClientService implements ClientServiceInterface
      *
      * @return mixed
     */
-    abstract public function oAuth(string $accessToken): static;
+    abstract public function authAccessToken(string $accessToken): static;
 
 
 
