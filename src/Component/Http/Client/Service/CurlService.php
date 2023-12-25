@@ -161,10 +161,10 @@ class CurlService extends ClientService
     /**
      * @inheritDoc
     */
-    public function json(array|string $body): static
+    public function json(array|string $json): static
     {
         $this->headers(['Content-Type' => 'application/json; charset=UTF-8']);
-        $this->parsedBody = (is_array($body) ? $this->encodeJson($body) : $body);
+        $this->jsonBody = (is_array($json) ? $this->encodeJson($json) : $json);
 
         return $this;
     }
@@ -220,6 +220,8 @@ class CurlService extends ClientService
     {
         return $this;
     }
+
+
 
 
 

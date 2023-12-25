@@ -34,7 +34,9 @@ class HttpClientService
          try {
              $response = $this->client->request( 'GET', 'http://localhost:8000/index.php', [
                  'query' => [
-                     'page' => 2, 'sort' => 'u.name', 'direction' => 'asc'
+                     'page' => 2,
+                     'sort' => 'u.name',
+                     'direction' => 'asc'
                  ]
              ]);
          } catch (Exception $e) {
@@ -42,7 +44,7 @@ class HttpClientService
              $response->setContent($e->getMessage());
          }
 
-         dump($response->getHeaders());
+         /* dump($response->getHeaders()); */
 
          echo $response;
      }

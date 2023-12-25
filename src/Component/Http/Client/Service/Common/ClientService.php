@@ -44,6 +44,11 @@ abstract class ClientService implements ClientServiceInterface
     protected string $parsedBody = '';
 
 
+    /**
+     * @var string
+    */
+    protected string $jsonBody  = '';
+
 
 
     /**
@@ -130,6 +135,10 @@ abstract class ClientService implements ClientServiceInterface
     */
     public function getParsedBody(): string
     {
+        if ($this->jsonBody) {
+            return $this->jsonBody;
+        }
+
         return $this->parsedBody;
     }
 
@@ -223,11 +232,12 @@ abstract class ClientService implements ClientServiceInterface
 
 
     /**
-     * @param array|string $body
+     * @param array|string $json
      *
      * @return $this
     */
-    abstract public function json(array|string $body): static;
+    abstract public function json(array|string $json): static;
+
 
 
 
