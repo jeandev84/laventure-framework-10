@@ -29,6 +29,10 @@ class AuthBasicOptions
     */
     public function toString(): string
     {
+        if (! $this->login) {
+            return '';
+        }
+
         return "$this->login:$this->password";
     }
 }

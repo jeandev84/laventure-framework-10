@@ -195,6 +195,26 @@ class Parameter implements ParameterInterface
 
 
 
+    /**
+     * @inheritDoc
+    */
+    public function isEmpty($key): bool
+    {
+        return empty($this->params[$key]);
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function count(): int
+    {
+        return count($this->params);
+    }
+
+
 
 
 

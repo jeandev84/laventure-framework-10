@@ -56,39 +56,6 @@ abstract class ClientRequest implements ClientRequestInterface
 
 
 
-
-    /**
-     * @param string $content
-     * @param int $statusCode
-     * @param array $headers
-     * @return ResponseInterface
-    */
-    protected function createResponse(string $content = '', int $statusCode = 200, array $headers = []): ResponseInterface
-    {
-        $response =  new Response($statusCode, $headers);
-        $response->getBody()->write($content);
-        return $response;
-    }
-
-
-
-
-    /**
-     * @return ResponseInterface
-    */
-    protected function respond(): ResponseInterface
-    {
-         return $this->createResponse(
-              $this->service->getBody(),
-              $this->service->getStatus(),
-              $this->service->getHeaders()
-         );
-    }
-
-
-
-
-
     /**
      * @param RequestInterface $request
      * @param \Throwable $e

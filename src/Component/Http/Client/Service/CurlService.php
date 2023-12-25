@@ -50,38 +50,38 @@ class CurlService extends ClientService
      public function __construct()
      {
          $this->ch = curl_init();
-         $this->setOptions($this->defaultOptions);
-     }
-
-
-
-
-
-     /**
-      * @param $key
-      * @param $value
-      * @return $this
-     */
-     public function setOption($key, $value): static
-     {
-          curl_setopt($this->ch, $key, $value);
-
-          return $this;
+         $this->initializeOptions();
      }
 
 
 
 
      /**
-      * @param array $options
+      * @param string $method
       *
       * @return $this
      */
-     public function setOptions(array $options): static
+     public function method(string $method): static
      {
-         curl_setopt_array($this->ch, $options);
+         // TODO refactoring using function match($method)
+         switch ($method):
+             case 'GET':
+             case 'HEAD':
+                  $this->setOption(CURLOPT_HEADER, false);
+                  break;
+             case 'POST':
+                 $this->setOption(CURLOPT_POST, 1);
+                 break;
+             case 'PUT':
+                 $this->setOption(CURLOPT_PUT, 1);
+                 break;
+             case 'PATCH':
+             case 'DELETE':
+                 $this->setOption(CURLOPT_CUSTOMREQUEST, $method);
+                 break;
+         endswitch;
 
-         return $this;
+         return parent::method($method);
      }
 
 
@@ -92,7 +92,10 @@ class CurlService extends ClientService
     */
     public function proxy(string $proxy): static
     {
-         return $this;
+         return $this->setOptions([
+             CURLOPT_TIMEOUT => 400,
+             CURLOPT_PROXY   => $proxy
+         ]);
     }
 
 
@@ -103,7 +106,7 @@ class CurlService extends ClientService
     */
     public function authBasic(AuthBasicOptions $options): static
     {
-         return $this;
+        return $this->setOption(CURLOPT_USERPWD, $options->toString());
     }
 
 
@@ -115,7 +118,9 @@ class CurlService extends ClientService
     */
     public function oAuth(string $accessToken): static
     {
-        return $this;
+        return $this->headers([
+            "Authorization: $accessToken"
+        ]);
     }
 
 
@@ -142,10 +147,10 @@ class CurlService extends ClientService
     public function body(array|string $body): static
     {
         if (is_array($body)) {
-            $body = $this->buildQueryParams($body, '', '&');
+            $body = $this->buildQueries($body, '', '&');
         }
 
-        $this->body = $body;
+        $this->parsedBody = $body;
 
         return $this;
     }
@@ -159,7 +164,7 @@ class CurlService extends ClientService
     public function json(array|string $body): static
     {
         $this->headers(['Content-Type' => 'application/json; charset=UTF-8']);
-        $this->body = (is_array($body) ? $this->encodeJson($body) : $body);
+        $this->parsedBody = (is_array($body) ? $this->encodeJson($body) : $body);
 
         return $this;
     }
@@ -194,11 +199,17 @@ class CurlService extends ClientService
 
     /**
      * @inheritDoc
-     */
+    */
     public function upload($file): static
     {
-        return $this;
+        return $this->setOptions([
+            CURLOPT_UPLOAD => 1,
+            CURLOPT_INFILESIZE => $file['size'],
+            CURLOPT_INFILE     => $file['resource']
+        ]);
     }
+
+
 
 
 
@@ -215,10 +226,27 @@ class CurlService extends ClientService
 
     /**
      * @inheritDoc
+     * @throws CurlException
     */
     public function send(): ClientResponseInterface
     {
+        // terminate options setting
+        $this->terminateOptions();
 
+        // returns the request body
+        $body = $this->getBody();
+
+        // returns status code
+        $statusCode = $this->getStatusCode();
+
+        // returns request headers
+        $headers = $this->getHeaders();
+
+        // close curl
+        $this->close();
+
+        // returns client response
+        return $this->createResponse($body, $statusCode, $headers);
     }
 
 
@@ -226,9 +254,189 @@ class CurlService extends ClientService
 
     /**
      * @inheritDoc
-     */
+    */
     public function toArray(): array
     {
-        // TODO: Implement toArray() method.
+        return $this->getInfos();
+    }
+
+
+
+
+
+    /**
+     * @param $key
+     * @param $value
+     * @return $this
+    */
+    private function setOption($key, $value): static
+    {
+        curl_setopt($this->ch, $key, $value);
+
+        return $this;
+    }
+
+
+
+
+    /**
+     * @param array $options
+     *
+     * @return $this
+    */
+    private function setOptions(array $options): static
+    {
+        curl_setopt_array($this->ch, $options);
+
+        return $this;
+    }
+
+
+
+
+
+
+    /**
+     * @return int
+    */
+    private function errno(): int
+    {
+        return curl_errno($this->ch);
+    }
+
+
+
+
+    /**
+     * @return string
+    */
+    private function error(): string
+    {
+        return curl_error($this->ch);
+    }
+
+
+
+
+    /**
+     * @return bool|string
+    */
+    private function exec(): bool|string
+    {
+        return curl_exec($this->ch);
+    }
+
+
+
+
+
+    /**
+     * @return void
+    */
+    private function close(): void
+    {
+        curl_close($this->ch);
+    }
+
+
+
+
+    /**
+     * @return mixed
+    */
+    private function getInfos(): mixed
+    {
+        return curl_getinfo($this->ch);
+    }
+
+
+
+
+
+    /**
+     * @param int $key
+     * @return mixed
+    */
+    private function getInfo(int $key): mixed
+    {
+        return curl_getinfo($this->ch, $key);
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    protected function getHeaders(): array
+    {
+        $this->setOptions([
+            CURLOPT_HEADER => true,
+            CURLOPT_NOBODY => true
+        ]);
+
+        $response   = $this->exec();
+        $headerRows = explode(PHP_EOL, $response);
+        $headerRows = array_filter($headerRows, 'trim');
+        return $this->filterHeaders($headerRows);
+    }
+
+
+
+
+
+    /**
+     * @return void
+    */
+    private function initializeOptions(): void
+    {
+        // set default options
+        $this->setOptions($this->defaultOptions);
+    }
+
+
+
+
+    /**
+     * @return void
+    */
+    private function terminateOptions(): void
+    {
+        // set curl URL after resolving
+        $this->setOption(CURLOPT_URL, $this->getUri());
+
+        // set parsed body
+        if (in_array($this->method, ['POST', 'PUT', 'PATCH'])) {
+            $this->setOption(CURLOPT_POSTFIELDS, $this->getParsedBody());
+        }
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    protected function getStatusCode(): int
+    {
+        return (int)$this->getInfo(CURLINFO_HTTP_CODE);
+    }
+
+
+    /**
+     * @inheritDoc
+     * @throws CurlException
+    */
+    protected function getBody(): string
+    {
+        $body = $this->exec();
+
+        // check curl error
+        if ($errno = $this->errno()) {
+            throw new CurlException($this->error(), $errno);
+        }
+
+        return (string)$body;
     }
 }

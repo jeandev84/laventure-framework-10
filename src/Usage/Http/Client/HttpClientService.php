@@ -42,6 +42,8 @@ class HttpClientService
              $response->setContent($e->getMessage());
          }
 
+         dump($response->getHeaders());
+
          echo $response;
      }
 

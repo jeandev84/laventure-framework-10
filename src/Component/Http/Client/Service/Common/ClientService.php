@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Client\Service\Common;
 
 
+use Laventure\Component\Http\Client\Response\ClientResponse;
+use Laventure\Component\Http\Client\Response\Contract\ClientResponseInterface;
 use Laventure\Component\Http\Client\Service\Contract\ClientServiceInterface;
 use Laventure\Component\Http\Client\Service\Cookies\ClientCookieInterface;
 use Laventure\Component\Http\Client\Service\Files\ClientFileInterface;
 use Laventure\Component\Http\Client\Service\Options\AuthBasicOptions;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOption;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOptionInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * ClientService
@@ -40,7 +41,7 @@ abstract class ClientService implements ClientServiceInterface
     /**
      * @var string
     */
-    protected string $body = '';
+    protected string $parsedBody = '';
 
 
 
@@ -107,18 +108,6 @@ abstract class ClientService implements ClientServiceInterface
 
 
 
-    /**
-     * @return string
-    */
-    public function getBody(): string
-    {
-        return $this->body;
-    }
-
-
-
-
-
 
 
     /**
@@ -127,11 +116,23 @@ abstract class ClientService implements ClientServiceInterface
     public function getUri(): string
     {
         if ($this->queries) {
-            $this->path .= "?". $this->buildQueryParams($this->queries);
+            $this->path .= "?". $this->buildQueries($this->queries);
         }
 
         return $this->path;
     }
+
+
+
+
+    /**
+     * @return string
+    */
+    public function getParsedBody(): string
+    {
+        return $this->parsedBody;
+    }
+
 
 
 
@@ -276,6 +277,59 @@ abstract class ClientService implements ClientServiceInterface
 
 
 
+    /**
+     * Returns response headers
+     *
+     * @return array
+    */
+    abstract protected function getHeaders(): array;
+
+
+
+
+
+    /**
+     * Returns response status
+     *
+     * @return int
+    */
+    abstract protected function getStatusCode(): int;
+
+
+
+
+
+    /**
+     * Returns response body
+     *
+     * @return string
+    */
+    abstract protected function getBody(): string;
+
+
+
+
+
+
+    /**
+     * @param string $content
+     * @param int $statusCode
+     * @param array $headers
+     * @return ClientResponseInterface
+   */
+    protected function createResponse(
+        string $content = '',
+        int $statusCode = 200,
+        array $headers = []
+    ): ClientResponseInterface
+    {
+        $response =  new ClientResponse($statusCode, $headers);
+        $response->getBody()->write($content);
+        return $response;
+    }
+
+
+
 
     /**
      * @param array $params
@@ -283,7 +337,11 @@ abstract class ClientService implements ClientServiceInterface
      * @param string|null $separator
      * @return string
     */
-    protected function buildQueryParams(array $params, string $prefix = '', ?string $separator = null): string
+    protected function buildQueries(
+        array $params,
+        string $prefix = '',
+        ?string $separator = null
+    ): string
     {
          return http_build_query($params, $prefix, $separator);
     }
@@ -356,5 +414,4 @@ abstract class ClientService implements ClientServiceInterface
     {
         return (string)json_encode($data, JSON_UNESCAPED_UNICODE);
     }
-
 }
