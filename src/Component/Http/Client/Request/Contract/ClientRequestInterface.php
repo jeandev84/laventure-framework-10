@@ -25,16 +25,4 @@ interface ClientRequestInterface extends ClientInterface
      * @return static
     */
     public function withOptions(array $options): static;
-
-
-
-
-
-
-    /**
-     * Returns options
-     *
-     * @return array
-    */
-    public function getOptions(): array;
 }

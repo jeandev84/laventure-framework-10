@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Client\Service\Contract;
 
 
+
 /**
  * ClientServiceInterface
  *
@@ -16,13 +17,13 @@ namespace Laventure\Component\Http\Client\Service\Contract;
 interface ClientServiceInterface
 {
 
-
     /**
      * @param string $path
      *
      * @return $this
     */
     public function url(string $path): static;
+
 
 
 
@@ -40,9 +41,22 @@ interface ClientServiceInterface
 
 
     /**
+      * @param array $options
+      *
+      * @return mixed
+    */
+    public function parseOptions(array $options): static;
+
+
+
+
+
+
+    /**
      * @return string
     */
     public function getBody(): string;
+
 
 
 
@@ -52,6 +66,7 @@ interface ClientServiceInterface
      * @return array
     */
     public function getHeaders(): array;
+
 
 
 
@@ -72,6 +87,7 @@ interface ClientServiceInterface
      * @return mixed
     */
     public function getInfo($key): mixed;
+
 
 
 

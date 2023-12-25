@@ -22,7 +22,7 @@ class JsonEncoder implements EncoderInterface
     */
     public static function encode($data): string
     {
-        $content = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $content = json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
 
         if (json_last_error()) {
             trigger_error(json_last_error_msg());

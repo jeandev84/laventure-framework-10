@@ -5,8 +5,11 @@ namespace Laventure\Component\Http\Client\Service;
 
 
 use CurlHandle;
+use Laventure\Component\Http\Client\Service\Common\ClientService;
 use Laventure\Component\Http\Client\Service\Contract\ClientServiceInterface;
 use Laventure\Component\Http\Client\Service\Exception\CurlException;
+use Laventure\Component\Http\Client\Service\Options\ClientServiceOption;
+use Laventure\Component\Http\Client\Service\Options\ClientServiceOptionInterface;
 
 /**
  * CurlRequest wrapper
@@ -17,46 +20,12 @@ use Laventure\Component\Http\Client\Service\Exception\CurlException;
  *
  * @package  Laventure\Component\Http\Client\Request
 */
-class CurlService implements ClientServiceInterface
+class CurlService extends ClientService
 {
      /**
       * @var CurlHandle|false
      */
      protected $ch;
-
-
-
-     /**
-      * @var string
-     */
-     protected string $url;
-
-
-     /**
-      * @var string
-     */
-     protected string $method = '';
-
-
-     /**
-      * @var null
-     */
-     protected $body  = null;
-
-
-
-     /**
-      * @var int
-     */
-     protected int $statusCode = 0;
-
-
-
-
-     /**
-      * @var array
-     */
-     protected array $headers = [];
 
 
 
@@ -72,44 +41,19 @@ class CurlService implements ClientServiceInterface
 
 
 
-     public function __construct()
-     {
-         $this->ch = curl_init();
-         $this->setOptions($this->defaultOptions);
-     }
-
-
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function url(string $path): static
-    {
-          $this->setOption(CURLOPT_URL, $path);
-
-          return $this;
-     }
-
-
-
-
-
-
 
      /**
-      * @param string $method
-      *
-      * @return $this
+      * @param ClientServiceOptionInterface|null $options
      */
-     public function method(string $method): static
+     public function __construct(ClientServiceOptionInterface $options = null)
      {
-         $this->method = $method;
+           $this->ch = curl_init();
+           $this->initializeOptions();
 
-         return $this;
+           parent::__construct($options);
      }
+
+
 
 
 
@@ -133,6 +77,7 @@ class CurlService implements ClientServiceInterface
 
 
 
+
      /**
       * @param array $options
       * @return $this
@@ -149,21 +94,21 @@ class CurlService implements ClientServiceInterface
 
 
      /**
-      * @return bool
+      * @inheritdoc
       *
       * @throws CurlException
      */
      public function send(): bool
      {
-          $this->setAvailableOptions();
+          $this->terminateOptions();
 
-          $this->body = (string)curl_exec($this->ch);
+          $this->withBody((string)$this->exec());
 
-          if ($errno = curl_errno($this->ch)) {
-               throw new CurlException(curl_error($this->ch), $errno);
+          if ($errno = $this->errno()) {
+               throw new CurlException($this->error(), $errno);
           }
 
-          $this->statusCode = (int)$this->getInfo(CURLINFO_HTTP_CODE);
+          $this->withStatusCode((int)$this->getInfo(CURLINFO_HTTP_CODE));
 
           curl_close($this->ch);
 
@@ -174,25 +119,38 @@ class CurlService implements ClientServiceInterface
 
 
 
-    /**
-     * @return string
-    */
-    public function getBody(): string
-    {
-        return $this->body;
-    }
+     /**
+      * @return int
+     */
+     public function errno(): int
+     {
+         return curl_errno($this->ch);
+     }
 
 
 
 
+     /**
+      * @return string
+     */
+     public function error(): string
+     {
+         return curl_error($this->ch);
+     }
 
-    /**
-     * @return int
-    */
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
-    }
+
+
+
+     /**
+      * @return bool|string
+     */
+     public function exec(): bool|string
+     {
+          return curl_exec($this->ch);
+     }
+
+
+
 
 
 
@@ -227,15 +185,31 @@ class CurlService implements ClientServiceInterface
     */
     public function getHeaders(): array
     {
-         return [];
+         $this->setOptions([CURLOPT_HEADER => true, CURLOPT_NOBODY => true]);
+         $response = $this->exec();
+         $headerRows = explode(PHP_EOL, $response);
+         $headerRows = array_filter($headerRows, 'trim');
+
+         return $this->filterHeaders($headerRows);
     }
 
 
 
 
 
-    private function setAvailableOptions(): void
+    /**
+     * @return void
+    */
+    private function initializeOptions(): void
     {
+        $this->setOptions($this->defaultOptions);
+    }
 
+
+
+
+    private function terminateOptions(): void
+    {
+        $this->setOption(CURLOPT_URL, $this->getUri());
     }
 }

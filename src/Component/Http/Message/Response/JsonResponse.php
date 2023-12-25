@@ -45,6 +45,25 @@ class JsonResponse extends Response
     public function __construct(array|object $data, int $status = 200, array $headers = [])
     {
         parent::__construct($status, array_merge($this->defaultHeaders, $headers));
-        $this->setContent(JsonEncoder::encode($data));
+        $this->setContent($this->encode($data));
+    }
+
+
+
+
+
+    /**
+     * @param array|object $data
+     * @return string
+    */
+    private function encode(array|object $data): string
+    {
+        $content = json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+
+        if (json_last_error()) {
+            trigger_error(json_last_error_msg());
+        }
+
+        return $content;
     }
 }

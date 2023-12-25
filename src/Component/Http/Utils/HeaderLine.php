@@ -15,7 +15,7 @@ namespace Laventure\Component\Http\Utils;
 */
 class HeaderLine
 {
-    public static function transformFromArray(array $headers): array
+    public static function fromArray(array $headers): array
     {
         $resolved = [];
         foreach ($headers as $header) {

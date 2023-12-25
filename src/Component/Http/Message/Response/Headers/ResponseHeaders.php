@@ -22,7 +22,7 @@ class ResponseHeaders extends Parameter
     public function __construct(array $params = [])
     {
         if (function_exists('headers_list')) {
-            $params = HeaderLine::transformFromArray(headers_list());
+            $params = array_merge(HeaderLine::fromArray(headers_list()), $params);
         }
 
         parent::__construct($params);

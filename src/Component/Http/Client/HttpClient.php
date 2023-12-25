@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client;
 
+use Laventure\Component\Http\Client\Exception\ClientException;
 use Laventure\Component\Http\Client\Request\Contract\ClientRequestInterface;
 use Laventure\Component\Http\Client\Request\CurlRequest;
 use Laventure\Component\Http\Client\Request\Factory\CurlRequestFactory;
@@ -51,22 +52,20 @@ class HttpClient implements HttpClientInterface
     }
 
 
-
-
-
-
-
-
     /**
      * @param string $method
      * @param string $url
      * @param array $options
      * @return ResponseInterface
-     * @throws ClientExceptionInterface
+     * @throws ClientException
     */
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
-        return $this->client->withOptions($options)->sendRequest(new Request($method, $url));
+        try {
+            return $this->client->withOptions($options)->sendRequest(new Request($method, $url));
+        } catch (\Throwable $e) {
+             throw new ClientException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
 
