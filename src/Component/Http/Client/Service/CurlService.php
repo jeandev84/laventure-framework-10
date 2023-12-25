@@ -180,7 +180,7 @@ class CurlService extends ClientService
     {
         $this->setUriOption();
         $this->setOverrideMethods();
-        $this->setRequestBody();
+        $this->setParsedBody();
     }
 
 
@@ -214,7 +214,7 @@ class CurlService extends ClientService
     /**
      * @return void
     */
-    private function setRequestBody(): void
+    private function setParsedBody(): void
     {
         $body = $this->getParsedBody();
 

@@ -36,7 +36,7 @@ class CurlRequest extends ClientRequest
             $this->service->parseOptions($this->options);
             $this->service->send();
 
-            return $this->createResponseFromService();
+            return $this->respond();
 
         } catch (\Throwable $e) {
 

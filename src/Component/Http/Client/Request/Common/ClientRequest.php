@@ -74,7 +74,7 @@ abstract class ClientRequest implements ClientRequestInterface
     /**
      * @return ResponseInterface
     */
-    protected function createResponseFromService(): ResponseInterface
+    protected function respond(): ResponseInterface
     {
          return $this->createResponse(
               $this->service->getBody(),

@@ -52,6 +52,9 @@ class HttpClient implements HttpClientInterface
     }
 
 
+
+
+
     /**
      * @param string $method
      * @param string $url
