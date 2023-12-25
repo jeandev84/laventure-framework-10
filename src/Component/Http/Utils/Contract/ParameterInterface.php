@@ -13,7 +13,7 @@ namespace Laventure\Component\Http\Utils\Contract;
  *
  * @package  Laventure\Component\Http\Utils\Contract
 */
-interface ParameterInterface
+interface ParameterInterface extends \ArrayAccess
 {
     /**
      * @param $id
@@ -41,6 +41,35 @@ interface ParameterInterface
      * @return bool
     */
     public function has($id): bool;
+
+
+
+
+
+    /**
+     * @param $key
+     * @return mixed
+    */
+    public function isEmpty($key): bool;
+
+
+
+
+
+    /**
+     * @return bool
+    */
+    public function empty(): bool;
+
+
+
+
+
+    /**
+     * @return int
+    */
+    public function count(): int;
+
 
 
 

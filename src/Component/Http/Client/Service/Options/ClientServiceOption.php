@@ -21,10 +21,18 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
      * @var array
     */
     protected array $params = [
+        'auth_basic' => [
+           'login'    => '',
+           'password' => ''
+        ],
+        'oauth'    => '',
         'query'    => [],
         'headers'  => [],
         'body'     => '',
-        'json'     => null
+        'json'     => null,
+        'proxy'    => '',
+        'files'    => [],
+        'cookies'  => []
     ];
 
 
@@ -40,7 +48,7 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
     /**
      * @inheritdoc
     */
-    public function getQueries(): array
+    public function query(): array
     {
         return $this->get('query', []);
     }
@@ -53,7 +61,7 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
     /**
      * @inheritdoc
     */
-    public function getBody(): array|string
+    public function body(): array|string
     {
         return $this->get('body', '');
     }
@@ -64,7 +72,7 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
     /**
      * @inheritDoc
     */
-    public function getJson(): string
+    public function json(): array|string
     {
        return $this->get('json', '');
     }
@@ -73,13 +81,70 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
 
 
 
+    /**
+     * @inheritdoc
+    */
+    public function headers(): array
+    {
+         return $this->get('headers', []);
+    }
+
+
 
 
     /**
      * @inheritdoc
     */
-    public function getHeaders(): array
+    public function accessToken(): string
     {
-         return $this->get('headers', []);
+        return $this->get('oauth', '');
+    }
+
+
+
+
+    /**
+     * @inheritdoc
+    */
+    public function authBasic(): AuthBasicOptions
+    {
+        return new AuthBasicOptions(
+            $this->params['auth_basic']['login'],
+            $this->params['auth_basic']['password'],
+        );
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function proxy(): string
+    {
+        return $this->get('proxy', '');
+    }
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function files(): array
+    {
+        return $this->get('files', []);
+    }
+
+
+
+
+
+    /**
+     * @inheritDoc
+    */
+    public function cookies(): array
+    {
+        return $this->get('cookies', []);
     }
 }

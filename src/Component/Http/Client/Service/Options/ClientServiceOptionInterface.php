@@ -4,6 +4,10 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Client\Service\Options;
 
 
+use Laventure\Component\Http\Client\Service\Cookies\ClientCookieInterface;
+use Laventure\Component\Http\Client\Service\Files\ClientFileInterface;
+use Laventure\Component\Http\Utils\Contract\ParameterInterface;
+
 /**
  * ClientServiceOptionInterface
  *
@@ -13,14 +17,14 @@ namespace Laventure\Component\Http\Client\Service\Options;
  *
  * @package  Laventure\Component\Http\Client\Service\Options
  */
-interface ClientServiceOptionInterface
+interface ClientServiceOptionInterface extends ParameterInterface
 {
     /**
      * Returns request query
      *
      * @return array
     */
-    public function getQueries(): array;
+    public function query(): array;
 
 
 
@@ -31,7 +35,7 @@ interface ClientServiceOptionInterface
      *
      * @return array|string
     */
-    public function getBody(): array|string;
+    public function body(): array|string;
 
 
 
@@ -40,9 +44,9 @@ interface ClientServiceOptionInterface
 
 
     /**
-     * @return string
+     * @return array|string
     */
-    public function getJson(): string;
+    public function json(): array|string;
 
 
 
@@ -56,5 +60,58 @@ interface ClientServiceOptionInterface
      *
      * @return array
     */
-    public function getHeaders(): array;
+    public function headers(): array;
+
+
+
+
+
+
+    /**
+     * Returns access token
+     *
+     * @return string
+    */
+    public function accessToken(): string;
+
+
+
+
+
+
+
+    /**
+     * @return AuthBasicOptions
+    */
+    public function authBasic(): AuthBasicOptions;
+
+
+
+
+
+
+    /**
+     * @return string
+    */
+    public function proxy(): string;
+
+
+
+
+
+
+    /**
+     * @return ClientFileInterface[]
+    */
+    public function files(): array;
+
+
+
+
+
+
+    /**
+     * @return ClientCookieInterface[]
+    */
+    public function cookies(): array;
 }

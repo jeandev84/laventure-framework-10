@@ -55,6 +55,8 @@ abstract class ClientRequest implements ClientRequestInterface
 
 
 
+
+
     /**
      * @param string $content
      * @param int $statusCode
@@ -78,10 +80,12 @@ abstract class ClientRequest implements ClientRequestInterface
     {
          return $this->createResponse(
               $this->service->getBody(),
-              $this->service->getStatusCode(),
+              $this->service->getStatus(),
               $this->service->getHeaders()
          );
     }
+
+
 
 
 

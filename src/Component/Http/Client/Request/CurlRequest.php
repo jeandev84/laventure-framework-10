@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client\Request;
 
+use Exception;
 use Laventure\Component\Http\Client\Request\Common\ClientRequest;
+use Laventure\Component\Http\Client\Service\Options\ClientServiceOption;
 use Laventure\Component\Http\Message\Response\Response;
+use Psr\Http\Client\NetworkExceptionInterface;
+use Psr\Http\Client\RequestExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -20,6 +24,7 @@ use Psr\Http\Message\ResponseInterface;
 */
 class CurlRequest extends ClientRequest
 {
+
     const NETWORK_EXCEPTION_CODE = 7;
 
 
@@ -31,21 +36,36 @@ class CurlRequest extends ClientRequest
     {
         try {
 
-            $this->service->url((string)$request->getUri());
-            $this->service->method($request->getMethod());
-            $this->service->parseOptions($this->options);
-            $this->service->send();
-
-            return $this->respond();
+            return $this->service
+                        ->uri((string)$request->getUri())
+                        ->method($request->getMethod())
+                        ->options(new ClientServiceOption($this->options))
+                        ->send();
 
         } catch (\Throwable $e) {
 
-            $code = $e->getCode();
-
-            throw match ($code) {
-                self::NETWORK_EXCEPTION_CODE  => $this->createNetworkException($request, $e),
-                default                       => $this->createRequestException($request, $e)
-            };
+           $this->abort($request, $e);
         }
+    }
+
+
+
+
+
+    /**
+     * @param RequestInterface $request
+     * @param Exception $e
+     * @return mixed
+     * @throws NetworkExceptionInterface
+     * @throws RequestExceptionInterface
+    */
+    protected function abort(RequestInterface $request, Exception $e): mixed
+    {
+        $code = $e->getCode();
+
+        throw match ($code) {
+            self::NETWORK_EXCEPTION_CODE  => $this->createNetworkException($request, $e),
+            default                       => $this->createRequestException($request, $e)
+        };
     }
 }

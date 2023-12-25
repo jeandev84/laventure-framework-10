@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Client\Service\Contract;
 
 
+use Laventure\Component\Http\Client\Response\Contract\ClientResponseInterface;
+use Laventure\Component\Http\Client\Service\Options\ClientServiceOptionInterface;
 
 /**
  * ClientServiceInterface
@@ -17,19 +19,23 @@ namespace Laventure\Component\Http\Client\Service\Contract;
 interface ClientServiceInterface
 {
 
+
     /**
+     * Set request URI
+     *
      * @param string $path
      *
-     * @return $this
+     * @return mixed
     */
-    public function url(string $path): static;
-
+    public function uri(string $path): static;
 
 
 
 
 
     /**
+     * Set request method
+     *
      * @param string $method
      *
      * @return $this
@@ -40,53 +46,25 @@ interface ClientServiceInterface
 
 
 
-    /**
-      * @param array $options
-      *
-      * @return mixed
-    */
-    public function parseOptions(array $options): static;
-
-
-
-
 
 
     /**
-     * @return string
-    */
-    public function getBody(): string;
-
-
-
-
-
-
-    /**
-     * @return array
-    */
-    public function getHeaders(): array;
-
-
-
-
-
-
-    /**
-     * @return int
-    */
-    public function getStatusCode(): int;
-
-
-
-
-
-    /**
-     * @param $key
+     * Parse request options
      *
-     * @return mixed
+     * @return $this
     */
-    public function getInfo($key): mixed;
+    public function options(ClientServiceOptionInterface $options): static;
+
+
+
+
+
+
+
+    /**
+     * @return ClientResponseInterface
+    */
+    public function send(): ClientResponseInterface;
 
 
 
@@ -96,15 +74,5 @@ interface ClientServiceInterface
     /**
      * @return array
     */
-    public function getInfos(): array;
-
-
-
-
-
-
-    /**
-     * @return mixed
-    */
-    public function send(): mixed;
+    public function toArray(): array;
 }

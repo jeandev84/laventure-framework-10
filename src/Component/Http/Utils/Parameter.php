@@ -218,4 +218,50 @@ class Parameter implements ParameterInterface
     {
         return $this->params;
     }
+
+
+
+    /**
+     * @param mixed $offset
+     * @return bool
+    */
+    public function offsetExists(mixed $offset): bool
+    {
+        return $this->has($offset);
+    }
+
+
+
+
+    /**
+     * @param mixed $offset
+     *
+     * @return mixed
+    */
+    public function offsetGet(mixed $offset): mixed
+    {
+         return $this->get($offset);
+    }
+
+
+
+
+
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     * @return void
+    */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        $this->set($offset, $value);
+    }
+
+
+
+
+    public function offsetUnset(mixed $offset): void
+    {
+        $this->remove($offset);
+    }
 }

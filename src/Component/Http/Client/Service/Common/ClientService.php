@@ -5,6 +5,9 @@ namespace Laventure\Component\Http\Client\Service\Common;
 
 
 use Laventure\Component\Http\Client\Service\Contract\ClientServiceInterface;
+use Laventure\Component\Http\Client\Service\Cookies\ClientCookieInterface;
+use Laventure\Component\Http\Client\Service\Files\ClientFileInterface;
+use Laventure\Component\Http\Client\Service\Options\AuthBasicOptions;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOption;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOptionInterface;
 use Psr\Http\Message\UriInterface;
@@ -24,7 +27,7 @@ abstract class ClientService implements ClientServiceInterface
     /**
      * @var string
     */
-    protected string $url = '';
+    protected string $path = '';
 
 
     /**
@@ -37,15 +40,15 @@ abstract class ClientService implements ClientServiceInterface
     /**
      * @var string
     */
-    protected $body = null;
+    protected string $body = '';
+
 
 
 
     /**
-     * @var int
-     */
-    protected int $statusCode = 0;
-
+     * @var array
+    */
+    protected array $queries = [];
 
 
 
@@ -56,32 +59,14 @@ abstract class ClientService implements ClientServiceInterface
 
 
 
-
     /**
-     * @var ClientServiceOptionInterface
+     * @param string $path
+     *
+     * @return $this
     */
-    protected ClientServiceOptionInterface $options;
-
-
-
-
-    /**
-     * @param ClientServiceOptionInterface|null $options
-    */
-    public function __construct(ClientServiceOptionInterface $options = null)
+    public function uri(string $path): static
     {
-          $this->options = $options ?: new ClientServiceOption();
-    }
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function url(string $path): static
-    {
-        $this->url = $path;
+        $this->path = $path;
 
         return $this;
     }
@@ -92,7 +77,8 @@ abstract class ClientService implements ClientServiceInterface
 
 
     /**
-     * @inheritDoc
+     * @param string $method
+     * @return $this
     */
     public function method(string $method): static
     {
@@ -106,24 +92,13 @@ abstract class ClientService implements ClientServiceInterface
 
 
     /**
-     * @inheritdoc
-    */
-    public function parseOptions(array $options): static
-    {
-        $this->options->add($options);
-
-        return $this;
-    }
-
-
-
-    /**
-     * @param $body
+     * @param array $queries
+     *
      * @return $this
     */
-    public function body($body): static
+    public function queries(array $queries): static
     {
-        $this->body = $body;
+        $this->queries = $queries;
 
         return $this;
     }
@@ -133,7 +108,7 @@ abstract class ClientService implements ClientServiceInterface
 
 
     /**
-     * @inheritDoc
+     * @return string
     */
     public function getBody(): string
     {
@@ -144,28 +119,6 @@ abstract class ClientService implements ClientServiceInterface
 
 
 
-    /**
-     * @inheritDoc
-    */
-    public function getHeaders(): array
-    {
-        return $this->headers;
-    }
-
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
-    }
-
-
-
 
 
     /**
@@ -173,48 +126,152 @@ abstract class ClientService implements ClientServiceInterface
     */
     public function getUri(): string
     {
-        if ($queries = $this->options->getQueries()) {
-            $this->url .= "?". $this->buildQueryParams($queries);
+        if ($this->queries) {
+            $this->path .= "?". $this->buildQueryParams($this->queries);
         }
 
-        return $this->url;
+        return $this->path;
     }
 
 
 
 
 
-
     /**
-     * @return bool
+     * @inheritdoc
     */
-    protected function hasOverrideMethods(): bool
+    public function options(ClientServiceOptionInterface $options): static
     {
-        return in_array($this->method, ['PUT', 'DELETE', 'PATCH']);
+         $this->queries($options->query())
+              ->proxy($options->proxy())
+              ->authBasic($options->authBasic())
+              ->oAuth($options->accessToken())
+              ->headers($options->headers())
+              ->body($options->body())
+              ->json($options->json())
+              ->files($options->files())
+              ->cookies($options->cookies());
+
+         return $this;
     }
 
 
 
 
+
     /**
-     * @param array $headerRows
+     * @param string $proxy
      *
-     * @return array
+     * @return $this
     */
-    protected function filterHeaders(array $headerRows): array
-    {
-        $headers = [];
+    abstract public function proxy(string $proxy): static;
 
-        foreach ($headerRows as $header) {
-            $position = stripos($header, ':');
-            if($position !== false) {
-                [$name, $value] = explode(':', $header, 2);
-                $headers[$name] = trim($value);
-            }
-        }
 
-        return $headers;
-    }
+
+
+
+
+
+    /**
+     * @param AuthBasicOptions $options
+     *
+     * @return $this
+    */
+    abstract public function authBasic(AuthBasicOptions $options): static;
+
+
+
+
+
+
+    /**
+     * Authentication using access token
+     *
+     * @param string $accessToken
+     *
+     * @return mixed
+    */
+    abstract public function oAuth(string $accessToken): static;
+
+
+
+
+
+
+    /**
+     * @param array $headers
+     * @return $this
+    */
+    abstract public function headers(array $headers): static;
+
+
+
+
+
+
+    /**
+     * @param array|string $body
+     *
+     * @return $this
+    */
+    abstract public function body(array|string $body): static;
+
+
+
+
+
+
+    /**
+     * @param array|string $body
+     *
+     * @return $this
+    */
+    abstract public function json(array|string $body): static;
+
+
+
+
+
+    /**
+     * @param ClientFileInterface[] $files
+     *
+     * @return $this
+    */
+    abstract public function files(array $files): static;
+
+
+
+
+
+
+    /**
+     * @param ClientCookieInterface[] $cookies
+     *
+     * @return $this
+    */
+    abstract public function cookies(array $cookies): static;
+
+
+
+
+
+    /**
+     * @param $file
+     *
+     * @return mixed
+    */
+    abstract public function upload($file): static;
+
+
+
+
+
+    /**
+     * @param $file
+     * @return $this
+    */
+    abstract public function download($file): static;
+
 
 
 
@@ -236,15 +293,68 @@ abstract class ClientService implements ClientServiceInterface
 
 
     /**
-     * @param int $statusCode
-     *
-     * @return $this
-    */
-    protected function statusCode(int $statusCode): static
+     * @return bool
+     */
+    protected function hasOverrideMethods(): bool
     {
-        $this->statusCode = $statusCode;
+        return in_array($this->method, ['PUT', 'DELETE', 'PATCH']);
+    }
 
-        return $this;
+
+
+
+
+
+    /**
+     * @param array $headerRows
+     *
+     * @return array
+     */
+    protected function filterHeaders(array $headerRows): array
+    {
+        $headers = [];
+
+        foreach ($headerRows as $header) {
+            $position = stripos($header, ':');
+            if($position !== false) {
+                [$name, $value] = explode(':', $header, 2);
+                $headers[$name] = trim($value);
+            }
+        }
+
+        return $headers;
+    }
+
+
+
+
+    /**
+     * @param array $headers
+     *
+     * @return array
+    */
+    protected function resolveHeaders(array $headers): array
+    {
+        $resolved = [];
+
+        foreach ($headers as $key => $value) {
+            $resolved[] = (is_string($key) ? "$key: $value" : $value);
+        }
+
+        return $resolved;
+    }
+
+
+
+
+
+    /**
+     * @param array $data
+     * @return string
+    */
+    protected function encodeJson(array $data): string
+    {
+        return (string)json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 
 }
