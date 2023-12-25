@@ -73,8 +73,6 @@ class CurlService extends ClientService
                  $this->setOption(CURLOPT_POST, 1);
                  break;
              case 'PUT':
-                 $this->setOption(CURLOPT_PUT, 1);
-                 break;
              case 'PATCH':
              case 'DELETE':
                  $this->setOption(CURLOPT_CUSTOMREQUEST, $method);
