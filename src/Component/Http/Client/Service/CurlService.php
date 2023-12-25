@@ -236,13 +236,13 @@ class CurlService extends ClientService
         // terminate options setting
         $this->terminateOptions();
 
-        // returns the request body
+        // returns response body
         $body = $this->getBody();
 
-        // returns status code
+        // returns response status code
         $statusCode = $this->getStatusCode();
 
-        // returns request headers
+        // returns response headers
         $headers = $this->getHeaders();
 
         // close curl
