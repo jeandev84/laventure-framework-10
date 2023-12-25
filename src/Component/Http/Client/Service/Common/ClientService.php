@@ -121,7 +121,7 @@ abstract class ClientService implements ClientServiceInterface
      * @param $body
      * @return $this
     */
-    public function withBody($body): static
+    public function body($body): static
     {
         $this->body = $body;
 
@@ -224,7 +224,7 @@ abstract class ClientService implements ClientServiceInterface
      *
      * @return $this
     */
-    protected function withStatusCode(int $statusCode): static
+    protected function statusCode(int $statusCode): static
     {
         $this->statusCode = $statusCode;
 

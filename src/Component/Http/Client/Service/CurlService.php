@@ -101,52 +101,15 @@ class CurlService extends ClientService
      public function send(): bool
      {
           $this->terminateOptions();
-
-          $this->withBody((string)$this->exec());
+          $this->body((string)$this->exec());
 
           if ($errno = $this->errno()) {
                throw new CurlException($this->error(), $errno);
           }
 
-          $this->withStatusCode((int)$this->getInfo(CURLINFO_HTTP_CODE));
-
+          $this->statusCode((int)$this->getInfo(CURLINFO_HTTP_CODE));
           curl_close($this->ch);
-
           return true;
-     }
-
-
-
-
-
-     /**
-      * @return int
-     */
-     public function errno(): int
-     {
-         return curl_errno($this->ch);
-     }
-
-
-
-
-     /**
-      * @return string
-     */
-     public function error(): string
-     {
-         return curl_error($this->ch);
-     }
-
-
-
-
-     /**
-      * @return bool|string
-     */
-     public function exec(): bool|string
-     {
-          return curl_exec($this->ch);
      }
 
 
@@ -195,11 +158,9 @@ class CurlService extends ClientService
 
 
 
-
-
     /**
      * @return void
-    */
+     */
     private function initializeOptions(): void
     {
         $this->setOptions($this->defaultOptions);
@@ -211,5 +172,38 @@ class CurlService extends ClientService
     private function terminateOptions(): void
     {
         $this->setOption(CURLOPT_URL, $this->getUri());
+    }
+
+
+
+
+    /**
+     * @return int
+     */
+    private function errno(): int
+    {
+        return curl_errno($this->ch);
+    }
+
+
+
+
+    /**
+     * @return string
+    */
+    private function error(): string
+    {
+        return curl_error($this->ch);
+    }
+
+
+
+
+    /**
+     * @return bool|string
+     */
+    private function exec(): bool|string
+    {
+        return curl_exec($this->ch);
     }
 }
