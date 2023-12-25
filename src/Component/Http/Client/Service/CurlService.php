@@ -22,6 +22,8 @@ use Laventure\Component\Http\Client\Service\Options\ClientServiceOptionInterface
 */
 class CurlService extends ClientService
 {
+
+
      /**
       * @var CurlHandle|false
      */
@@ -101,6 +103,7 @@ class CurlService extends ClientService
      public function send(): bool
      {
           $this->terminateOptions();
+
           $this->body((string)$this->exec());
 
           if ($errno = $this->errno()) {
@@ -158,6 +161,9 @@ class CurlService extends ClientService
 
 
 
+
+
+
     /**
      * @return void
      */
@@ -169,10 +175,106 @@ class CurlService extends ClientService
 
 
 
+
     private function terminateOptions(): void
+    {
+        $this->setUriOption();
+        $this->setOverrideMethods();
+        $this->setRequestBody();
+    }
+
+
+
+
+
+
+    /**
+     * @return string
+    */
+    private function getParsedBody(): string
+    {
+         $body = $this->options->getBody();
+
+         if ($body && is_array($body)) {
+             $body = $this->buildQueryParams($body, '', '&');
+         }
+
+         if ($json = $this->options->getJson()) {
+             $this->setHeaders(['Content-Type:application/json; charset=UTF-8']);
+             $body = $json;
+         }
+
+         return $body;
+    }
+
+
+
+
+
+    /**
+     * @return void
+    */
+    private function setRequestBody(): void
+    {
+        $body = $this->getParsedBody();
+
+        if (in_array($this->method, ['POST', 'PUT', 'PATCH'])) {
+            if ($this->isMethod('POST')) {
+                $this->setOption(CURLOPT_POST, 1);
+            }
+            $this->setOption(CURLOPT_POSTFIELDS, $body);
+        }
+    }
+
+
+
+
+    private function setUriOption(): void
     {
         $this->setOption(CURLOPT_URL, $this->getUri());
     }
+
+
+
+
+
+    /**
+     * @param string $method
+     *
+     * @return bool
+    */
+    private function isMethod(string $method): bool
+    {
+        return strtoupper($this->method) === strtoupper($method);
+    }
+
+
+
+
+    /**
+     * @return void
+    */
+    private function setOverrideMethods(): void
+    {
+        if ($this->hasOverrideMethods()) {
+            $this->setOption(CURLOPT_CUSTOMREQUEST, $this->method);
+        }
+    }
+
+
+
+
+
+    /**
+     * @param array $headers
+     *
+     * @return void
+    */
+    private function setHeaders(array $headers = []): void
+    {
+        $this->setOptions([CURLOPT_HTTPHEADER => $headers]);
+    }
+
 
 
 

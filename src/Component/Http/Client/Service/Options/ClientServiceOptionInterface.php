@@ -29,9 +29,9 @@ interface ClientServiceOptionInterface
     /**
      * Returns request body
      *
-     * @return mixed
+     * @return array|string
     */
-    public function getBody(): mixed;
+    public function getBody(): array|string;
 
 
 
@@ -40,9 +40,9 @@ interface ClientServiceOptionInterface
 
 
     /**
-     * @return mixed
+     * @return string
     */
-    public function getJson(): mixed;
+    public function getJson(): string;
 
 
 

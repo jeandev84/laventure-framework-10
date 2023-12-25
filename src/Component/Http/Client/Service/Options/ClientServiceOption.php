@@ -53,7 +53,7 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
     /**
      * @inheritdoc
     */
-    public function getBody(): mixed
+    public function getBody(): array|string
     {
         return $this->get('body', '');
     }
@@ -64,9 +64,9 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
     /**
      * @inheritDoc
     */
-    public function getJson(): mixed
+    public function getJson(): string
     {
-        return $this->get('json', '');
+       return $this->get('json', '');
     }
 
 

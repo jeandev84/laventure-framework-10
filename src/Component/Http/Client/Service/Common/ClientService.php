@@ -183,6 +183,19 @@ abstract class ClientService implements ClientServiceInterface
 
 
 
+
+
+    /**
+     * @return bool
+    */
+    protected function hasOverrideMethods(): bool
+    {
+        return in_array($this->method, ['PUT', 'DELETE', 'PATCH']);
+    }
+
+
+
+
     /**
      * @param array $headerRows
      *
@@ -206,15 +219,18 @@ abstract class ClientService implements ClientServiceInterface
 
 
 
+
     /**
      * @param array $params
-     *
+     * @param string $prefix
+     * @param string|null $separator
      * @return string
-     */
-    protected function buildQueryParams(array $params): string
+    */
+    protected function buildQueryParams(array $params, string $prefix = '', ?string $separator = null): string
     {
-         return http_build_query($params);
+         return http_build_query($params, $prefix, $separator);
     }
+
 
 
 
