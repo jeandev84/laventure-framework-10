@@ -92,4 +92,25 @@ class HttpClientService
 
          echo $response;
      }
+
+
+
+
+    public function delete(): void
+    {
+        // PUT
+        try {
+            $response = $this->client->delete( 'http://localhost:8000/delete.php', [
+                'query' => [
+                   'id' => 3
+                ]
+            ]);
+        } catch (Exception $e) {
+            $response = new Response(500);
+            $response->setContent($e->getMessage());
+        }
+
+
+        echo $response;
+    }
 }
