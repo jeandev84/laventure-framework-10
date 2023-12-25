@@ -58,9 +58,9 @@ abstract class ClientService implements ClientServiceInterface
 
 
     /**
-     * @var ClientServiceOption
+     * @var ClientServiceOptionInterface
     */
-    protected ClientServiceOption $options;
+    protected ClientServiceOptionInterface $options;
 
 
 
@@ -70,7 +70,7 @@ abstract class ClientService implements ClientServiceInterface
     */
     public function __construct(ClientServiceOptionInterface $options = null)
     {
-        $this->options = $options ?: new ClientServiceOption();
+          $this->options = $options ?: new ClientServiceOption();
     }
 
 
