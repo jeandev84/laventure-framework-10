@@ -309,6 +309,7 @@ class ServerRequest implements ServerRequestInterface
         }
 
         parse_str($this->getContent(), $data);
+
         return $data;
     }
 
@@ -331,11 +332,27 @@ class ServerRequest implements ServerRequestInterface
 
 
     /**
+     * Returns content from stream
+     *
      * @return string
     */
     public function getContent(): string
     {
         return (string)$this->getBody();
+    }
+
+
+
+
+
+    /**
+     * Convert request params json to array
+     *
+     * @return array
+    */
+    public function toArray(): array
+    {
+         return json_decode($this->getContent(), true);
     }
 
 
@@ -408,6 +425,18 @@ class ServerRequest implements ServerRequestInterface
 
 
 
+    /**
+     * @return bool
+    */
+    public function hasMethodOverride(): bool
+    {
+        return in_array($this->getMethod(), ['PUT', 'DELETE', 'PATCH']);
+    }
+
+
+
+
+
 
     /**
      * @return static
@@ -424,20 +453,5 @@ class ServerRequest implements ServerRequestInterface
                ->withCookieParams($_COOKIE)
                ->withUploadedFiles($files);
     }
-
-
-
-
-    /**
-     * @return bool
-    */
-    public function hasMethodOverride(): bool
-    {
-        return in_array($this->getMethod(), ['PUT', 'DELETE', 'PATCH']);
-    }
-
-
-
-
 
 }

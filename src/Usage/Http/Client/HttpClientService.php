@@ -31,10 +31,11 @@ class HttpClientService
 
      public function get(): void
      {
+         // GET Users (example)
          try {
              $response = $this->client->request( 'GET', 'http://localhost:8000/index.php', [
                  'query' => [
-                     'page' => 2,
+                     #'page' => 2,
                      'sort' => 'u.name',
                      'direction' => 'asc'
                  ]
@@ -59,7 +60,7 @@ class HttpClientService
          try {
              $response = $this->client->post( 'http://localhost:8000/create.php', [
                  'body' => [
-                     'username' => 'brown',
+                     'username' => 'Create User',
                      'password' => '12345'
                  ]
              ]);
@@ -72,15 +73,16 @@ class HttpClientService
 
 
          // POST with headers
+         /*
          try {
              $response = $this->client->post( 'http://localhost:8000/create.php', [
                  'headers' => [
                      'Content-Type' => 'application/json'
                  ],
-                 'body' => [
+                 'body' => json_encode([
                      'username' => 'brown',
                      'password' => '12345'
-                 ]
+                 ], JSON_PRETTY_PRINT)
              ]);
          } catch (Exception $e) {
              $response = new Response(500);
@@ -88,6 +90,7 @@ class HttpClientService
          }
 
          echo $response;
+         */
      }
 
 
@@ -99,7 +102,7 @@ class HttpClientService
          try {
              $response = $this->client->put( 'http://localhost:8000/update.php', [
                  'body' => [
-                     'username' => 'brown',
+                     'username' => 'Update User',
                      'password' => '12345'
                  ]
              ]);

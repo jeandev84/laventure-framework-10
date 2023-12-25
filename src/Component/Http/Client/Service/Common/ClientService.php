@@ -125,7 +125,7 @@ abstract class ClientService implements ClientServiceInterface
      *
      * @return $this
     */
-    public function queries(array $queries): static
+    public function query(array $queries): static
     {
         $this->queries = $queries;
 
