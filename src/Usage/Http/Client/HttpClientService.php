@@ -5,6 +5,7 @@ namespace Laventure\Usage\Http\Client;
 
 use Exception;
 use Laventure\Component\Http\Client\HttpClient;
+use Laventure\Component\Http\Client\Service\Options\AuthBasicOptions;
 use Laventure\Component\Http\Message\Response\Response;
 
 /**
@@ -161,10 +162,7 @@ class HttpClientService
         // Auth Basic
         try {
             $response = $this->client->post( 'http://localhost:8000/auth/login.php', [
-                'auth_basic' => [
-                    'login' => 'john',
-                    'password' => 'secret'
-                ]
+                'auth_basic' => new AuthBasicOptions('john', 'password')
             ]);
         } catch (Exception $e) {
             $response = new Response(500);

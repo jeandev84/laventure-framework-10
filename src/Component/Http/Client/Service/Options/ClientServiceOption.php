@@ -21,129 +21,16 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
      * @var array
     */
     protected array $params = [
-        'query'    => [],
-        'body'     => '',
-        'json'     => null,
-        'headers'  => [],
-        'proxy'    => '',
-        'cookies'  => [],
-        'auth_basic' => [],
-        'auth_access_token' => '',
-        'upload'      => null,
-        'download'    => null,
-        'files'       => []
+        'query'              => [],           // type string[]
+        'body'               => '',           // type array|string
+        'json'               => null,         // type array|string
+        'headers'            => [],           // type string[]
+        'proxy'              => '',           // type string[]
+        'auth_basic'         => null,         // type AuthBasicOptions('YOUR_LOGIN', 'YOUR_PASSWORD')
+        'auth_access_token'  => '',           // type string
+        'upload'             => null,         // type string
+        'download'           => null,         // type string
+        'files'              => [],           // type ClientFileInterface[]
+        'cookies'            => [],           // type ClientCookieInterface[]
     ];
-
-
-
-    public function __construct(array $params = [])
-    {
-        parent::__construct($params);
-    }
-
-
-
-
-    /**
-     * @inheritdoc
-    */
-    public function query(): array
-    {
-        return $this->get('query', []);
-    }
-
-
-
-
-
-
-    /**
-     * @inheritdoc
-    */
-    public function body(): array|string
-    {
-        return $this->get('body', '');
-    }
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function json(): array|string
-    {
-       return $this->get('json', '');
-    }
-
-
-
-
-
-    /**
-     * @inheritdoc
-    */
-    public function headers(): array
-    {
-         return $this->get('headers', []);
-    }
-
-
-
-
-    /**
-     * @inheritdoc
-    */
-    public function accessToken(): string
-    {
-        return $this->get('auth_access_token', '');
-    }
-
-
-
-
-    /**
-     * @inheritdoc
-    */
-    public function authBasic(): AuthBasicOptions
-    {
-        return new AuthBasicOptions(
-            $this->params['auth_basic']['login'],
-            $this->params['auth_basic']['password'],
-        );
-    }
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function proxy(): string
-    {
-        return $this->get('proxy', '');
-    }
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function files(): array
-    {
-        return $this->get('files', []);
-    }
-
-
-
-
-
-    /**
-     * @inheritDoc
-    */
-    public function cookies(): array
-    {
-        return $this->get('cookies', []);
-    }
 }

@@ -678,6 +678,21 @@ class Route implements RouteInterface
 
 
 
+    /**
+     * @return mixed
+    */
+    public function call(): mixed
+    {
+        if (! $this->callable()) {
+            return false;
+        }
+
+        return call_user_func_array($this->action, $this->getParams());
+    }
+
+
+
+
 
     /**
      * @return array
