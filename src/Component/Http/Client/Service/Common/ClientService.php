@@ -9,7 +9,8 @@ use Laventure\Component\Http\Client\Response\Contract\ClientResponseInterface;
 use Laventure\Component\Http\Client\Service\Contract\ClientServiceInterface;
 use Laventure\Component\Http\Client\Service\Cookies\ClientCookieInterface;
 use Laventure\Component\Http\Client\Service\Files\ClientFileInterface;
-use Laventure\Component\Http\Client\Service\Options\AuthBasicOptions;
+use Laventure\Component\Http\Client\Service\Options\AuthBasic;
+use Laventure\Component\Http\Client\Service\Options\AuthToken;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOption;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOptionInterface;
 use Laventure\Component\Http\Client\Service\Options\Exception\ClientOptionException;
@@ -40,15 +41,9 @@ abstract class ClientService implements ClientServiceInterface
 
 
     /**
-     * @var string
+     * @var mixed
     */
-    protected string $parsedBody = '';
-
-
-    /**
-     * @var string
-    */
-    protected string $jsonBody  = '';
+    protected $parsedBody = null;
 
 
 
@@ -63,27 +58,6 @@ abstract class ClientService implements ClientServiceInterface
      * @var array
     */
     protected array $headers = [];
-
-
-
-
-    /**
-     * @var array
-    */
-    private array $handlers = [
-        'query'      => 'query',
-        'body'       => 'body',
-        'json'       => 'json',
-        'headers'    => 'headers',
-        'proxy'      => 'proxy',
-        'cookies'    => 'cookies',
-        'auth_basic' => 'authBasic',
-        'auth_access_token' => 'authAccessToken',
-        'upload'      => 'upload',
-        'download'    => 'download',
-        'files'       => 'files'
-    ];
-
 
 
 
@@ -137,7 +111,6 @@ abstract class ClientService implements ClientServiceInterface
 
 
 
-
     /**
      * @return string
     */
@@ -154,40 +127,13 @@ abstract class ClientService implements ClientServiceInterface
 
 
     /**
-     * @return string
+     * @return mixed
     */
-    public function getRequestBody(): string
+    public function getRequestBody(): mixed
     {
         return $this->parsedBody;
     }
 
-
-
-
-
-
-    /**
-     * @inheritdoc
-    */
-    public function options(ClientServiceOptionInterface $options): static
-    {
-         foreach ($options->all() as $key => $value) {
-             if (!empty($value)) {
-                 if (array_key_exists($key, $this->handlers)) {
-                     $method = $this->handlers[$key];
-                     if (! method_exists($this, $method)) {
-                          throw new ClientOptionException(
-                      "Method '{$method}' does not exist inside : ". get_called_class()
-                          );
-                     }
-                     call_user_func_array([$this, $method], [$value]);
-                 }
-             }
-         }
-
-
-         return $this;
-    }
 
 
 
@@ -207,13 +153,11 @@ abstract class ClientService implements ClientServiceInterface
 
 
     /**
-     * @param AuthBasicOptions $options
+     * @param AuthBasic $options
      *
      * @return $this
     */
-    abstract public function authBasic(AuthBasicOptions $options): static;
-
-
+    abstract public function authBasic(AuthBasic $options): static;
 
 
 
@@ -221,11 +165,11 @@ abstract class ClientService implements ClientServiceInterface
     /**
      * Authentication using access token
      *
-     * @param string $accessToken
+     * @param AuthToken $token
      *
      * @return mixed
     */
-    abstract public function authAccessToken(string $accessToken): static;
+    abstract public function authToken(AuthToken $token): static;
 
 
 

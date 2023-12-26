@@ -5,7 +5,9 @@ namespace Laventure\Usage\Http\Client;
 
 use Exception;
 use Laventure\Component\Http\Client\HttpClient;
-use Laventure\Component\Http\Client\Service\Options\AuthBasicOptions;
+use Laventure\Component\Http\Client\Service\Files\ClientFile;
+use Laventure\Component\Http\Client\Service\Options\AuthBasic;
+use Laventure\Component\Http\Client\Service\Options\AuthToken;
 use Laventure\Component\Http\Message\Response\Response;
 
 /**
@@ -139,6 +141,29 @@ class HttpClientService
 
 
 
+
+    public function json(): void
+    {
+        // PUT
+        try {
+            $response = $this->client->put( 'http://localhost:8000/json/data.php', [
+                'json' => json_encode([
+                    'username' => 'brown',
+                    'job'      => 'Developer',
+                    'city'     => 'CIV'
+                ])
+            ]);
+        } catch (Exception $e) {
+            $response = new Response(500);
+            $response->setContent($e->getMessage());
+        }
+
+
+        echo $response;
+    }
+
+
+
     public function proxy(): void
     {
         // Proxy
@@ -162,7 +187,7 @@ class HttpClientService
         // Auth Basic
         try {
             $response = $this->client->post( 'http://localhost:8000/auth/login.php', [
-                'auth_basic' => new AuthBasicOptions('john', 'password')
+                'auth_basic' => new AuthBasic('john', 'password')
             ]);
         } catch (Exception $e) {
             $response = new Response(500);
@@ -171,5 +196,84 @@ class HttpClientService
 
 
         echo $response;
+    }
+
+
+
+
+    public function authToken(): void
+    {
+        // Auth Basic
+        try {
+            $response = $this->client->post( 'http://localhost:8000/auth/token.php', [
+                'auth_token' => new AuthToken(md5(uniqid()))
+            ]);
+        } catch (Exception $e) {
+            $response = new Response(500);
+            $response->setContent($e->getMessage());
+        }
+
+
+        echo $response;
+    }
+
+
+
+
+
+    public function files(): void
+    {
+        // Auth Basic
+        try {
+            $response = $this->client->post( 'http://localhost:8000/uploads/upload.php', [
+                'files' => [
+                    'avatar1' => new ClientFile( __DIR__.'/files/1.jpg', 'image/jpg', '1.jpg'),
+                    'avatar2' => new ClientFile(__DIR__.'/files/2.png', 'image/png', '2.png'),
+                ],
+                'body' => [
+                    'username' => 'Brown',
+                    'email'    => 'brown@demo.ru'
+                ]
+            ]);
+        } catch (Exception $e) {
+            $response = new Response(500);
+            $response->setContent($e->getMessage());
+        }
+
+
+        echo $response;
+
+        /*
+             Array
+             (
+                [username] => Brown
+                [email] => brown@demo.ru
+             )
+
+             Array
+             (
+                [avatar1] => Array
+                    (
+                        [name] => 1.jpg
+                        [full_path] => 1.jpg
+                        [type] => image/jpg
+                        [tmp_name] => /tmp/phpZqWsHv
+                        [error] => 0
+                        [size] => 118597
+                    )
+
+                [avatar2] => Array
+                    (
+                        [name] => 2.png
+                        [full_path] => 2.png
+                        [type] => image/png
+                        [tmp_name] => /tmp/phpJiWjwT
+                        [error] => 0
+                        [size] => 4590
+                    )
+
+            )
+
+        */
     }
 }

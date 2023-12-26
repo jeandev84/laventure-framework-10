@@ -27,7 +27,7 @@ class ClientServiceOption extends Parameter implements ClientServiceOptionInterf
         'headers'            => [],           // type string[]
         'proxy'              => '',           // type string[]
         'auth_basic'         => null,         // type AuthBasicOptions('YOUR_LOGIN', 'YOUR_PASSWORD')
-        'auth_access_token'  => '',           // type string
+        'auth_token'         => '',           // type string
         'upload'             => null,         // type string
         'download'           => null,         // type string
         'files'              => [],           // type ClientFileInterface[]

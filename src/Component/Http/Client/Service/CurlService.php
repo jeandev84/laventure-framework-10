@@ -4,14 +4,19 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Client\Service;
 
 
+use CURLFile;
 use CurlHandle;
 use Laventure\Component\Http\Client\Response\Contract\ClientResponseInterface;
 use Laventure\Component\Http\Client\Service\Common\ClientService;
+use Laventure\Component\Http\Client\Service\Common\ClientServiceTrait;
 use Laventure\Component\Http\Client\Service\Contract\ClientServiceInterface;
 use Laventure\Component\Http\Client\Service\Exception\CurlException;
-use Laventure\Component\Http\Client\Service\Options\AuthBasicOptions;
+use Laventure\Component\Http\Client\Service\Files\ClientFileInterface;
+use Laventure\Component\Http\Client\Service\Options\AuthBasic;
+use Laventure\Component\Http\Client\Service\Options\AuthToken;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOption;
 use Laventure\Component\Http\Client\Service\Options\ClientServiceOptionInterface;
+use Laventure\Component\Http\Client\Service\Options\Exception\ClientOptionException;
 
 /**
  * CurlRequest wrapper
@@ -24,6 +29,8 @@ use Laventure\Component\Http\Client\Service\Options\ClientServiceOptionInterface
 */
 class CurlService extends ClientService
 {
+
+     use ClientServiceTrait;
 
 
      /**
@@ -44,6 +51,19 @@ class CurlService extends ClientService
      ];
 
 
+     /**
+      * @var array
+     */
+     protected array $data = [];
+
+
+
+
+     /**
+      * @var CURLFile[]
+     */
+     protected array $files = [];
+
 
 
 
@@ -56,6 +76,8 @@ class CurlService extends ClientService
 
 
 
+
+
      /**
       * @param string $method
       *
@@ -63,7 +85,7 @@ class CurlService extends ClientService
      */
      public function method(string $method): static
      {
-         // TODO refactoring using function match($method)
+         // TODO may be refactoring using function match($method)
          switch ($method):
              case 'GET':
              case 'HEAD':
@@ -103,7 +125,7 @@ class CurlService extends ClientService
     /**
      * @inheritDoc
     */
-    public function authBasic(AuthBasicOptions $options): static
+    public function authBasic(AuthBasic $options): static
     {
         return $this->setOption(CURLOPT_USERPWD, $options->toString());
     }
@@ -115,12 +137,14 @@ class CurlService extends ClientService
     /**
      * @inheritDoc
     */
-    public function authAccessToken(string $accessToken): static
+    public function authToken(AuthToken $token): static
     {
-        return $this->headers([
-            "Authorization: $accessToken"
-        ]);
+        $accessToken = $token->getAccessToken();
+
+        return $this->headers(["Authorization: $accessToken"]);
     }
+
+
 
 
 
@@ -147,10 +171,6 @@ class CurlService extends ClientService
     */
     public function body(array|string $body): static
     {
-        if (is_array($body)) {
-            $body = $this->buildQueries($body, '', '&');
-        }
-
         $this->parsedBody = $body;
 
         return $this;
@@ -165,6 +185,7 @@ class CurlService extends ClientService
     public function json(array|string $json): static
     {
         $this->headers(['Content-Type' => 'application/json; charset=UTF-8']);
+
         $body = (is_array($json) ? $this->encodeJson($json) : $json);
 
         return $this->body($body);
@@ -179,6 +200,10 @@ class CurlService extends ClientService
     */
     public function files(array $files): static
     {
+         foreach ($files as $key => $clientFile) {
+             $this->files[$key] = $this->makeFile($clientFile);
+         }
+
          return $this;
     }
 
@@ -234,7 +259,7 @@ class CurlService extends ClientService
     public function send(): ClientResponseInterface
     {
         // terminate options setting
-        $this->terminateOptions();
+        $this->flushOptions();
 
         // returns response body
         $body = $this->getBody();
@@ -383,6 +408,70 @@ class CurlService extends ClientService
 
 
     /**
+     * @return void
+     */
+    private function initializeOptions(): void
+    {
+        // set default options
+        $this->setOptions($this->defaultOptions);
+    }
+
+
+
+
+    /**
+     * @return void
+    */
+    private function flushOptions(): void
+    {
+        // set curl URL after resolving
+        $this->setOption(CURLOPT_URL, $this->getUri());
+
+        #dd($this->getRequestBody());
+
+        // set parsed body
+        switch ($this->method):
+            case 'POST':
+            case 'PUT':
+            case 'PATCH':
+               $this->setOption(CURLOPT_POSTFIELDS, $this->getRequestBody());
+            break;
+        endswitch;
+    }
+
+
+
+
+    /**
+     * @inheritdoc
+    */
+    public function getRequestBody(): mixed
+    {
+        if (is_string($this->parsedBody)) {
+            return $this->parsedBody;
+        }
+
+        return array_merge((array)$this->parsedBody, $this->files);
+    }
+
+
+
+
+    /**
+     * @param ClientFileInterface $file
+     *
+     * @return CURLFile
+    */
+    private function makeFile(ClientFileInterface $file): CURLFile
+    {
+        return curl_file_create($file->getPath(), $file->getMimeType(), $file->getFilename());
+    }
+
+
+
+
+
+    /**
      * @inheritDoc
     */
     protected function getHeaders(): array
@@ -401,50 +490,23 @@ class CurlService extends ClientService
 
 
 
-
-    /**
-     * @return void
-    */
-    private function initializeOptions(): void
-    {
-        // set default options
-        $this->setOptions($this->defaultOptions);
-    }
-
-
-
-
-    /**
-     * @return void
-    */
-    private function terminateOptions(): void
-    {
-        // set curl URL after resolving
-        $this->setOption(CURLOPT_URL, $this->getUri());
-
-        // set parsed body
-        if (in_array($this->method, ['POST', 'PUT', 'PATCH'])) {
-            $this->setOption(CURLOPT_POSTFIELDS, $this->getRequestBody());
-        }
-    }
-
-
-
-
-
     /**
      * @inheritDoc
-    */
+     */
     protected function getStatusCode(): int
     {
         return (int)$this->getInfo(CURLINFO_HTTP_CODE);
     }
 
 
+
+
+
+
     /**
      * @inheritDoc
      * @throws CurlException
-    */
+     */
     protected function getBody(): string
     {
         $body = $this->exec();

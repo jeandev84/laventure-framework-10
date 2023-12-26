@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Client\Service\Options;
 
 /**
- * AuthBasicOptions
+ * AuthBasic
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -12,7 +12,7 @@ namespace Laventure\Component\Http\Client\Service\Options;
  *
  * @package  Laventure\Component\Http\Client\Service\Options
  */
-class AuthBasicOptions
+class AuthBasic
 {
     public function __construct(
         public string $login,

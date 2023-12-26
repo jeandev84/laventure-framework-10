@@ -19,6 +19,8 @@ use Laventure\Component\Routing\Group\Invoker\RouteGroupInvokerInterface;
 class RouteGroup implements RouteGroupInterface
 {
     /**
+     * Base namespace
+     *
      * @var string
     */
     private string $namespace;

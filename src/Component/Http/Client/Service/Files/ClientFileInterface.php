@@ -18,7 +18,7 @@ interface ClientFileInterface
       /**
        * @return string
       */
-      public function getFullPath(): string;
+      public function getPath(): string;
 
 
       /**

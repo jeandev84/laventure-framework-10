@@ -34,7 +34,7 @@ class ClientFile implements ClientFileInterface
     /**
      * @inheritDoc
     */
-    public function getFullPath(): string
+    public function getPath(): string
     {
         return $this->fullPath;
     }
