@@ -12,7 +12,7 @@ use Psr\Http\Message\ResponseInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Client
+ * @package  Laventure\Component\Http\StreamClient
  */
 interface HttpClientInterface
 {
@@ -25,7 +25,7 @@ interface HttpClientInterface
      *
      * @param array $options
      *
-     * @return mixed
-     */
+     * @return ResponseInterface
+    */
     public function request(string $method, string $url, array $options = []): ResponseInterface;
 }

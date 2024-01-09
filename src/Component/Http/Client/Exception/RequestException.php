@@ -15,7 +15,7 @@ use Psr\Http\Message\RequestInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\Client\Exception
+ * @package  Laventure\Component\Http\StreamClient\Exception
 */
 class RequestException extends ClientException implements RequestExceptionInterface
 {
