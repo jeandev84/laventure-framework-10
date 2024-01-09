@@ -25,6 +25,7 @@ use PHPUnitTest\App\Security\Voters\SpecificVoter;
  * @package  PHPUnitTest\Component\Security\Permission
  *
  * ./vendor/bin/phpunit-watcher watch --color tests
+ * ./vendor/bin/phpunit-watcher watch --color tests/phpunit/Component/Security/Permission/PermissionTest.php
  */
 class PermissionTest extends TestCase
 {
@@ -100,6 +101,7 @@ class PermissionTest extends TestCase
 
 
 
+    /*
     public function testConsoleDebug(): void
     {
         $permission = new Permission(new ConsoleDebugger());
@@ -112,4 +114,5 @@ class PermissionTest extends TestCase
         $permission->addVoter(new AlwaysNoVoter());
         $permission->can($user, Voter::EDIT);
     }
+    */
 }

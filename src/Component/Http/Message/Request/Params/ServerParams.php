@@ -121,7 +121,9 @@ class ServerParams extends Parameter
     */
     public function setMethod(string $method): void
     {
-        $this->set('REQUEST_METHOD', strtoupper($method));
+        if ($this->has('REQUEST_METHOD')) {
+            $this->set('REQUEST_METHOD', strtoupper($method));
+        }
     }
 
 

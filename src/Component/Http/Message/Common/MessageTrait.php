@@ -29,7 +29,7 @@ trait MessageTrait
     /**
      * @var Parameter
     */
-    protected $headers;
+    public $headers;
 
 
 
@@ -37,9 +37,21 @@ trait MessageTrait
     /**
      * @var StreamInterface
     */
-    protected StreamInterface $body ;
+    protected StreamInterface $body;
 
 
+
+
+    /**
+     * @param StreamInterface $body
+     * @param string $version
+     * @param array $headers
+    */
+    public function __construct(StreamInterface $body, string $version = '', array $headers = [])
+    {
+        $this->body    = $body;
+        $this->version = $version;
+    }
 
 
 

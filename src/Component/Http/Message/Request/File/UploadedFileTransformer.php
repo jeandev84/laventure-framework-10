@@ -15,12 +15,8 @@ namespace Laventure\Component\Http\Message\Request\File;
  */
 class UploadedFileTransformer
 {
-    /**
-     * @param array $files
-     *
-     * @return array
-    */
-    public static function transformFromGlobals(array $files): array
+
+    public static function transform(array $files): array
     {
         $transformed = [];
 

@@ -21,10 +21,23 @@ class ResponseHeaders extends Parameter
 {
     public function __construct(array $params = [])
     {
+        parent::__construct($this->resolveParams($params));
+    }
+
+
+
+
+    /**
+     * @param array $params
+     *
+     * @return array
+    */
+    private function resolveParams(array $params): array
+    {
         if (function_exists('headers_list')) {
             $params = array_merge(HeaderLine::fromArray(headers_list()), $params);
         }
 
-        parent::__construct($params);
+        return $params;
     }
 }

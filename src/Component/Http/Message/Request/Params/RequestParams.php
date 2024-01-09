@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Params;
 
-use Laventure\Component\Http\Utils\Parameter;
 
 /**
- * Attributes
+ * RequestParams
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
@@ -15,6 +14,6 @@ use Laventure\Component\Http\Utils\Parameter;
  *
  * @package  Laventure\Component\Http\Message\Request\Params
 */
-class RequestAttributes extends Parameter
+class RequestParams extends InputParams
 {
 }

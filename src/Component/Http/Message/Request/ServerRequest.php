@@ -6,14 +6,14 @@ namespace Laventure\Component\Http\Message\Request;
 
 use Laventure\Component\Http\Message\Common\MessageTrait;
 use Laventure\Component\Http\Message\Request\Body\RequestBody;
+use Laventure\Component\Http\Message\Request\Params\Attributes;
 use Laventure\Component\Http\Message\Request\Params\CookieParams;
 use Laventure\Component\Http\Message\Request\Params\FileParams;
+use Laventure\Component\Http\Message\Request\Params\GlobalParams;
 use Laventure\Component\Http\Message\Request\Params\ParsedBody;
 use Laventure\Component\Http\Message\Request\Params\QueryParams;
-use Laventure\Component\Http\Message\Request\Params\RequestAttributes;
 use Laventure\Component\Http\Message\Request\Params\RequestHeaders;
 use Laventure\Component\Http\Message\Request\Params\ServerParams;
-use Laventure\Component\Http\Message\Request\File\UploadedFileTransformer;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -93,9 +93,9 @@ class ServerRequest implements ServerRequestInterface
 
 
     /**
-     * @var RequestAttributes
+     * @var Attributes
     */
-    public RequestAttributes $attributes;
+    public Attributes $attributes;
 
 
 
@@ -122,7 +122,7 @@ class ServerRequest implements ServerRequestInterface
         $this->request    = new ParsedBody();
         $this->queries    = new QueryParams();
         $this->files      = new FileParams();
-        $this->attributes = new RequestAttributes();
+        $this->attributes = new Attributes();
     }
 
 
@@ -159,7 +159,7 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getMethod(): string
     {
-        return $this->method ?: $this->server->requestMethod();
+        return $this->method;
     }
 
 
@@ -304,13 +304,12 @@ class ServerRequest implements ServerRequestInterface
     */
     public function getParsedBody(): array
     {
-        if (!$this->request->empty()) {
-            return $this->request->all();
+        if ($this->request->empty()) {
+            parse_str($this->getContent(), $data);
+            $this->request->add($data);
         }
 
-        parse_str($this->getContent(), $data);
-
-        return $data;
+        return $this->request->all();
     }
 
 
@@ -443,15 +442,17 @@ class ServerRequest implements ServerRequestInterface
     */
     public static function fromGlobals(): static
     {
-        $server  = new ServerParams($_SERVER);
-        $files   = UploadedFileTransformer::transformFromGlobals($_FILES);
+        $param   = new GlobalParams();
+        $method  = $param->server->requestMethod();
+        $url     = $param->server->url();
+        $version = $param->server->protocolVersion();
 
-        return (new self($server->requestMethod(), $server->url(), $server->all()))
-               ->withQueryParams($_GET)
-               ->withParsedBody($_POST)
-               ->withProtocolVersion($server->protocolVersion())
-               ->withCookieParams($_COOKIE)
-               ->withUploadedFiles($files);
+        return (new self($method, $url, $param->server->all()))
+               ->withQueryParams($param->queries())
+               ->withParsedBody($param->body())
+               ->withProtocolVersion($version)
+               ->withCookieParams($param->cookies())
+               ->withUploadedFiles($param->files());
     }
 
 }

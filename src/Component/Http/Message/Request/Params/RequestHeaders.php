@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Params;
 
-use Laventure\Component\Http\Utils\HeaderParameter;
 use Laventure\Component\Http\Utils\Parameter;
 
 /**
@@ -23,10 +22,22 @@ class RequestHeaders extends Parameter
     */
     public function __construct(array $params = [])
     {
+        parent::__construct($this->resolveParams($params));
+    }
+
+
+
+    /**
+     * @param array $params
+     *
+     * @return array
+    */
+    private function resolveParams(array $params): array
+    {
         if (function_exists('getallheaders')) {
-            $params = getallheaders();
+            $params = array_merge(getallheaders(), $params);
         }
 
-        parent::__construct($params);
+        return $params;
     }
 }
