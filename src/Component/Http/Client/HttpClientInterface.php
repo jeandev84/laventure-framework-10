@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client;
@@ -12,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\StreamClient
+ * @package  Laventure\Component\Http\Client
  */
 interface HttpClientInterface
 {
@@ -25,7 +26,7 @@ interface HttpClientInterface
      *
      * @param array $options
      *
-     * @return ResponseInterface
-    */
+     * @return mixed
+     */
     public function request(string $method, string $url, array $options = []): ResponseInterface;
 }

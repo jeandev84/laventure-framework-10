@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Laventure\Component\Http\Client;
 
-use Laventure\Component\Http\Client\Factory\ClientFactory;
-use Laventure\Component\Http\Client\Factory\ClientFactoryInterface;
-use Laventure\Component\Http\Message\Request\Factory\RequestFactory;
+use Laventure\Component\Http\Client\Exception\ClientException;
+use Laventure\Component\Http\Client\Request\Contract\ClientRequestInterface;
+use Laventure\Component\Http\Client\Request\CurlRequest;
+use Laventure\Component\Http\Client\Request\Factory\CurlRequestFactory;
+use Laventure\Component\Http\Message\Request\Request;
 use Psr\Http\Client\ClientExceptionInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
-
 
 /**
  * HttpClient
@@ -18,83 +19,88 @@ use Psr\Http\Message\ResponseInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\StreamClient
- */
+ * @package  Laventure\Component\Http\Client
+*/
 class HttpClient implements HttpClientInterface
 {
-
-     /**
-      * @var ClientFactoryInterface
-     */
-     private ClientFactoryInterface $clientFactory;
-
-
-     /**
-      * @var RequestFactoryInterface
-     */
-     private RequestFactoryInterface $requestFactory;
-
-
-     /**
-       * @param ClientFactoryInterface|null $clientFactory
-       * @param RequestFactoryInterface|null $requestFactory
-     */
-      public function __construct(
-          ClientFactoryInterface  $clientFactory = null,
-          RequestFactoryInterface $requestFactory = null
-      )
-      {
-          $this->clientFactory  = $clientFactory  ?: new ClientFactory();
-          $this->requestFactory = $requestFactory ?: new RequestFactory();
-      }
-
-
-
-
-      /**
-       * @param string $method
-       * @param string $url
-       * @param array $options
-       * @return ResponseInterface
-       * @throws ClientExceptionInterface
-      */
-      public function request(string $method, string $url, array $options = []): ResponseInterface
-      {
-           $request = $this->requestFactory->createRequest($method, $url);
-           $client  = $this->clientFactory->createClient($options);
-           return $client->sendRequest($request);
-      }
+    /**
+     * @var ClientRequestInterface
+    */
+    protected ClientRequestInterface $client;
 
 
 
 
 
-      /**
-       * @param string $url
-       * @param array $options
-       * @return ResponseInterface
-       * @throws ClientExceptionInterface
-      */
-      public function get(string $url, array $options = []): ResponseInterface
-      {
-           return $this->request('GET', $url, $options);
-      }
+    /**
+     * @param ClientRequestInterface $client
+    */
+    public function __construct(ClientRequestInterface $client)
+    {
+        $this->client = $client;
+    }
+
+
+
+
+    /**
+     * @return static
+    */
+    public static function create(): static
+    {
+        return new self(CurlRequestFactory::create());
+    }
+
+
+
+
+
+    /**
+     * @param string $method
+     * @param string $url
+     * @param array $options
+     * @return ResponseInterface
+     * @throws ClientException
+    */
+    public function request(string $method, string $url, array $options = []): ResponseInterface
+    {
+        try {
+            return $this->client->withOptions($options)->sendRequest(new Request($method, $url));
+        } catch (\Throwable $e) {
+             throw new ClientException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
 
 
 
 
 
 
-     /**
-      * @param string $url
-      * @param array $options
-      * @return ResponseInterface
-      * @throws ClientExceptionInterface
-     */
-     public function post(string $url, array $options = []): ResponseInterface
-     {
-         return $this->request('POST', $url, $options);
-     }
+    /**
+     * @param string $url
+     * @param array $options
+     * @return ResponseInterface
+     * @throws ClientExceptionInterface
+    */
+    public function get(string $url, array $options = []): ResponseInterface
+    {
+        return $this->request('GET', $url, $options);
+    }
+
+
+
+
+
+    /**
+     * @param string $url
+     * @param array $options
+     * @return ResponseInterface
+     * @throws ClientExceptionInterface
+    */
+    public function post(string $url, array $options = []): ResponseInterface
+    {
+        return $this->request('POST', $url, $options);
+    }
 
 
 
@@ -113,6 +119,21 @@ class HttpClient implements HttpClientInterface
     }
 
 
+
+
+
+
+
+    /**
+     * @param string $url
+     * @param array $options
+     * @return ResponseInterface
+     * @throws ClientExceptionInterface
+    */
+    public function patch(string $url, array $options = []): ResponseInterface
+    {
+        return $this->request('PATCH', $url, $options);
+    }
 
 
 

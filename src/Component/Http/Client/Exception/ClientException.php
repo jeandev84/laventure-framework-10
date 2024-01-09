@@ -13,7 +13,7 @@ use Psr\Http\Client\ClientExceptionInterface;
  *
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
- * @package  Laventure\Component\Http\StreamClient\Exception
+ * @package  Laventure\Component\Http\Client\Exception
  */
 class ClientException extends \Exception implements ClientExceptionInterface
 {
