@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Laventure\Component\Security\Permission;
 
 use Laventure\Component\Security\Permission\Contract\Voter;
+use Laventure\Component\Security\Permission\Debugger\PermissionDebugger;
 use Laventure\Component\Security\User\Contract\UserInterface;
 
 /**
@@ -19,10 +20,25 @@ final class Permission
 {
 
      /**
+      * @var PermissionDebugger|null
+     */
+     protected ?PermissionDebugger $debugger;
+
+
+     /**
       * @var Voter[]
      */
      protected array $voters = [];
 
+
+
+     /**
+      * @param PermissionDebugger|null $debugger
+     */
+     public function __construct(?PermissionDebugger $debugger = null)
+     {
+         $this->debugger = $debugger;
+     }
 
 
      /**
@@ -36,6 +52,9 @@ final class Permission
           foreach ($this->voters as $voter) {
               if ($voter->canVote($permission, $subject)) {
                   $vote = $voter->vote($user, $permission, $subject);
+                  if ($this->debugger) {
+                      $this->debugger->debug($voter, $vote, $permission, $user, $subject);
+                  }
                   if ($vote === true) {
                       return true;
                   }

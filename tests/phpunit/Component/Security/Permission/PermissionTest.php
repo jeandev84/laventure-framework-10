@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace PHPUnitTest\Component\Security\Permission;
 
+use Laventure\Component\Security\Permission\Contract\Voter;
+use Laventure\Component\Security\Permission\Debugger\ConsoleDebugger;
+use Laventure\Component\Security\Permission\Debugger\PermissionDebugger;
 use Laventure\Component\Security\Permission\Permission;
 use PHPUnit\Framework\TestCase;
 use PHPUnitTest\App\Entity\TestPost;
@@ -75,5 +78,38 @@ class PermissionTest extends TestCase
 
         $this->assertTrue($permission->can($user1, AuthorVoter::EDIT, $post));
         $this->assertFalse($permission->can($user2, AuthorVoter::EDIT, $post));
+    }
+
+
+
+    public function testDebug(): void
+    {
+        $debugger   = $this->getMockBuilder(PermissionDebugger::class)->getMock();
+        $debugger->expects($this->exactly(5))->method('debug');
+
+        $permission = new Permission($debugger);
+        $user       = new TestUser();
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->addVoter(new AlwaysYesVoter());
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->can($user, Voter::EDIT);
+    }
+
+
+
+    public function testConsoleDebug(): void
+    {
+        $permission = new Permission(new ConsoleDebugger());
+        $user       = new TestUser();
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->addVoter(new AlwaysYesVoter());
+        $permission->addVoter(new AlwaysNoVoter());
+        $permission->can($user, Voter::EDIT);
     }
 }

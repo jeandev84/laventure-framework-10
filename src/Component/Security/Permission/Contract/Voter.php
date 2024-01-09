@@ -17,6 +17,10 @@ use Laventure\Component\Security\User\Contract\UserInterface;
 */
 interface Voter
 {
+    const EDIT = 'edit';
+
+
+
     /**
      * Determine if voter can vote
      *
