@@ -5,9 +5,12 @@ namespace PHPUnitTest\Component\Security\Permission;
 
 use Laventure\Component\Security\Permission\Permission;
 use PHPUnit\Framework\TestCase;
+use PHPUnitTest\App\Entity\TestPost;
 use PHPUnitTest\App\Entity\TestUser;
 use PHPUnitTest\App\Security\Voters\AlwaysNoVoter;
 use PHPUnitTest\App\Security\Voters\AlwaysYesVoter;
+use PHPUnitTest\App\Security\Voters\AuthorVoter;
+use PHPUnitTest\App\Security\Voters\SpecificVoter;
 
 /**
  * PermissionTest
@@ -48,5 +51,29 @@ class PermissionTest extends TestCase
         $permission->addVoter(new AlwaysYesVoter());
         $permission->addVoter(new AlwaysNoVoter());
         $this->assertTrue($permission->can($user, 'demo'));
+    }
+
+
+    public function testWithSpecificPermissionVoter(): void
+    {
+        $permission = new Permission();
+        $user       = new TestUser();
+        $permission->addVoter(new SpecificVoter());
+        $this->assertFalse($permission->can($user, 'demo'));
+        $this->assertTrue($permission->can($user, SpecificVoter::SPECIFIC));
+    }
+
+
+
+    public function testWithSpecificConditionVoter(): void
+    {
+        $permission = new Permission();
+        $user1      = new TestUser();
+        $user2      = new TestUser();
+        $post       = new TestPost($user1);
+        $permission->addVoter(new AuthorVoter());
+
+        $this->assertTrue($permission->can($user1, AuthorVoter::EDIT, $post));
+        $this->assertFalse($permission->can($user2, AuthorVoter::EDIT, $post));
     }
 }

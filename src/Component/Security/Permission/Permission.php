@@ -59,4 +59,21 @@ final class Permission
 
          return $this;
      }
+
+
+
+
+     /**
+      * @param Voter[] $voters
+      *
+      * @return $this
+     */
+     public function addVoters(array $voters): Permission
+     {
+         foreach ($voters as $voter) {
+             $this->addVoter($voter);
+         }
+
+         return $this;
+     }
 }
