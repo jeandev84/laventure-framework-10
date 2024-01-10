@@ -14,5 +14,4 @@ namespace Laventure\Component\Http\Utils;
 */
 class HeaderParams extends Parameter
 {
-
 }

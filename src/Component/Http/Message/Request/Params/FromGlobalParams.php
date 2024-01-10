@@ -13,19 +13,72 @@ use Laventure\Component\Http\Message\Request\File\UploadedFileTransformer;
  * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
  *
  * @package  Laventure\Component\Http\Message\Request\Params
-*/
-class GlobalParams
+ */
+class FromGlobalParams
 {
     /**
      * @var ServerParams
     */
-    public ServerParams $server;
+    protected ServerParams $server;
+
+
+    /**
+     * @var array
+    */
+    protected array $files;
+
 
 
 
     public function __construct()
     {
         $this->server = new ServerParams($_SERVER);
+        $this->files  = UploadedFileTransformer::transform($_FILES);
+    }
+
+
+
+    /**
+     * @return string
+    */
+    public function method(): string
+    {
+        return $this->server->getMethod();
+    }
+
+
+
+
+
+
+    /**
+     * @return string
+    */
+    public function url(): string
+    {
+        return $this->server->getUrl();
+    }
+
+
+
+
+    /**
+     * @return array
+    */
+    public function server(): array
+    {
+        return $this->server->all();
+    }
+
+
+
+
+    /**
+     * @return string
+    */
+    public function version(): string
+    {
+        return $this->server->getProtocolVersion();
     }
 
 
@@ -36,7 +89,7 @@ class GlobalParams
     */
     public function files(): array
     {
-        return UploadedFileTransformer::transform($_FILES);
+        return $this->files;
     }
 
 

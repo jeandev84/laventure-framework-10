@@ -1,42 +1,43 @@
 <?php
-
 declare(strict_types=1);
 
-namespace Laventure\Component\Http\Message\Common;
+namespace Laventure\Component\Http\Message;
 
-use Laventure\Component\Http\Utils\Parameter;
+
+use Laventure\Component\Http\Utils\HeaderParams;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * Created by PhpStorm at 22.12.2023
- *
- * @Message
+ * Message
  *
  * @author Jean-Claude <jeanyao@ymail.com>
  *
- * @package Laventure\Component\Http\Message\Common
+ * @license https://github.com/jeandev84/laventure-framework/blob/master/LICENSE
+ *
+ * @package  Laventure\Component\Http\Message
 */
-trait MessageTrait
+class Message implements MessageInterface
 {
     /**
      * @var string
-    */
-    protected string $version = '';
+     */
+    protected string $version;
 
 
 
     /**
-     * @var Parameter
+     * @var HeaderParams
     */
-    public $headers;
+    public HeaderParams $headers;
+
 
 
 
 
     /**
      * @var StreamInterface
-    */
+     */
     protected StreamInterface $body;
 
 
@@ -44,14 +45,16 @@ trait MessageTrait
 
     /**
      * @param StreamInterface $body
+     * @param HeaderParams $headers
      * @param string $version
-     * @param array $headers
     */
-    public function __construct(StreamInterface $body, string $version = '', array $headers = [])
+    public function __construct(string $version, HeaderParams $headers, StreamInterface $body)
     {
-        $this->body    = $body;
         $this->version = $version;
+        $this->headers = $headers;
+        $this->body    = $body;
     }
+
 
 
 
@@ -84,7 +87,7 @@ trait MessageTrait
      *
      * @param string $version HTTP protocol version
      * @return static
-    */
+     */
     public function withProtocolVersion(string $version): MessageInterface
     {
         $this->version = $version;
@@ -101,7 +104,7 @@ trait MessageTrait
      * @param array $headers
      *
      * @return $this
-    */
+     */
     public function withHeaders(array $headers): static
     {
         foreach ($headers as $name => $value) {
@@ -157,7 +160,7 @@ trait MessageTrait
      * @return bool Returns true if any header names match the given header
      *     name using a case-insensitive string comparison. Returns false if
      *     no matching header name is found in the message.
-    */
+     */
     public function hasHeader(string $name): bool
     {
         return $this->headers->has($name);
@@ -279,7 +282,7 @@ trait MessageTrait
      *
      * @param string $name Case-insensitive header field name to remove.
      * @return static
-    */
+     */
     public function withoutHeader(string $name): MessageInterface
     {
         $this->headers->remove($name);
@@ -317,7 +320,7 @@ trait MessageTrait
      * @param StreamInterface $body Body.
      * @return static
      * @throws \InvalidArgumentException When the body is not valid.
-   */
+    */
     public function withBody(StreamInterface $body): MessageInterface
     {
         $this->body = $body;

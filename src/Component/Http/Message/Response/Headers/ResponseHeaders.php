@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Laventure\Component\Http\Message\Response\Headers;
 
 use Laventure\Component\Http\Utils\HeaderLine;
-use Laventure\Component\Http\Utils\HeaderParameter;
-use Laventure\Component\Http\Utils\Parameter;
+use Laventure\Component\Http\Utils\HeaderParams;
 
 /**
  * ResponseHeaders
@@ -17,7 +16,7 @@ use Laventure\Component\Http\Utils\Parameter;
  *
  * @package  Laventure\Component\Http\Message\Response\Headers
  */
-class ResponseHeaders extends Parameter
+class ResponseHeaders extends HeaderParams
 {
     public function __construct(array $params = [])
     {

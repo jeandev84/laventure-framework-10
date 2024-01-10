@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Params;
 
+use Laventure\Component\Http\Utils\HeaderParams;
 use Laventure\Component\Http\Utils\Parameter;
 
 /**
@@ -15,7 +16,7 @@ use Laventure\Component\Http\Utils\Parameter;
  *
  * @package  Laventure\Component\Http\Message\Request\Params
  */
-class RequestHeaders extends Parameter
+class RequestHeaders extends HeaderParams
 {
     /**
      * @param array $params

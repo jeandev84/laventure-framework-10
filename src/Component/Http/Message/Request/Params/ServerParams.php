@@ -20,7 +20,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function name(): string
+    public function getName(): string
     {
         return $this->string('SERVER_NAME');
     }
@@ -31,7 +31,7 @@ class ServerParams extends Parameter
     /**
      * @return int
     */
-    public function port(): int
+    public function getPort(): int
     {
         return $this->integer('SERVER_PORT');
     }
@@ -43,7 +43,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function host(): string
+    public function getHost(): string
     {
         return $this->string('HTTP_HOST');
     }
@@ -54,7 +54,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function referer(): string
+    public function getReferer(): string
     {
         return $this->string('HTTP_REFERER');
     }
@@ -68,7 +68,7 @@ class ServerParams extends Parameter
      *
      * @return array
     */
-    public function headers(): array
+    public function getHeaders(): array
     {
         // TODO using array_filter()
 
@@ -93,7 +93,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function protocolVersion(): string
+    public function getProtocolVersion(): string
     {
         return $this->string('SERVER_PROTOCOL');
     }
@@ -106,7 +106,7 @@ class ServerParams extends Parameter
     /**
        * @return string
       */
-    public function requestMethod(): string
+    public function getMethod(): string
     {
         return $this->toUpper('REQUEST_METHOD');
     }
@@ -134,7 +134,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function requestUri(): string
+    public function getRequestUri(): string
     {
         return $this->string('REQUEST_URI');
     }
@@ -148,7 +148,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function queryString(): string
+    public function getQueryString(): string
     {
         return $this->string('REQUEST_QUERY');
     }
@@ -161,7 +161,7 @@ class ServerParams extends Parameter
     /**
      * @return int
     */
-    public function requestTime(): int
+    public function getRequestTime(): int
     {
         return $this->integer("REQUEST_TIME");
     }
@@ -173,7 +173,7 @@ class ServerParams extends Parameter
     /**
      * @return float
     */
-    public function requestTimeAsFloat(): float
+    public function getRequestTimeAsFloat(): float
     {
         return $this->float("REQUEST_TIME_FLOAT");
     }
@@ -184,7 +184,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function documentRoot(): string
+    public function getDocumentRoot(): string
     {
         return $this->string('DOCUMENT_ROOT');
     }
@@ -196,7 +196,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function scriptName(): string
+    public function getScriptName(): string
     {
         return $this->string('SCRIPT_NAME');
     }
@@ -210,7 +210,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function scriptFilename(): string
+    public function getScriptFile(): string
     {
         return $this->string('SCRIPT_FILENAME');
     }
@@ -223,7 +223,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function phpSelf(): string
+    public function getPhpSelf(): string
     {
         return $this->string('PHP_SELF');
     }
@@ -231,10 +231,11 @@ class ServerParams extends Parameter
 
 
 
+
     /**
      * @return string
     */
-    public function remoteAddress(): string
+    public function getRemoteAddress(): string
     {
         return $this->string('REMOTE_ADDR');
     }
@@ -246,7 +247,7 @@ class ServerParams extends Parameter
     /**
      * @return int
     */
-    public function remotePort(): int
+    public function getRemotePort(): int
     {
         return $this->integer('REMOTE_PORT');
     }
@@ -259,9 +260,9 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function pathInfo(): string
+    public function getPathInfo(): string
     {
-        $path = strtok($this->requestUri(), '?');
+        $path = strtok($this->getRequestUri(), '?');
 
         return $this->get('PATH_INFO', $path);
     }
@@ -273,7 +274,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function username(): string
+    public function getUsername(): string
     {
         return $this->string('PHP_AUTH_USER');
     }
@@ -286,7 +287,7 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function password(): string
+    public function getPassword(): string
     {
         return $this->string('PHP_AUTH_PW');
     }
@@ -298,13 +299,13 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function authority(): string
+    public function getAuthority(): string
     {
-        if (!$user = $this->username()) {
+        if (!$user = $this->getUsername()) {
             return '';
         }
 
-        return sprintf('%s:%s@', $user, $this->password());
+        return sprintf('%s:%s@', $user, $this->getPassword());
     }
 
 
@@ -352,7 +353,7 @@ class ServerParams extends Parameter
     */
     public function isSecure(): bool
     {
-        return $this->isHttps() && $this->port() == 443;
+        return $this->isHttps() && $this->getPort() == 443;
     }
 
 
@@ -364,7 +365,7 @@ class ServerParams extends Parameter
      *
      * @return string
     */
-    public function scheme(): string
+    public function getScheme(): string
     {
         return $this->isSecure() ? 'https' : 'http';
     }
@@ -375,9 +376,9 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function baseUrl(): string
+    public function getBaseUrl(): string
     {
-        return sprintf('%s://%s%s', $this->scheme(), $this->authority(), $this->host());
+        return sprintf('%s://%s%s', $this->getScheme(), $this->getAuthority(), $this->getHost());
     }
 
 
@@ -386,8 +387,8 @@ class ServerParams extends Parameter
     /**
      * @return string
     */
-    public function url(): string
+    public function getUrl(): string
     {
-        return sprintf('%s%s', $this->baseUrl(), $this->requestUri());
+        return sprintf('%s%s', $this->getBaseUrl(), $this->getRequestUri());
     }
 }

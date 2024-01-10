@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request;
 
-use Laventure\Component\Http\Message\Common\MessageTrait;
+use Laventure\Component\Http\Message\Message;
 use Laventure\Component\Http\Message\Request\Body\RequestBody;
+use Laventure\Component\Http\Message\Request\File\UploadedFileTransformer;
 use Laventure\Component\Http\Message\Request\Params\Attributes;
 use Laventure\Component\Http\Message\Request\Params\CookieParams;
 use Laventure\Component\Http\Message\Request\Params\FileParams;
-use Laventure\Component\Http\Message\Request\Params\GlobalParams;
+use Laventure\Component\Http\Message\Request\Params\FromGlobalParams;
 use Laventure\Component\Http\Message\Request\Params\ParsedBody;
 use Laventure\Component\Http\Message\Request\Params\QueryParams;
 use Laventure\Component\Http\Message\Request\Params\RequestHeaders;
@@ -28,10 +29,8 @@ use Psr\Http\Message\UriInterface;
  *
  * @package  Laventure\Component\Http\Message\Request
 */
-class ServerRequest implements ServerRequestInterface
+class ServerRequest extends Message implements ServerRequestInterface
 {
-    use MessageTrait;
-
 
     /**
      * @var string
@@ -99,24 +98,17 @@ class ServerRequest implements ServerRequestInterface
 
 
 
-
-
     /**
      * @param string $method
-     *
      * @param string $url
-     *
      * @param array $server
-     *
-     * TODO reviews uri may be both param UriInterface|string
     */
     public function __construct(string $method, string $url, array $server = [])
     {
+        parent::__construct('', new RequestHeaders(), new RequestBody());
         $this->method     = $method;
         $this->target     = $url;
         $this->uri        = new Uri($url);
-        $this->body       = new RequestBody();
-        $this->headers    = new RequestHeaders();
         $this->server     = new ServerParams($server);
         $this->cookies    = new CookieParams();
         $this->request    = new ParsedBody();
@@ -124,7 +116,6 @@ class ServerRequest implements ServerRequestInterface
         $this->files      = new FileParams();
         $this->attributes = new Attributes();
     }
-
 
 
 
@@ -442,17 +433,14 @@ class ServerRequest implements ServerRequestInterface
     */
     public static function fromGlobals(): static
     {
-        $param   = new GlobalParams();
-        $method  = $param->server->requestMethod();
-        $url     = $param->server->url();
-        $version = $param->server->protocolVersion();
+        $param = new FromGlobalParams();
 
-        return (new self($method, $url, $param->server->all()))
-               ->withQueryParams($param->queries())
-               ->withParsedBody($param->body())
-               ->withProtocolVersion($version)
-               ->withCookieParams($param->cookies())
-               ->withUploadedFiles($param->files());
+        return (new self($param->method(), $param->url(), $param->server()))
+            ->withQueryParams($param->queries())
+            ->withParsedBody($param->body())
+            ->withProtocolVersion($param->version())
+            ->withCookieParams($param->cookies())
+            ->withUploadedFiles($param->files());
     }
 
 }

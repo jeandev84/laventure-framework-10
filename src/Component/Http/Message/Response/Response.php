@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Response;
 
-use Laventure\Component\Http\Message\Common\MessageTrait;
+use Laventure\Component\Http\Message\Message;
 use Laventure\Component\Http\Message\Response\Body\ResponseBody;
 use Laventure\Component\Http\Message\Response\Headers\ResponseHeaders;
 use Psr\Http\Message\ResponseInterface;
@@ -19,11 +19,8 @@ use Psr\Http\Message\StreamInterface;
  *
  * @package  Laventure\Component\Http\Message\Response
  */
-class Response implements ResponseInterface
+class Response extends Message implements ResponseInterface
 {
-    use MessageTrait;
-
-
 
     /**
      * @var int
@@ -38,21 +35,17 @@ class Response implements ResponseInterface
     protected string $reasonPhrase = '';
 
 
+
     /**
      * @param int $status
-     *
      * @param array $headers
-     *
      * @param StreamInterface|null $body
     */
     public function __construct(int $status = 200, array $headers = [], StreamInterface $body = null)
     {
+        parent::__construct('', new ResponseHeaders($headers), $body ?: new ResponseBody());
         $this->status  = $status;
-        $this->headers = new ResponseHeaders($headers);
-        $this->body    = $body ?: new ResponseBody();
     }
-
-
 
 
 
