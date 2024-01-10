@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laventure\Component\Http\Message\Request\Params;
 
+use Laventure\Component\Http\Message\Request\Uri;
 use Laventure\Component\Http\Utils\Parameter;
 
 /**
@@ -45,7 +46,13 @@ class ServerParams extends Parameter
     */
     public function getHost(): string
     {
-        return $this->string('HTTP_HOST');
+        $host = $this->string('HTTP_HOST');
+
+        if($this->getPort()) {
+            return explode(':', $host)[0];
+        }
+
+        return $host;
     }
 
 
@@ -121,9 +128,7 @@ class ServerParams extends Parameter
     */
     public function setMethod(string $method): void
     {
-        if ($this->has('REQUEST_METHOD')) {
-            $this->set('REQUEST_METHOD', strtoupper($method));
-        }
+        $this->set('REQUEST_METHOD', strtoupper($method));
     }
 
 
@@ -150,7 +155,7 @@ class ServerParams extends Parameter
     */
     public function getQueryString(): string
     {
-        return $this->string('REQUEST_QUERY');
+        return $this->string('QUERY_STRING');
     }
 
 
@@ -301,9 +306,7 @@ class ServerParams extends Parameter
     */
     public function getAuthority(): string
     {
-        if (!$user = $this->getUsername()) {
-            return '';
-        }
+        if (!$user = $this->getUsername()) { return ''; }
 
         return sprintf('%s:%s@', $user, $this->getPassword());
     }
@@ -373,12 +376,30 @@ class ServerParams extends Parameter
 
 
 
+
+    /**
+     * @return Uri
+    */
+    public function getUri(): Uri
+    {
+        return (new Uri())
+               ->withScheme($this->getScheme())
+               ->withUserInfo($this->getUsername(), $this->getPassword())
+               ->withHost($this->getHost())
+               ->withPort($this->getPort())
+               ->withPath($this->getPathInfo())
+               ->withQuery($this->getQueryString());
+    }
+
+
+
+
     /**
      * @return string
     */
     public function getBaseUrl(): string
     {
-        return sprintf('%s://%s%s', $this->getScheme(), $this->getAuthority(), $this->getHost());
+        return str_replace($this->getRequestUri(), '', $this->getUrl());
     }
 
 
@@ -389,6 +410,6 @@ class ServerParams extends Parameter
     */
     public function getUrl(): string
     {
-        return sprintf('%s%s', $this->getBaseUrl(), $this->getRequestUri());
+        return (string)$this->getUri();
     }
 }

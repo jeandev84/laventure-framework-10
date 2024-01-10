@@ -6,11 +6,11 @@ namespace Laventure\Component\Http\Message\Request;
 
 use Laventure\Component\Http\Message\Message;
 use Laventure\Component\Http\Message\Request\Body\RequestBody;
-use Laventure\Component\Http\Message\Request\File\UploadedFileTransformer;
+use Laventure\Component\Http\Message\Request\DTO\FromGlobals;
+use Laventure\Component\Http\Message\Request\DTO\FromGlobalsFactory;
 use Laventure\Component\Http\Message\Request\Params\Attributes;
 use Laventure\Component\Http\Message\Request\Params\CookieParams;
 use Laventure\Component\Http\Message\Request\Params\FileParams;
-use Laventure\Component\Http\Message\Request\Params\FromGlobalParams;
 use Laventure\Component\Http\Message\Request\Params\ParsedBody;
 use Laventure\Component\Http\Message\Request\Params\QueryParams;
 use Laventure\Component\Http\Message\Request\Params\RequestHeaders;
@@ -98,14 +98,16 @@ class ServerRequest extends Message implements ServerRequestInterface
 
 
 
+
     /**
      * @param string $method
      * @param string $url
      * @param array $server
+     * @param string $version
     */
-    public function __construct(string $method, string $url, array $server = [])
+    public function __construct(string $method, string $url, array $server = [], string $version = '')
     {
-        parent::__construct('', new RequestHeaders(), new RequestBody());
+        parent::__construct($version, new RequestHeaders(), new RequestBody());
         $this->method     = $method;
         $this->target     = $url;
         $this->uri        = new Uri($url);
@@ -150,7 +152,7 @@ class ServerRequest extends Message implements ServerRequestInterface
     */
     public function getMethod(): string
     {
-        return $this->method;
+        return $this->server->getMethod();
     }
 
 
@@ -433,14 +435,13 @@ class ServerRequest extends Message implements ServerRequestInterface
     */
     public static function fromGlobals(): static
     {
-        $param = new FromGlobalParams();
+        $dto = FromGlobalsFactory::createDto();
 
-        return (new self($param->method(), $param->url(), $param->server()))
-            ->withQueryParams($param->queries())
-            ->withParsedBody($param->body())
-            ->withProtocolVersion($param->version())
-            ->withCookieParams($param->cookies())
-            ->withUploadedFiles($param->files());
+        return (new self($dto->method, $dto->url, $dto->server, $dto->version))
+            ->withQueryParams($dto->queries)
+            ->withParsedBody($dto->parsedBody)
+            ->withCookieParams($dto->cookies)
+            ->withUploadedFiles($dto->files);
     }
 
 }
